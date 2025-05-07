@@ -2,8 +2,11 @@ import "./App.css";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import HomePage from "./components/pages/HomePage";
 import "./utils/localization/i18n";
-import Layout from "./components/layout/LAyout";
+
+
+import Layout from "./components/layout/Layout";
 import { ThemeProvider } from "./components/ui/themeprovider";
+import MyRidesPage from "./components/pages/MyRidesPage";
 
 function App() {
   return (
@@ -13,6 +16,7 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route path="/" element={<Navigate to={"/home"} replace />} />
             <Route path="/home" element={<HomePage />} />
+            <Route path="/my-rides" element={<MyRidesPage />} /> {/* Add this line */}
           </Route>
         </Routes>
       </BrowserRouter>

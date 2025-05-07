@@ -1,0 +1,23 @@
+import "./App.css";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import HomePage from "./components/pages/HomePage";
+import "./utils/localization/i18n";
+import Layout from "./components/layout/LAyout";
+import { ThemeProvider } from "./components/ui/themeprovider";
+
+function App() {
+  return (
+    <ThemeProvider defaultTheme="system" storageKey="go-together-theme">
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route path="/" element={<Navigate to={"/home"} replace />} />
+            <Route path="/home" element={<HomePage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
+  );
+}
+
+export default App;

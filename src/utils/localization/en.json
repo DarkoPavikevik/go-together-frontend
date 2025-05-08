@@ -49,5 +49,14 @@
     "profile.addVehicle": "Add Vehicle",
     "profile.editProfile": "Edit Profile",
     "chat.send": "Send",
-    "chat.message": "Message"
+    "chat.message": "Message",
+    "footer.description":"© 2025 GoTogether.All rights reserved.",
+    "footer.links.title":"About",
+    "footer.links.home":"Home",
+    "footer.links.about":"About",
+    "footer.links.contact":"Contact",
+    "footer.legal.title":"Legal",
+    "footer.legal.terms":"Terms",
+    "footer.legal.privacy":"Privacy",
+    "footer.social.title":"Social"
   }

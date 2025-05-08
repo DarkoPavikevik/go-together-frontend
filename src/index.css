@@ -130,3 +130,15 @@ body {
     --ring: 224.3 76.3% 48%;
   }
 }
+
+.homepage-gradient-color {
+  background: linear-gradient(to bottom, #d8e3fc, #f4f7fe);
+}
+
+.homepage-gradient-three-colors {
+  background: linear-gradient(to bottom, #f4f7fe 0%, #d8e3fc 50%, #f4f7fe 100%);
+}
+
+.homepage-gradient-bottom-color {
+  background: linear-gradient(to bottom,#f4f7fe, #d8e3fc );
+}

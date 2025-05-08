@@ -13,7 +13,10 @@ export default function Footer() {
               Go Together
             </h3>
             <p className="text-gray-600 dark:text-gray-300">
-              {t("footer.description")}
+              © 2025 GoTogether.
+            </p>
+            <p className="text-gray-600 dark:text-gray-300">
+              All rights reserved.
             </p>
           </div>
           <div>
@@ -74,7 +77,7 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
               {t("footer.social.title")}
             </h3>
-            <div className="flex space-x-4">
+            <div className="flex flex-col space-y-2">
               <a
                 href="#"
                 className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"

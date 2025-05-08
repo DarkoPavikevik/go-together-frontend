@@ -13,7 +13,12 @@ import { Input } from "../ui/Input";
 import { Link } from "react-router-dom";
 import Image from "../ui/Image";
 import { useTranslation } from "react-i18next";
-import { Button as AntdButton, DatePicker, type DatePickerProps } from "antd";
+import {
+  Button as AntdButton,
+  Avatar,
+  DatePicker,
+  type DatePickerProps,
+} from "antd";
 import { Button } from "../ui/Button";
 
 export default function Home() {
@@ -24,10 +29,10 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="w-full flex flex-col items-center">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-b from-primary/20 to-background py-16 md:py-24">
-        <div className="container flex flex-col items-center text-center">
+      <section className="w-full relative py-16 md:py-24 homepage-gradient-color">
+        <div className="flex flex-col items-center text-center">
           <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
             {t("home.title")}
           </h1>
@@ -41,7 +46,12 @@ export default function Home() {
                 {t("home.findRide")}
               </Link>
             </Button>
-            <Button size="lg" variant="outline" asChild>
+            <Button
+              size="lg"
+              variant="outline"
+              style={{ color: "white", backgroundColor: "#646cff" }}
+              asChild
+            >
               <Link to="/rides/create">
                 <Car className="mr-2 h-4 w-4" />
                 {t("home.offerRide")}
@@ -63,7 +73,9 @@ export default function Home() {
           <CardContent>
             <form className="grid gap-6 sm:grid-cols-2 md:grid-cols-4">
               <div className="grid gap-2">
-                <Label htmlFor="from">{t("rides.from")}</Label>
+                <Label htmlFor="from" className="text-left">
+                  {t("rides.from")}
+                </Label>
                 <div className="relative">
                   <MapPin className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                   <Input
@@ -74,7 +86,9 @@ export default function Home() {
                 </div>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="to">{t("rides.to")}</Label>
+                <Label htmlFor="to" className="text-left">
+                  {t("rides.to")}
+                </Label>
                 <div className="relative">
                   <MapPin className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                   <Input
@@ -85,40 +99,14 @@ export default function Home() {
                 </div>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="date">{t("rides.date")}</Label>
+                <Label htmlFor="date" className="text-left">
+                  {t("rides.date")}
+                </Label>
                 <DatePicker
                   onChange={onChange}
                   size="large"
                   style={{ borderColor: "black" }}
                 />
-
-                {/* <Popover open={open} onOpenChange={setOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start text-left font-normal"
-                      onClick={() => setOpen(!open)}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {date ? (
-                        dayjs(date).format("DD.MM.YYYY")
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={date}
-                      onSelect={(selectedDate) => {
-                        setDate(selectedDate);
-                        setOpen(false); // Close popover after date selection
-                      }}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover> */}
               </div>
               <div className="grid gap-2 sm:col-span-2 md:col-span-1">
                 <Label>&nbsp;</Label>
@@ -127,6 +115,7 @@ export default function Home() {
                   variant="solid"
                   size="large"
                   color="primary"
+                  style={{ backgroundColor: "#646cff" }}
                 >
                   <Search className="mr-2 h-4 w-4" />
                   {t("rides.search")}
@@ -138,15 +127,15 @@ export default function Home() {
       </section>
 
       {/* How It Works Section */}
-      <section className="bg-muted py-16">
-        <div className="container">
+      <section className="w-full py-26 md:py-24 homepage-gradient-three-colors">
+        <div className="flex flex-col items-center text-center">
           <div className="mb-10 text-center">
             <h2 className="text-3xl font-bold">{t("home.howItWorks")}</h2>
           </div>
-          <div className="grid gap-8 md:grid-cols-3">
-            <Card>
+          <div className="flex flex-col items-center gap-6 md:flex-row md:justify-center">
+            <Card className="w-[430px]">
               <CardContent className="pt-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-foreground">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-foreground bg-[#646cff] text-white">
                   1
                 </div>
                 <h3 className="mb-2 text-xl font-bold">{t("home.step1")}</h3>
@@ -156,9 +145,9 @@ export default function Home() {
                 </p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="w-[430px]">
               <CardContent className="pt-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-foreground">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-foreground bg-[#646cff] text-white">
                   2
                 </div>
                 <h3 className="mb-2 text-xl font-bold">{t("home.step2")}</h3>
@@ -168,9 +157,9 @@ export default function Home() {
                 </p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="w-[430px]">
               <CardContent className="pt-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-foreground">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-foreground bg-[#646cff] text-white">
                   3
                 </div>
                 <h3 className="mb-2 text-xl font-bold">{t("home.step3")}</h3>
@@ -185,42 +174,42 @@ export default function Home() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-16">
-        <div className="container">
+      <section className="w-full py-26 homepage-gradient-three-colors">
+        <div className="flex flex-col items-center text-center">
           <div className="mb-10 text-center">
             <h2 className="text-3xl font-bold">{t("home.benefits")}</h2>
           </div>
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
+            <Card className="w-[310px]">
               <CardContent className="pt-6">
-                <CreditCard className="mb-4 h-10 w-10 text-primary" />
+                <CreditCard className="mb-4 h-10 w-10 text-[#646cff]" />
                 <h3 className="mb-2 text-xl font-bold">{t("home.benefit1")}</h3>
                 <p className="text-muted-foreground">
                   Share travel expenses and save money on your journeys.
                 </p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="w-[310px]">
               <CardContent className="pt-6">
-                <Car className="mb-4 h-10 w-10 text-primary" />
+                <Car className="mb-4 h-10 w-10 text-[#646cff]" />
                 <h3 className="mb-2 text-xl font-bold">{t("home.benefit2")}</h3>
                 <p className="text-muted-foreground">
                   Fewer cars on the road means less pollution and traffic.
                 </p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="w-[310px]">
               <CardContent className="pt-6">
-                <Users className="mb-4 h-10 w-10 text-primary" />
+                <Users className="mb-4 h-10 w-10 text-[#646cff]" />
                 <h3 className="mb-2 text-xl font-bold">{t("home.benefit3")}</h3>
                 <p className="text-muted-foreground">
                   Connect with like-minded travelers and make new friends.
                 </p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="w-[310px]">
               <CardContent className="pt-6">
-                <MapPin className="mb-4 h-10 w-10 text-primary" />
+                <MapPin className="mb-4 h-10 w-10 text-[#646cff]" />
                 <h3 className="mb-2 text-xl font-bold">{t("home.benefit4")}</h3>
                 <p className="text-muted-foreground">
                   Enjoy a comfortable journey with verified drivers and
@@ -233,22 +222,17 @@ export default function Home() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="bg-muted py-16">
-        <div className="container">
+      <section className="w-full py-16 md:py-24 homepage-gradient-three-colors">
+        <div className="flex flex-col items-center text-center">
           <div className="mb-10 text-center">
             <h2 className="text-3xl font-bold">What Our Users Say</h2>
           </div>
-          <div className="grid gap-8 md:grid-cols-3">
-            <Card>
+          <div className="flex flex-col items-center gap-6 md:flex-row md:justify-center">
+            <Card className="w-[430px]">
               <CardContent className="pt-6">
                 <div className="mb-4 flex items-center gap-4">
-                  <Image
-                    src="/placeholder.svg?height=50&width=50"
-                    alt="User"
-                    width={50}
-                    height={50}
-                    className="rounded-full"
-                  />
+                  {/*SMENI GO OVA DA TI E DINAMICHNO */}
+                  <Avatar alt="test" size={"large"} />
                   <div>
                     <h4 className="font-bold">Ana K.</h4>
                     <div className="flex text-yellow-500">
@@ -264,16 +248,11 @@ export default function Home() {
                 </p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="w-[430px]">
               <CardContent className="pt-6">
                 <div className="mb-4 flex items-center gap-4">
-                  <Image
-                    src="/placeholder.svg?height=50&width=50"
-                    alt="User"
-                    width={50}
-                    height={50}
-                    className="rounded-full"
-                  />
+                  {/*SMENI GO OVA DA TI E DINAMICHNO */}
+                  <Avatar alt="test" size={"large"} />
                   <div>
                     <h4 className="font-bold">Marko S.</h4>
                     <div className="flex text-yellow-500">
@@ -289,16 +268,11 @@ export default function Home() {
                 </p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="w-[430px]">
               <CardContent className="pt-6">
                 <div className="mb-4 flex items-center gap-4">
-                  <Image
-                    src="/placeholder.svg?height=50&width=50"
-                    alt="User"
-                    width={50}
-                    height={50}
-                    className="rounded-full"
-                  />
+                  {/*SMENI GO OVA DA TI E DINAMICHNO */}
+                  <Avatar alt="test" size={"large"} />
                   <div>
                     <h4 className="font-bold">Elena T.</h4>
                     <div className="flex text-yellow-500">
@@ -320,8 +294,8 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16">
-        <div className="container">
+      <section className="w-full py-26 homepage-gradient-bottom-color">
+        <div className="flex flex-col items-center text-center">
           <div className="rounded-lg bg-primary p-8 text-center text-primary-foreground md:p-12">
             <h2 className="mb-4 text-3xl font-bold">
               Ready to Start Your Journey?

@@ -39,7 +39,7 @@ export default function Header() {
     setTheme(nextTheme);
   };
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full shadow-xl bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex items-center justify-around px-4 py-2">
         <div className="flex items-center gap-4">
           <Sheet>
@@ -118,8 +118,8 @@ export default function Header() {
             showSelectedLabel={false}
             showSecondarySelectedLabel={false}
             showOptionLabel={false}
-            className="!rounded-lg !w-14 !p-0 !shadow-none !bg-white"
-            selectButtonClassName="!pr-0 after:hidden"
+            className="!w-14 !p-0 hover:border-1 border-[#646cff] rounded-lg"
+            selectButtonClassName="!pr-0 after:hidden !border-none"
           />
           <Button
             variant="ghost"

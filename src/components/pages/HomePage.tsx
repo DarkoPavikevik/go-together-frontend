@@ -63,7 +63,7 @@ export default function Home() {
 
       {/* Search Section */}
       <section className="container py-12">
-        <Card className="mx-auto max-w-4xl">
+        <Card className="mx-auto max-w-4xl shadow-2xl">
           <CardHeader>
             <CardTitle>{t("rides.search")}</CardTitle>
             <CardDescription>

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Car, Menu, Moon, Sun, User, LogOut } from "lucide-react";
-import { useTheme } from "../ui/themeprovider";
+
 import { Sheet, SheetContent, SheetTrigger } from "../ui/Sheet";
 import { Button } from "../ui/Button";
 import {
@@ -14,6 +14,8 @@ import {
 import { useTranslation } from "react-i18next";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/Avatar";
 import ReactFlagsSelect from "react-flags-select";
+import { useTheme } from "../ui/ThemeProvider";
+
 const countryLangMap: Record<string, string> = {
   GB: "en", // English
   AL: "sq", // Albanian
@@ -164,10 +166,10 @@ export default function Header() {
           ) : (
             <div className="flex items-center gap-2">
               <Button variant="ghost" asChild>
-                <Link to="/auth/signin">{t("nav.signIn")}</Link>
+                <Link to="/sign-in">{t("nav.signIn")}</Link>
               </Button>
               <Button asChild>
-                <Link to="/auth/signup">{t("nav.signUp")}</Link>
+                <Link to="/sign-up">{t("nav.signUp")}</Link>
               </Button>
             </div>
           )}

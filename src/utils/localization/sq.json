@@ -49,6 +49,43 @@
     "profile.addVehicle": "Shto Automjet",
     "profile.editProfile": "Modifiko Profilin",
     "chat.send": "Dërgo",
-    "chat.message": "Mesazh"
+    "chat.message": "Mesazh",
+    "rides.search.description":"Gjeni udhëtime që përputhen me planet tuaja të udhëtimit",
+    "home.howItWorks.description":"Krijo profilin tënd, shto foton tënde dhe verifiko numrin tënd të telefonit për siguri të shtuar.",
+    "home.step2.description":"Kërko për udhëtime ose ofro udhëtimin tënd. Lidhu me udhëtarët që ndjekin rrugën tënde.",
+    "home.step3.description":"Udhëtoni së bashku, ndani kostot dhe vlerësoni përvojën tuaj për të ndihmuar komunitetin.",
+    "home.benefit1.description":"Ndani shpenzimet e udhëtimit dhe kurseni para në udhëtimet tuaja.",
+    "home.benefit2.description":"Më pak makina në rrugë do të thotë më pak ndotje dhe trafik.",
+    "home.benefit3.description":"Lidhu me udhëtarë me të njëjtat interesa dhe krijo miq të rinj.",
+    "home.benefit4.description":"Shijoni një udhëtim të rehatshëm me shoferë dhe pasagjerë të verifikuar.",
+    "home.whatTheySay":"Çfarë thonë përdoruesit tanë",
+    "home.titlejourney":"Gati për të filluar udhëtimin tuaj?",
+    "home.titlejourney.description":"Bashkohuni me mijëra udhëtarë që tashmë po kursejnë para dhe po zvogëlojnë gjurmën e tyre të karbonit.",
+    "nav.rides.description":"Gjeni udhëtime që përputhen me planet tuaja të udhëtimit",
+    "rides.search.nav":"Kërko",
+    "rides.popular.routes":"Rrugët popullore",
+    "profile.description":"Menaxho profilin dhe preferencat e tua",
+    "profile.member":"Anëtar që nga",
+    "profile.contact":"Informacione Kontakti",
+    "profile.preferences":"Preferencat",
+    "profile.aboutme":"Rreth meje",
+    "profile.reviews":"Vlerësime",
+    "profile.vehicle.details":"Detajet e automjetit",
+    "profile.vehicle.features":"Karakteristikat"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   }
   

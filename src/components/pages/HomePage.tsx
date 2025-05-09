@@ -67,7 +67,7 @@ export default function Home() {
           <CardHeader>
             <CardTitle>{t("rides.search")}</CardTitle>
             <CardDescription>
-              Find rides that match your travel plans
+              {t("rides.search.description")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -140,8 +140,7 @@ export default function Home() {
                 </div>
                 <h3 className="mb-2 text-xl font-bold">{t("home.step1")}</h3>
                 <p className="text-muted-foreground">
-                  Create your profile, add your photo and verify your phone
-                  number for added security.
+                {t("home.howItWorks.description")}
                 </p>
               </CardContent>
             </Card>
@@ -152,8 +151,7 @@ export default function Home() {
                 </div>
                 <h3 className="mb-2 text-xl font-bold">{t("home.step2")}</h3>
                 <p className="text-muted-foreground">
-                  Search for rides or offer your own. Connect with travelers
-                  going your way.
+                {t("home.step2.description")}
                 </p>
               </CardContent>
             </Card>
@@ -164,8 +162,7 @@ export default function Home() {
                 </div>
                 <h3 className="mb-2 text-xl font-bold">{t("home.step3")}</h3>
                 <p className="text-muted-foreground">
-                  Travel together, share costs, and rate your experience to help
-                  the community.
+                {t("home.step3.description")}
                 </p>
               </CardContent>
             </Card>
@@ -185,7 +182,7 @@ export default function Home() {
                 <CreditCard className="mb-4 h-10 w-10 text-[#646cff]" />
                 <h3 className="mb-2 text-xl font-bold">{t("home.benefit1")}</h3>
                 <p className="text-muted-foreground">
-                  Share travel expenses and save money on your journeys.
+                {t("home.benefit1.description")}
                 </p>
               </CardContent>
             </Card>
@@ -194,7 +191,7 @@ export default function Home() {
                 <Car className="mb-4 h-10 w-10 text-[#646cff]" />
                 <h3 className="mb-2 text-xl font-bold">{t("home.benefit2")}</h3>
                 <p className="text-muted-foreground">
-                  Fewer cars on the road means less pollution and traffic.
+                {t("home.benefit2.description")}
                 </p>
               </CardContent>
             </Card>
@@ -203,7 +200,7 @@ export default function Home() {
                 <Users className="mb-4 h-10 w-10 text-[#646cff]" />
                 <h3 className="mb-2 text-xl font-bold">{t("home.benefit3")}</h3>
                 <p className="text-muted-foreground">
-                  Connect with like-minded travelers and make new friends.
+                  {t("home.benefit3.description")}
                 </p>
               </CardContent>
             </Card>
@@ -212,8 +209,7 @@ export default function Home() {
                 <MapPin className="mb-4 h-10 w-10 text-[#646cff]" />
                 <h3 className="mb-2 text-xl font-bold">{t("home.benefit4")}</h3>
                 <p className="text-muted-foreground">
-                  Enjoy a comfortable journey with verified drivers and
-                  passengers.
+                {t("home.benefit4.description")}
                 </p>
               </CardContent>
             </Card>
@@ -225,7 +221,7 @@ export default function Home() {
       <section className="w-full py-16 md:py-24 homepage-gradient-three-colors">
         <div className="flex flex-col items-center text-center">
           <div className="mb-10 text-center">
-            <h2 className="text-3xl font-bold">What Our Users Say</h2>
+            <h2 className="text-3xl font-bold">{t("home.whatTheySay")}</h2>
           </div>
           <div className="flex flex-col items-center gap-6 md:flex-row md:justify-center">
             <Card className="w-[430px] border-gray-200 shadow-2xl">
@@ -298,14 +294,13 @@ export default function Home() {
         <div className="flex flex-col items-center text-center">
           <div className="rounded-lg bg-primary p-8 text-center text-primary-foreground md:p-12">
             <h2 className="mb-4 text-3xl font-bold">
-              Ready to Start Your Journey?
+            {t("home.titlejourney")}
             </h2>
             <p className="mb-6 mx-auto max-w-[600px] text-primary-foreground/90 md:text-lg">
-              Join thousands of travelers who are already saving money and
-              reducing their carbon footprint.
+            {t("home.titlejourney.description")}
             </p>
             <div className="flex flex-col gap-4 sm:flex-row justify-center">
-              <Button size="lg" variant="secondary" asChild>
+              <Button size="lg" variant="secondary" style={{ color: "white", backgroundColor: "#646cff" }} asChild>
                 <Link to="/auth/signup">{t("nav.signUp")}</Link>
               </Button>
               <Button

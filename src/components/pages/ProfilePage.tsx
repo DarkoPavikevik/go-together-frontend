@@ -116,7 +116,7 @@ export default function ProfilePage() {
     <div className="container py-8">
       <div className="mb-8 text-left">
         <h1 className="text-3xl font-bold">{t("nav.profile")}</h1>
-        <p className="text-gray-400">Manage your profile and preferences</p>
+        <p className="text-gray-400">{t("profile.description")}</p>
       </div>
 
       <div className="grid gap-8 lg:grid-cols-3">
@@ -138,11 +138,11 @@ export default function ProfilePage() {
                   <span className="font-medium">{user.rating}</span>
                   <span className="mx-1 text-muted-foreground">·</span>
                   <span className="text-gray-400">
-                    {user.ridesCompleted} rides
+                    {user.ridesCompleted} {t("profile.rides")}
                   </span>
                 </div>
                 <p className="mt-1 text-sm text-gray-400">
-                  Member since {format(user.joinedDate, "MMMM yyyy")}
+                {t("profile.member")} {format(user.joinedDate, "MMMM yyyy")}
                 </p>
                 <div className="mt-4 w-full border-gray-200">
                   <Button className="w-full" onClick={() => setIsEditing(true)}>
@@ -157,7 +157,7 @@ export default function ProfilePage() {
           <Card className="border-gray-200">
             <CardHeader>
               <CardTitle>
-                <div className="text-left">Contact Information</div>
+                <div className="text-left">{t("profile.contact")}</div>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -177,7 +177,7 @@ export default function ProfilePage() {
           <Card className="border-gray-200">
             <CardHeader>
               <CardTitle>
-                <div className="text-left">Preferences</div>
+                <div className="text-left">{t("profile.preferences")}</div>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -300,7 +300,7 @@ export default function ProfilePage() {
             <Card className="border-gray-200">
               <CardHeader>
                 <div className="text-left">
-                  <CardTitle>About Me</CardTitle>
+                  <CardTitle>{t("profile.aboutme")}</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
@@ -333,7 +333,7 @@ export default function ProfilePage() {
                 <div className="grid gap-4 md:grid-cols-2">
                   <div>
                     <h3 className="mb-2 font-medium text-left">
-                      Vehicle Details
+                    {t("profile.vehicle.details")}
                     </h3>
                     <ul className="space-y-1 text-sm">
                       <li className="flex justify-between">
@@ -361,7 +361,7 @@ export default function ProfilePage() {
                     </ul>
                   </div>
                   <div>
-                    <h3 className="mb-2 font-medium text-left">Features</h3>
+                    <h3 className="mb-2 font-medium text-left">{t("profile.vehicle.features")}</h3>
                     <ul className="space-y-1 text-sm">
                       <li className="flex items-center gap-2">
                         <span>✓</span>
@@ -401,7 +401,7 @@ export default function ProfilePage() {
 
           <Card className="border-gray-200">
             <CardHeader>
-              <CardTitle className="text-left">Reviews</CardTitle>
+              <CardTitle className="text-left">{t("profile.reviews")}</CardTitle>
             </CardHeader>
             <CardContent>
               {user.reviews.length > 0 ? (

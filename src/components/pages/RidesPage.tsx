@@ -164,7 +164,7 @@ export default function RidesPage() {
         <div>
           <h1 className="text-3xl font-bold text-left">{t("nav.rides")}</h1>
           <p className="text-gray-400">
-            Find and join rides to your destination
+          {t("nav.rides.description")}
           </p>
         </div>
         <Button
@@ -179,15 +179,15 @@ export default function RidesPage() {
 
       <Tabs defaultValue="search" className="mb-8 text-left">
         <TabsList>
-          <TabsTrigger value="search">Search</TabsTrigger>
-          <TabsTrigger value="popular">Popular Routes</TabsTrigger>
+          <TabsTrigger value="search">{t("rides.search.nav")}</TabsTrigger>
+          <TabsTrigger value="popular">{t("rides.popular.routes")}</TabsTrigger>
         </TabsList>
         <TabsContent value="search">
           <Card className="border-gray-200">
             <CardHeader>
               <CardTitle>{t("rides.search")}</CardTitle>
               <CardDescription className="text-gray-400">
-                Find rides that match your travel plans
+              {t("nav.rides.description")}
               </CardDescription>
             </CardHeader>
             <CardContent>

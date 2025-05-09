@@ -173,7 +173,9 @@ export default function Header() {
               <Button variant="ghost" asChild>
                 <Link to="/sign-in">{t("nav.signIn")}</Link>
               </Button>
-              <Button asChild>
+              <Button
+                style={{ color: "white", backgroundColor: "#646cff" }}              
+              asChild>
                 <Link to="/sign-up">{t("nav.signUp")}</Link>
               </Button>
             </div>

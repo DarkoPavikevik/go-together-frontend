@@ -8,6 +8,9 @@ import { ThemeProvider } from "./components/ui/ThemeProvider";
 import MyRidesPage from "./components/pages/MyRidesPage";
 import SignInPage from "./components/pages/SignInPage";
 import SignUpPage from "./components/pages/SignUpPage";
+import ProfilePage from "./components/pages/ProfilePage";
+import ChatPage from "./components/pages/ChatPage";
+import RidesPage from "./components/pages/RidesPage";
 
 function App() {
   return (
@@ -20,6 +23,9 @@ function App() {
             <Route path="/my-rides" element={<MyRidesPage />} />
             <Route path="/sign-in" element={<SignInPage />} />
             <Route path="/sign-up" element={<SignUpPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/chat/:id" element={<ChatPage />} />
+            <Route path="/rides" element={<RidesPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

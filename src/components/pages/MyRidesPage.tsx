@@ -16,7 +16,7 @@ import { format } from "date-fns";
 // import { Avatar, AvatarFallback, AvatarImage } from "../ui/Avatar";
 import { Avatar, Badge, Tag, Button as AntdButton } from "antd";
 import { Button } from "../ui/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const mockUpcomingRides = [
   {
@@ -103,6 +103,7 @@ const mockPastRides = [
 
 export default function MyRidesPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [upcomingRides, setUpcomingRides] = useState(mockUpcomingRides);
   const [pastRides, setPastRides] = useState(mockPastRides);
 
@@ -287,21 +288,19 @@ export default function MyRidesPage() {
                           {ride.price} {ride.currency}
                         </div>
                         <div className="flex gap-2">
-                          <AntdButton>
-                            <Link to={`/rides/${ride.id}`}>Details</Link>
+                          <AntdButton
+                            onClick={() => navigate(`/rides/${ride.id}`)}
+                          >
+                            Details
                           </AntdButton>
                           <AntdButton
                             variant="solid"
                             color="primary"
                             style={{ backgroundColor: "#646cff" }}
+                            onClick={() => navigate(`/chat/${ride.id}`)}
                           >
-                            <Link
-                              to={`/chat/${ride.id}`}
-                              className="flex items-center decoration-0"
-                            >
-                              <MessageSquare className="mr-1 h-4 w-4" />
-                              Chat
-                            </Link>
+                            <MessageSquare className="mr-1 h-4 w-4" />
+                            Chat
                           </AntdButton>
                         </div>
                       </div>

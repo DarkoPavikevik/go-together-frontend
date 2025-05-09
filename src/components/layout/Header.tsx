@@ -15,6 +15,7 @@ import { useTranslation } from "react-i18next";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/Avatar";
 import ReactFlagsSelect from "react-flags-select";
 import { useTheme } from "../ui/ThemeProvider";
+import Image from "../ui/Image";
 
 const countryLangMap: Record<string, string> = {
   GB: "en", // English
@@ -82,8 +83,11 @@ export default function Header() {
             to="/"
             className="flex items-center gap-2 text-lg font-semibold"
           >
-            <Car className="h-5 w-5" />
-            <span className="hidden md:inline">GoTogether</span>
+            <Image
+              alt={"GoTogether"}
+              src="/GoTogetherLogo2.png"
+              className="h-20 w-20"
+            />
           </Link>
 
           <nav className="hidden lg:flex lg:gap-6 lg:text-sm lg:font-medium">
@@ -127,6 +131,7 @@ export default function Header() {
             aria-label={`Switch to ${
               theme === "dark" ? "light" : "dark"
             } theme`}
+            style={{ backgroundColor: theme !== "dark" ? "transparent" : "" }}
           >
             {theme === "dark" ? (
               <Sun className="h-5 w-5 text-black" />

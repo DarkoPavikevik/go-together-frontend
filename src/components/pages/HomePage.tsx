@@ -63,7 +63,7 @@ export default function Home() {
 
       {/* Search Section */}
       <section className="container py-12">
-        <Card className="mx-auto max-w-4xl shadow-2xl">
+        <Card className="mx-auto max-w-4xl shadow-2xl border-gray-200">
           <CardHeader>
             <CardTitle>{t("rides.search")}</CardTitle>
             <CardDescription>
@@ -133,7 +133,7 @@ export default function Home() {
             <h2 className="text-3xl font-bold">{t("home.howItWorks")}</h2>
           </div>
           <div className="flex flex-col items-center gap-6 md:flex-row md:justify-center">
-            <Card className="w-[430px]">
+            <Card className="w-[430px] border-gray-200 shadow-2xl">
               <CardContent className="pt-6">
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-foreground bg-[#646cff] text-white">
                   1
@@ -145,7 +145,7 @@ export default function Home() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="w-[430px]">
+            <Card className="w-[430px] border-gray-200 shadow-2xl">
               <CardContent className="pt-6">
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-foreground bg-[#646cff] text-white">
                   2
@@ -157,7 +157,7 @@ export default function Home() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="w-[430px]">
+            <Card className="w-[430px] border-gray-200 shadow-2xl">
               <CardContent className="pt-6">
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-foreground bg-[#646cff] text-white">
                   3
@@ -180,7 +180,7 @@ export default function Home() {
             <h2 className="text-3xl font-bold">{t("home.benefits")}</h2>
           </div>
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-            <Card className="w-[310px]">
+            <Card className="w-[310px] border-gray-200 shadow-2xl">
               <CardContent className="pt-6">
                 <CreditCard className="mb-4 h-10 w-10 text-[#646cff]" />
                 <h3 className="mb-2 text-xl font-bold">{t("home.benefit1")}</h3>
@@ -189,7 +189,7 @@ export default function Home() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="w-[310px]">
+            <Card className="w-[310px] border-gray-200 shadow-2xl">
               <CardContent className="pt-6">
                 <Car className="mb-4 h-10 w-10 text-[#646cff]" />
                 <h3 className="mb-2 text-xl font-bold">{t("home.benefit2")}</h3>
@@ -198,7 +198,7 @@ export default function Home() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="w-[310px]">
+            <Card className="w-[310px] border-gray-200 shadow-2xl">
               <CardContent className="pt-6">
                 <Users className="mb-4 h-10 w-10 text-[#646cff]" />
                 <h3 className="mb-2 text-xl font-bold">{t("home.benefit3")}</h3>
@@ -207,7 +207,7 @@ export default function Home() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="w-[310px]">
+            <Card className="w-[310px] border-gray-200 shadow-2xl">
               <CardContent className="pt-6">
                 <MapPin className="mb-4 h-10 w-10 text-[#646cff]" />
                 <h3 className="mb-2 text-xl font-bold">{t("home.benefit4")}</h3>
@@ -228,7 +228,7 @@ export default function Home() {
             <h2 className="text-3xl font-bold">What Our Users Say</h2>
           </div>
           <div className="flex flex-col items-center gap-6 md:flex-row md:justify-center">
-            <Card className="w-[430px]">
+            <Card className="w-[430px] border-gray-200 shadow-2xl">
               <CardContent className="pt-6">
                 <div className="mb-4 flex items-center gap-4">
                   {/*SMENI GO OVA DA TI E DINAMICHNO */}
@@ -248,7 +248,7 @@ export default function Home() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="w-[430px]">
+            <Card className="w-[430px] border-gray-200 shadow-2xl">
               <CardContent className="pt-6">
                 <div className="mb-4 flex items-center gap-4">
                   {/*SMENI GO OVA DA TI E DINAMICHNO */}
@@ -268,7 +268,7 @@ export default function Home() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="w-[430px]">
+            <Card className="w-[430px] border-gray-200 shadow-2xl">
               <CardContent className="pt-6">
                 <div className="mb-4 flex items-center gap-4">
                   {/*SMENI GO OVA DA TI E DINAMICHNO */}

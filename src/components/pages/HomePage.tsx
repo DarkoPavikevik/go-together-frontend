@@ -16,10 +16,76 @@ import { useTranslation } from "react-i18next";
 import {
   Button as AntdButton,
   Avatar,
+  Carousel,
   DatePicker,
   type DatePickerProps,
 } from "antd";
 import { Button } from "../ui/Button";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
+
+const sliderSettings = {
+  infinite: true,
+  speed: 8000,
+  slidesToShow: 3,
+  slidesToScroll: 1,
+  autoplay: true,
+  arrows: false,
+};
+
+const mockReviews = [
+  {
+    id: 1,
+    user: {
+      name: "Elena D.",
+      avatar: null,
+    },
+    rating: 5,
+    comment:
+      "I've been using GoTogether for my daily commute to work. It's saved me so much money and I've made some great friends!",
+  },
+  {
+    id: 2,
+    user: {
+      name: "Marko D.",
+      avatar: null,
+    },
+    rating: 4,
+    comment:
+      "Good experience As a driver, I can offset my travel costs and help others. The app makes it easy to find passengers going my way.",
+  },
+  {
+    id: 3,
+    user: {
+      name: "Josif D.",
+      avatar: null,
+    },
+    rating: 4,
+    comment:
+      "Good experience As a driver, I can offset my travel costs and help others. The app makes it easy to find passengers going my way.",
+  },
+  {
+    id: 4,
+    user: {
+      name: "Boris D.",
+      avatar: null,
+    },
+    rating: 4,
+    comment:
+      "Good experience As a driver, I can offset my travel costs and help others. The app makes it easy to find passengers going my way.",
+  },
+  {
+    id: 5,
+    user: {
+      name: "Pegja D.",
+      avatar: null,
+    },
+    rating: 4,
+    comment:
+      "Good experience As a driver, I can offset my travel costs and help others. The app makes it easy to find passengers going my way.",
+  },
+];
 
 export default function Home() {
   const { t } = useTranslation();
@@ -66,9 +132,7 @@ export default function Home() {
         <Card className="mx-auto max-w-4xl shadow-2xl border-gray-200">
           <CardHeader>
             <CardTitle>{t("rides.search")}</CardTitle>
-            <CardDescription>
-              {t("rides.search.description")}
-            </CardDescription>
+            <CardDescription>{t("rides.search.description")}</CardDescription>
           </CardHeader>
           <CardContent>
             <form className="grid gap-6 sm:grid-cols-2 md:grid-cols-4">
@@ -140,7 +204,7 @@ export default function Home() {
                 </div>
                 <h3 className="mb-2 text-xl font-bold">{t("home.step1")}</h3>
                 <p className="text-muted-foreground">
-                {t("home.howItWorks.description")}
+                  {t("home.howItWorks.description")}
                 </p>
               </CardContent>
             </Card>
@@ -151,7 +215,7 @@ export default function Home() {
                 </div>
                 <h3 className="mb-2 text-xl font-bold">{t("home.step2")}</h3>
                 <p className="text-muted-foreground">
-                {t("home.step2.description")}
+                  {t("home.step2.description")}
                 </p>
               </CardContent>
             </Card>
@@ -162,7 +226,7 @@ export default function Home() {
                 </div>
                 <h3 className="mb-2 text-xl font-bold">{t("home.step3")}</h3>
                 <p className="text-muted-foreground">
-                {t("home.step3.description")}
+                  {t("home.step3.description")}
                 </p>
               </CardContent>
             </Card>
@@ -182,7 +246,7 @@ export default function Home() {
                 <CreditCard className="mb-4 h-10 w-10 text-[#646cff]" />
                 <h3 className="mb-2 text-xl font-bold">{t("home.benefit1")}</h3>
                 <p className="text-muted-foreground">
-                {t("home.benefit1.description")}
+                  {t("home.benefit1.description")}
                 </p>
               </CardContent>
             </Card>
@@ -191,7 +255,7 @@ export default function Home() {
                 <Car className="mb-4 h-10 w-10 text-[#646cff]" />
                 <h3 className="mb-2 text-xl font-bold">{t("home.benefit2")}</h3>
                 <p className="text-muted-foreground">
-                {t("home.benefit2.description")}
+                  {t("home.benefit2.description")}
                 </p>
               </CardContent>
             </Card>
@@ -209,7 +273,7 @@ export default function Home() {
                 <MapPin className="mb-4 h-10 w-10 text-[#646cff]" />
                 <h3 className="mb-2 text-xl font-bold">{t("home.benefit4")}</h3>
                 <p className="text-muted-foreground">
-                {t("home.benefit4.description")}
+                  {t("home.benefit4.description")}
                 </p>
               </CardContent>
             </Card>
@@ -223,68 +287,41 @@ export default function Home() {
           <div className="mb-10 text-center">
             <h2 className="text-3xl font-bold">{t("home.whatTheySay")}</h2>
           </div>
-          <div className="flex flex-col items-center gap-6 md:flex-row md:justify-center">
-            <Card className="w-[430px] border-gray-200 shadow-2xl">
-              <CardContent className="pt-6">
-                <div className="mb-4 flex items-center gap-4">
-                  {/*SMENI GO OVA DA TI E DINAMICHNO */}
-                  <Avatar alt="test" size={"large"} />
-                  <div>
-                    <h4 className="font-bold">Ana K.</h4>
-                    <div className="flex text-yellow-500">
-                      {[...Array(5)].map((_, i) => (
-                        <span key={i}>★</span>
-                      ))}
-                    </div>
-                  </div>
+
+          <div className="w-full max-w-7xl">
+            <Slider {...sliderSettings}>
+              {mockReviews.map((review) => (
+                <div key={review.id} className="px-4">
+                  <Card className="h-full border-gray-200 shadow-lg">
+                    <CardContent className="pt-6">
+                      <div className="mb-4 flex items-center gap-4">
+                        <Avatar
+                          alt="test"
+                          size={"large"}
+                          src={review.user.avatar}
+                        >
+                          {review.user.avatar === null &&
+                            review.user.name.charAt(0)}
+                        </Avatar>
+                        <div>
+                          <h4 className="font-bold">{review.user.name}</h4>
+                          <div className="flex text-yellow-500">
+                            {[...Array(5)].map((_, i) => (
+                              <span key={i}>
+                                {i < review.rating ? "★" : "☆"}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                      <p className="italic text-muted-foreground">
+                        {review.comment}
+                      </p>
+                    </CardContent>
+                  </Card>
                 </div>
-                <p className="italic text-muted-foreground">
-                  "I've been using GoTogether for my daily commute to work. It's
-                  saved me so much money and I've made some great friends!"
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="w-[430px] border-gray-200 shadow-2xl">
-              <CardContent className="pt-6">
-                <div className="mb-4 flex items-center gap-4">
-                  {/*SMENI GO OVA DA TI E DINAMICHNO */}
-                  <Avatar alt="test" size={"large"} />
-                  <div>
-                    <h4 className="font-bold">Marko S.</h4>
-                    <div className="flex text-yellow-500">
-                      {[...Array(5)].map((_, i) => (
-                        <span key={i}>★</span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <p className="italic text-muted-foreground">
-                  "As a driver, I can offset my travel costs and help others.
-                  The app makes it easy to find passengers going my way."
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="w-[430px] border-gray-200 shadow-2xl">
-              <CardContent className="pt-6">
-                <div className="mb-4 flex items-center gap-4">
-                  {/*SMENI GO OVA DA TI E DINAMICHNO */}
-                  <Avatar alt="test" size={"large"} />
-                  <div>
-                    <h4 className="font-bold">Elena T.</h4>
-                    <div className="flex text-yellow-500">
-                      {[...Array(5)].map((_, i) => (
-                        <span key={i}>★</span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <p className="italic text-muted-foreground">
-                  "I travel between cities often and GoTogether has been a
-                  game-changer. Safe, reliable, and much cheaper than other
-                  options."
-                </p>
-              </CardContent>
-            </Card>
+              ))}
+            </Slider>
           </div>
         </div>
       </section>
@@ -294,14 +331,19 @@ export default function Home() {
         <div className="flex flex-col items-center text-center">
           <div className="rounded-lg bg-primary p-8 text-center text-primary-foreground md:p-12">
             <h2 className="mb-4 text-3xl font-bold">
-            {t("home.titlejourney")}
+              {t("home.titlejourney")}
             </h2>
             <p className="mb-6 mx-auto max-w-[600px] text-primary-foreground/90 md:text-lg">
-            {t("home.titlejourney.description")}
+              {t("home.titlejourney.description")}
             </p>
             <div className="flex flex-col gap-4 sm:flex-row justify-center">
-              <Button size="lg" variant="secondary" style={{ color: "white", backgroundColor: "#646cff" }} asChild>
-                <Link to="/auth/signup">{t("nav.signUp")}</Link>
+              <Button
+                size="lg"
+                variant="secondary"
+                style={{ color: "white", backgroundColor: "#646cff" }}
+                asChild
+              >
+                <Link to="/sign-up">{t("nav.signUp")}</Link>
               </Button>
               <Button
                 size="lg"

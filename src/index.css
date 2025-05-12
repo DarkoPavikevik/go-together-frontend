@@ -142,3 +142,8 @@ body {
 .homepage-gradient-bottom-color {
   background: linear-gradient(to bottom,#f4f7fe, #d8e3fc );
 }
+
+.user-ride-car-border > .ant-card-body{
+  border: 1px solid;
+  border-color: #e2e8f0;
+}

@@ -11,6 +11,8 @@ import SignUpPage from "./components/pages/SignUpPage";
 import ProfilePage from "./components/pages/ProfilePage";
 import ChatPage from "./components/pages/ChatPage";
 import RidesPage from "./components/pages/RidesPage";
+import CreateRidesPage from "./components/pages/CreateRidesPage";
+import RidesUserPage from "./components/pages/RidesUserPage";
 
 function App() {
   return (
@@ -21,12 +23,15 @@ function App() {
             <Route path="/" element={<Navigate to={"/home"} replace />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/my-rides" element={<MyRidesPage />} />
-            <Route path="/sign-in" element={<SignInPage />} />
+            {/* <Route path="/sign-in" element={<SignInPage />} /> */}
             <Route path="/sign-up" element={<SignUpPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/chat/:id" element={<ChatPage />} />
             <Route path="/rides" element={<RidesPage />} />
+            <Route path="/rides/create" element={<CreateRidesPage />} />
+            <Route path="/rides/:id" element={<RidesUserPage />} />
           </Route>
+          <Route path="sign-in" element={<SignInPage />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

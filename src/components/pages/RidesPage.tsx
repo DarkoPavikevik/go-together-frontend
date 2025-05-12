@@ -1,9 +1,8 @@
 "use client";
 
 import { TabsContent, TabsList, Tabs, TabsTrigger } from "@radix-ui/react-tabs";
-import { Avatar, Input, Badge, Button, DatePicker, Tag } from "antd";
+import { Avatar, Input, Button, DatePicker, Tag } from "antd";
 import {
-  CalendarIcon,
   Car,
   Clock,
   Filter,
@@ -14,8 +13,8 @@ import {
   Users,
 } from "lucide-react";
 import React, { useState } from "react";
-import { Translation, useTranslation } from "react-i18next";
-import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import {
   CardContent,
   CardDescription,
@@ -25,10 +24,6 @@ import {
 } from "../ui/Card";
 import { Label } from "@radix-ui/react-label";
 import { format } from "date-fns";
-// import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-// import { Button } from "../ui/Button";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/Popover";
-import { Calendar } from "../ui/Calendar";
 
 // Mock data for rides
 const mockRides = [
@@ -125,11 +120,47 @@ const mockRides = [
     luggage: "Medium",
   },
 ];
-
+const mockRoutes = [
+  {
+    id: 1,
+    from: "Skopje",
+    to: "Ohrid",
+    available_rides: "1+ rides available today",
+  },
+  {
+    id: 2,
+    from: "Skopje",
+    to: "Tetovo",
+    available_rides: "69+ rides available today",
+  },
+  {
+    id: 3,
+    from: "Skopje",
+    to: "Bitola",
+    available_rides: "11+ rides available today",
+  },
+  {
+    id: 4,
+    from: "Ohrid",
+    to: "Skopje",
+    available_rides: "10+ rides available today",
+  },
+  {
+    id: 5,
+    from: "Bitola",
+    to: "Skopje",
+    available_rides: "8+ rides available today",
+  },
+  {
+    id: 6,
+    from: "Tetovo",
+    to: "Skopje",
+    available_rides: "6+ rides available today",
+  },
+];
 export default function RidesPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [date, setDate] = useState<Date>();
   const [rides, setRides] = useState(mockRides);
   const [searchParams, setSearchParams] = useState({
     from: "",
@@ -163,9 +194,7 @@ export default function RidesPage() {
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl font-bold text-left">{t("nav.rides")}</h1>
-          <p className="text-gray-400">
-          {t("nav.rides.description")}
-          </p>
+          <p className="text-gray-400">{t("nav.rides.description")}</p>
         </div>
         <Button
           variant="solid"
@@ -187,7 +216,7 @@ export default function RidesPage() {
             <CardHeader>
               <CardTitle>{t("rides.search")}</CardTitle>
               <CardDescription className="text-gray-400">
-              {t("nav.rides.description")}
+                {t("nav.rides.description")}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -256,105 +285,30 @@ export default function RidesPage() {
         <TabsContent value="popular">
           <Card className="border-gray-200">
             <CardContent className="pt-6 ">
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 ">
-                <Button
-                  variant="solid"
-                  //   color=""
-
-                  className="h-auto justify-start p-4 text-left "
-                >
-                  <div className="flex flex-col items-start ">
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <span>Skopje</span>
-                      <span className="text-muted-foreground">→</span>
-                      <span>Ohrid</span>
-                    </div>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      15+ rides available today
-                    </p>
-                  </div>
-                </Button>
-                <Button
-                  variant="outline"
-                  className="h-auto justify-start p-4 text-left"
-                >
-                  <div className="flex flex-col items-start">
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <span>Skopje</span>
-                      <span className="text-muted-foreground">→</span>
-                      <span>Tetovo</span>
-                    </div>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      10+ rides available today
-                    </p>
-                  </div>
-                </Button>
-                <Button
-                  variant="outline"
-                  className="h-auto justify-start p-4 text-left"
-                >
-                  <div className="flex flex-col items-start">
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <span>Skopje</span>
-                      <span className="text-muted-foreground">→</span>
-                      <span>Bitola</span>
-                    </div>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      8+ rides available today
-                    </p>
-                  </div>
-                </Button>
-                <Button
-                  variant="outline"
-                  className="h-auto justify-start p-4 text-left"
-                >
-                  <div className="flex flex-col items-start">
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <span>Ohrid</span>
-                      <span className="text-muted-foreground">→</span>
-                      <span>Skopje</span>
-                    </div>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      12+ rides available today
-                    </p>
-                  </div>
-                </Button>
-                <Button
-                  variant="outline"
-                  className="h-auto justify-start p-4 text-left"
-                >
-                  <div className="flex flex-col items-start">
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <span>Bitola</span>
-                      <span className="text-muted-foreground">→</span>
-                      <span>Skopje</span>
-                    </div>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      7+ rides available today
-                    </p>
-                  </div>
-                </Button>
-                <Button
-                  variant="outline"
-                  className="h-auto justify-start p-4 text-left"
-                >
-                  <div className="flex flex-col items-start">
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <span>Tetovo</span>
-                      <span className="text-muted-foreground">→</span>
-                      <span>Skopje</span>
-                    </div>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      9+ rides available today
-                    </p>
-                  </div>
-                </Button>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {mockRoutes.map((route) => {
+                  return (
+                    <Button
+                      key={route.id}
+                      style={{ height: "80px" }}
+                      variant="solid"
+                    >
+                      <div>
+                        <div className="flex flex-col items-start">
+                          <div className="flex items-center gap-2">
+                            <MapPin className="h-4 w-4 text-muted-foreground" />
+                            <span>{route.from}</span>
+                            <span className="text-muted-foreground">→</span>
+                            <span>{route.to}</span>
+                          </div>
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            {route.available_rides}
+                          </p>
+                        </div>
+                      </div>
+                    </Button>
+                  );
+                })}
               </div>
             </CardContent>
           </Card>

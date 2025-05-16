@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Car, Menu, Moon, Sun, User, LogOut } from "lucide-react";
 
 import { Sheet, SheetContent, SheetTrigger } from "../ui/Sheet";
@@ -27,7 +27,8 @@ export default function Header() {
   const { theme, setTheme } = useTheme();
   const { t, i18n } = useTranslation();
   const { isAuthenticated, logout } = useUser();
-
+  const location = useLocation();
+  const navigate = useNavigate();
   const changeLanguageHandler = (countryCode: string) => {
     const langCode = countryLangMap[countryCode];
     if (langCode) {
@@ -163,7 +164,12 @@ export default function Header() {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={() => logout()}
+                  onClick={() => {
+                    logout();
+                    if (location.pathname !== "/home") {
+                      navigate("/home");
+                    }
+                  }}
                   className="flex items-center gap-2"
                 >
                   <LogOut className="h-4 w-4" />

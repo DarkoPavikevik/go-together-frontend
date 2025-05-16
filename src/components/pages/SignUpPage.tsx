@@ -14,36 +14,29 @@ import { Input } from "../ui/Input";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { Button, Form } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import type { FieldType } from "../../utils/types/FieldTypes";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import useAuthController from "../../services/auth/useAuthController";
+import type { IRegisterType } from "../../utils/types/RegisterType";
+import { enqueueSnackbar } from "notistack";
 
 export default function SignUp() {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
+  const { register } = useAuthController();
+  const navigate = useNavigate();
 
-  const handleSubmit = async (data: FieldType) => {
-    console.log("formData", data);
-    // console.log(e);
-    // setIsLoading(true);
-
-    // try {
-    //   // Here you would connect to your Spring Boot backend
-    //   // const response = await fetch('/api/auth/signup', {
-    //   //   method: 'POST',
-    //   //   headers: { 'Content-Type': 'application/json' },
-    //   //   body: JSON.stringify(formData),
-    //   // })
-
-    //   // Simulate API call
-    //   await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    //   // Redirect to login page after successful registration
-    //   window.location.href = "/sign-in";
-    // } catch (error) {
-    //   console.error("Registration failed:", error);
-    // } finally {
-    //   setIsLoading(false);
-    // }
+  const { mutate: registerMutation } = useMutation({
+    mutationKey: ["register"],
+    mutationFn: (data: IRegisterType) => register(data),
+    onSuccess: () => {
+      enqueueSnackbar("USpesno klaen", { variant: "success" });
+      navigate("/sign-in");
+    },
+  });
+  const handleSubmit = async (data: IRegisterType) => {
+    await registerMutation(data);
   };
   return (
     <div className="container flex h-screen items-center justify-center">
@@ -62,9 +55,9 @@ export default function SignUp() {
         <Form onFinish={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2 text-left">
-              <Label htmlFor="name">{t("auth.name")}</Label>
+              <Label htmlFor="username">{t("auth.name")}</Label>
               <Form.Item
-                name="name"
+                name="username"
                 rules={[
                   { required: true, message: "Please input your fullname!" },
                 ]}
@@ -88,9 +81,9 @@ export default function SignUp() {
               </Form.Item>
             </div>
             <div className="space-y-2 text-left">
-              <Label htmlFor="phone">{t("auth.phone")}</Label>
+              <Label htmlFor="phoneNumber">{t("auth.phone")}</Label>
               <Form.Item
-                name={"phone"}
+                name={"phoneNumber"}
                 rules={[
                   {
                     required: true,

@@ -197,6 +197,7 @@ export default function RidesPage() {
           <p className="text-gray-400">{t("nav.rides.description")}</p>
         </div>
         <Button
+          style={{ color: "white", backgroundColor: "#646cff" }}
           variant="solid"
           color="blue"
           onClick={() => navigate(`/rides/create`)}
@@ -269,6 +270,7 @@ export default function RidesPage() {
                 <div className="grid gap-2 sm:col-span-2 md:col-span-1">
                   <Label>&nbsp;</Label>
                   <Button
+                    style={{ color: "white", backgroundColor: "#646cff" }}
                     htmlType="submit"
                     className="w-full"
                     variant="solid"
@@ -408,6 +410,7 @@ export default function RidesPage() {
                   </div>
                   <div className="flex items-center justify-center border-t bg-muted p-6 md:border-l md:border-t-0 border-gray-200">
                     <Button
+                      style={{ color: "white", backgroundColor: "#646cff" }}
                       variant="solid"
                       color="blue"
                       onClick={() => navigate(`/rides/${ride.id}`)}

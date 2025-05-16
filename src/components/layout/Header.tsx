@@ -16,6 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/Avatar";
 import ReactFlagsSelect from "react-flags-select";
 import { useTheme } from "../ui/ThemeProvider";
 import Image from "../ui/Image";
+import { useUser } from "../../context/AuthContext";
 
 const countryLangMap: Record<string, string> = {
   GB: "en", // English
@@ -25,8 +26,7 @@ const countryLangMap: Record<string, string> = {
 export default function Header() {
   const { theme, setTheme } = useTheme();
   const { t, i18n } = useTranslation();
-  const [language, setLanguage] = useState("EN");
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // This would come from your auth context
+  const { isAuthenticated, logout } = useUser();
 
   const changeLanguageHandler = (countryCode: string) => {
     const langCode = countryLangMap[countryCode];
@@ -65,7 +65,7 @@ export default function Header() {
                 <Link to="/rides" className="hover:text-foreground/80">
                   {t("nav.rides")}
                 </Link>
-                {isLoggedIn && (
+                {isAuthenticated && (
                   <>
                     <Link to="/my-rides" className="hover:text-foreground/80">
                       {t("nav.myRides")}
@@ -97,7 +97,7 @@ export default function Header() {
             <Link to="/rides" className="hover:text-foreground/80">
               {t("nav.rides")}
             </Link>
-            {isLoggedIn && (
+            {isAuthenticated && (
               <>
                 <Link to="/my-rides" className="hover:text-foreground/80">
                   {t("nav.myRides")}
@@ -139,7 +139,7 @@ export default function Header() {
               <Moon className="h-5 w-5" />
             )}
           </Button>
-          {isLoggedIn ? (
+          {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full">
@@ -152,7 +152,10 @@ export default function Header() {
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent
+                align="end"
+                className="bg-gray-100 border-gray-200"
+              >
                 <DropdownMenuItem asChild>
                   <Link to="/profile" className="flex items-center gap-2">
                     <User className="h-4 w-4" />
@@ -160,7 +163,7 @@ export default function Header() {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={() => setIsLoggedIn(false)}
+                  onClick={() => logout()}
                   className="flex items-center gap-2"
                 >
                   <LogOut className="h-4 w-4" />
@@ -174,8 +177,9 @@ export default function Header() {
                 <Link to="/sign-in">{t("nav.signIn")}</Link>
               </Button>
               <Button
-                style={{ color: "white", backgroundColor: "#646cff" }}              
-              asChild>
+                style={{ color: "white", backgroundColor: "#646cff" }}
+                asChild
+              >
                 <Link to="/sign-up">{t("nav.signUp")}</Link>
               </Button>
             </div>

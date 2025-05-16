@@ -10,7 +10,7 @@ import {
 } from "../ui/Card";
 import { Label } from "../ui/Label";
 import { Input } from "../ui/Input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Image from "../ui/Image";
 import { useTranslation } from "react-i18next";
 import {
@@ -24,6 +24,7 @@ import { Button } from "../ui/Button";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
+import { useUser } from "../../context/AuthContext";
 
 const sliderSettings = {
   infinite: true,
@@ -89,7 +90,8 @@ const mockReviews = [
 
 export default function Home() {
   const { t } = useTranslation();
-
+  const { isAuthenticated } = useUser();
+  const navigate = useNavigate();
   const onChange: DatePickerProps["onChange"] = (date, dateString) => {
     console.log(date, dateString);
   };
@@ -116,12 +118,18 @@ export default function Home() {
               size="lg"
               variant="outline"
               style={{ color: "white", backgroundColor: "#646cff" }}
-              asChild
+              onClick={() => {
+                if (!isAuthenticated) {
+                  navigate("/sign-in");
+                } else {
+                  navigate("/rides/create");
+                }
+              }}
             >
-              <Link to="/rides/create">
+              <>
                 <Car className="mr-2 h-4 w-4" />
                 {t("home.offerRide")}
-              </Link>
+              </>
             </Button>
           </div>
         </div>

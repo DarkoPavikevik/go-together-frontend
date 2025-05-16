@@ -12,36 +12,43 @@ import {
 } from "../ui/Card";
 import { Label } from "../ui/Label";
 import { Input } from "../ui/Input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, Form } from "antd";
 import type { FieldType } from "../../utils/types/FieldTypes";
 import Image from "../ui/Image";
 import AnimatedBackground from "../ui/animated-backgroud";
+import { enqueueSnackbar } from "notistack";
+import { useUser } from "../../context/AuthContext";
+import axios from "axios";
 
 export default function SignIn() {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
-
+  const navigate = useNavigate();
+  const { login, isAuthenticated } = useUser();
   const handleSubmit = async (data: FieldType) => {
     console.log("data", data);
-    // e.preventDefault();
-    // setIsLoading(true);
-    // try {
-    //   // Here you would connect to your Spring Boot backend
-    //   // const response = await fetch('/api/auth/signin', {
-    //   //   method: 'POST',
-    //   //   headers: { 'Content-Type': 'application/json' },
-    //   //   body: JSON.stringify({ email, password }),
-    //   // })
-    //   // Simulate API call
-    //   await new Promise((resolve) => setTimeout(resolve, 1000));
-    //   // Redirect to home page after successful login
-    //   window.location.href = "/";
-    // } catch (error) {
-    //   console.error("Login failed:", error);
-    // } finally {
-    //   setIsLoading(false);
-    // }
+    setIsLoading(true);
+    axios({
+      method: "post",
+      url: "http://localhost:8080/api/auth/login",
+      data: {
+        username: data.username,
+        password: data.password,
+      },
+    })
+      .then((response) => {
+        login(response.data.accessToken);
+        setIsLoading(false);
+        navigate("/home");
+      })
+      .catch((error) => {
+        console.log(error);
+        enqueueSnackbar(t("signin.invalid_login"), {
+          variant: "error",
+        });
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -97,14 +104,13 @@ export default function SignIn() {
           <Form onFinish={handleSubmit}>
             <CardContent className="space-y-4">
               <div className="space-y-2 text-left">
-                <Label htmlFor="email">{t("auth.email")}</Label>
+                <Label htmlFor="username">{t("auth.name")}</Label>
                 <Form.Item
-                  name="email"
+                  name="username"
                   rules={[
                     {
-                      type: "email",
                       required: true,
-                      message: "Please input your email!",
+                      message: "Please input your username!",
                     },
                   ]}
                 >

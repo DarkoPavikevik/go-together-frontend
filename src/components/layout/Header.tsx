@@ -12,11 +12,12 @@ import {
   DropdownMenuTrigger,
 } from "../ui/DropdownMenu";
 import { useTranslation } from "react-i18next";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/Avatar";
 import ReactFlagsSelect from "react-flags-select";
 import { useTheme } from "../ui/ThemeProvider";
 import Image from "../ui/Image";
 import { useUser } from "../../context/AuthContext";
+import { Avatar } from "antd";
+import { UserOutlined } from "@ant-design/icons";
 
 const countryLangMap: Record<string, string> = {
   GB: "en", // English
@@ -26,7 +27,7 @@ const countryLangMap: Record<string, string> = {
 export default function Header() {
   const { theme, setTheme } = useTheme();
   const { t, i18n } = useTranslation();
-  const { isAuthenticated, logout } = useUser();
+  const { isAuthenticated, logout, me } = useUser();
   const location = useLocation();
   const navigate = useNavigate();
   const changeLanguageHandler = (countryCode: string) => {
@@ -40,6 +41,7 @@ export default function Header() {
     console.log(nextTheme);
     setTheme(nextTheme);
   };
+  console.log(me);
   return (
     <header className="sticky top-0 z-50 w-full shadow-xl bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex items-center justify-around px-4 py-2">
@@ -143,15 +145,17 @@ export default function Header() {
           {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage
-                      src="/placeholder.svg?height=32&width=32"
-                      alt="User"
-                    />
-                    <AvatarFallback>U</AvatarFallback>
-                  </Avatar>
-                </Button>
+                <Avatar
+                  style={{
+                    backgroundColor: "lightgray",
+                    verticalAlign: "middle",
+                    cursor: "pointer",
+                    marginLeft: 15,
+                  }}
+                  size="large"
+                  icon={<UserOutlined />}
+                  src={me?.profilePicture}
+                ></Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="end"
@@ -172,8 +176,10 @@ export default function Header() {
                   }}
                   className="flex items-center gap-2"
                 >
-                  <LogOut className="h-4 w-4" />
-                  {t("nav.signOut")}
+                  <Link to="/sign-out" className="flex items-center gap-2">
+                    <LogOut className="h-4 w-4" />
+                    {t("nav.signOut")}
+                  </Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

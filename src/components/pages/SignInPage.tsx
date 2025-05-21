@@ -53,33 +53,44 @@ export default function SignIn() {
 
   return (
     <div className="flex h-screen w-full overflow-hidden">
-      {/* Left side with animation */}
-      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-indigo-500 to-purple-600 items-center justify-center p-6 relative overflow-hidden">
-        <AnimatedBackground />
-        <div className="max-w-md w-full z-10">
-          <div className="rounded-lg w-full flex items-center justify-center mb-6">
-            <div className="w-32 h-32 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="w-16 h-16"
-              >
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-              </svg>
+      {/* Left side with animation - now with rounded edges */}
+      <div className="hidden md:block md:w-1/2 p-6 relative">
+        <div className="absolute inset-0 rounded-r-3xl overflow-hidden">
+          <div className="w-full h-full bg-gradient-to-br from-indigo-500 to-[#646cff] flex items-center justify-center">
+            <AnimatedBackground />
+            <div className="max-w-md w-full z-10">
+              <div className="rounded-lg w-full flex items-center justify-center mb-6">
+                <div className="w-32 h-32 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-16 h-16"
+                  >
+                    <rect
+                      x="3"
+                      y="11"
+                      width="18"
+                      height="11"
+                      rx="2"
+                      ry="2"
+                    ></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                </div>
+              </div>
+              <h2 className="text-white text-3xl font-bold mt-6 text-center">
+                Welcome Back!
+              </h2>
+              <p className="text-indigo-100 mt-2 text-center text-lg">
+                Sign in to continue your journey with us.
+              </p>
             </div>
           </div>
-          <h2 className="text-white text-3xl font-bold mt-6 text-center">
-            Welcome Back!
-          </h2>
-          <p className="text-indigo-100 mt-2 text-center text-lg">
-            Sign in to continue your journey with us.
-          </p>
         </div>
       </div>
 

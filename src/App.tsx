@@ -19,7 +19,6 @@ import { UserProvider } from "./context/AuthContext";
 
 function App() {
   const queryClient = new QueryClient();
-
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="system" storageKey="go-together-theme">

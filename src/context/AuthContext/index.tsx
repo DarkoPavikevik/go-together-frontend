@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { jwtDecode } from "jwt-decode";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect } from "react";
 import type { UserContextType } from "./types";
 import useLocalStorageState from "use-local-storage-state";
 import useAuthController from "../../services/auth/useAuthController";
@@ -18,6 +18,7 @@ const UserContext = createContext<UserContextType>({
   isAuthenticated: null,
   login: async () => {},
   logout: async () => {},
+  refetch: async () => Promise.reject(new Error("refetch not implemented")),
 });
 
 interface UserProviderProps {
@@ -38,11 +39,20 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     enabled: false,
     refetchOnWindowFocus: false,
   });
+
   useEffect(() => {
     if (id && id !== TokenState.INVALID && id !== TokenState.EXPIRED) {
       refetch();
     }
   }, [id]);
+  useEffect(() => {
+    if (accessToken) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+      axios.defaults.baseURL = "http://localhost:8080";
+    } else {
+      delete axios.defaults.headers.common["Authorization"];
+    }
+  }, [accessToken]);
   const login = async (jwt: string): Promise<void> => {
     await setAccessToken(jwt);
     axios.defaults.headers.common["Authorization"] = `Bearer ${jwt}`;
@@ -72,6 +82,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         isAuthenticated: Boolean(data),
         logout,
         login,
+        refetch,
       }}
     >
       {children}

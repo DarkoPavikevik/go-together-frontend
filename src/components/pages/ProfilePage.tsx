@@ -15,9 +15,16 @@ import { format } from "date-fns";
 import { Label } from "../ui/Label";
 import { Input } from "../ui/Input";
 import { Textarea } from "../ui/Textarea";
-import { Avatar, Button, Image, Tag } from "antd";
+import { Avatar, Button, Form, Image, Tag } from "antd";
 import { Link } from "react-router-dom";
-
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { nanoid } from "nanoid";
+import Dragger from "antd/es/upload/Dragger";
+import { InboxOutlined } from "@ant-design/icons";
+import useAuthController from "../../services/auth/useAuthController";
+import { useUser } from "../../context/AuthContext";
+import { enqueueSnackbar } from "notistack";
+import type { RcFile } from "antd/es/upload";
 // Mock user data
 const mockUser = {
   id: 1,
@@ -71,6 +78,8 @@ const mockUser = {
 
 export default function ProfilePage() {
   const { t } = useTranslation();
+  const { addProfilePicture } = useAuthController();
+  const { me, refetch } = useUser();
   const [user, setUser] = useState(mockUser);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -80,7 +89,8 @@ export default function ProfilePage() {
     phone: user.phone,
     bio: user.bio,
   });
-
+  // const userSupabase = useUser();
+  const supabase = useSupabaseClient();
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -112,6 +122,48 @@ export default function ProfilePage() {
     }
   };
 
+  const uploadImage = async (e: RcFile) => {
+    let file = e;
+    const { data, error } = await supabase.storage
+      .from("storage")
+      .upload(user.id + "/" + nanoid(), file, {
+        cacheControl: "3600",
+        upsert: false,
+      });
+    await addProfilePicture(me?.id as number, {
+      profilePicture: `https://qloapwicswrnfibjjqsp.supabase.co/storage/v1/object/public/${data?.fullPath}`,
+    });
+    if (data) {
+      enqueueSnackbar("Success with adding image", { variant: "success" });
+      refetch();
+      setIsEditing(false);
+    } else {
+      enqueueSnackbar("Error with adding image", { variant: "error" });
+      console.log(error);
+    }
+  };
+
+  const props = {
+    name: "file",
+    accept: "image/png,image/jpeg,image/jpg",
+    maxCount: 1,
+    beforeUpload: (file: RcFile) => {
+      uploadImage(file);
+      return false;
+    },
+  };
+
+  //  <Form.Item style={{ maxWidth: 500 }}>
+  //       <Dragger {...props}>
+  //         <p className="ant-upload-drag-icon">
+  //           <InboxOutlined />
+  //         </p>
+  //         <p className="ant-upload-text">Click or drag image to upload</p>
+  //         <p className="ant-upload-hint">
+  //           Only PNG and JPEG files are allowed.
+  //         </p>
+  //       </Dragger>
+  //     </Form.Item>
   return (
     <div className="container py-8">
       <div className="mb-8 text-left">
@@ -126,13 +178,13 @@ export default function ProfilePage() {
               <div className="flex flex-col items-center text-center">
                 <Avatar
                   style={{ width: "100px", height: "100px" }}
-                  src={user.avatar}
+                  src={me?.profilePicture}
                 >
                   <div className="text-3xl">
-                    {user.avatar == null && user.name.charAt(0)}
+                    {me?.profilePicture == null && me?.username.charAt(0)}
                   </div>
                 </Avatar>
-                <h2 className="text-xl font-bold">{user.name}</h2>
+                <h2 className="text-xl font-bold">{me?.username}</h2>
                 <div className="flex items-center text-sm">
                   <Star className="mr-1 h-4 w-4 fill-yellow-500 text-yellow-500" />
                   <span className="font-medium">{user.rating}</span>
@@ -141,9 +193,12 @@ export default function ProfilePage() {
                     {user.ridesCompleted} {t("profile.rides")}
                   </span>
                 </div>
-                <p className="mt-1 text-sm text-gray-400">
-                {t("profile.member")} {format(user.joinedDate, "MMMM yyyy")}
-                </p>
+                {me?.created && (
+                  <p className="mt-1 text-sm text-gray-400">
+                    {t("profile.member")} {format(me?.created, "MMMM yyyy")}
+                  </p>
+                )}
+
                 <div className="mt-4 w-full border-gray-200">
                   <Button className="w-full" onClick={() => setIsEditing(true)}>
                     <Edit className="mr-2 h-4 w-4" />
@@ -164,11 +219,11 @@ export default function ProfilePage() {
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <User className="h-4 w-4 text-muted-foreground" />
-                  <span>{user.email}</span>
+                  <span>{me?.email}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Phone className="h-4 w-4 text-muted-foreground" />
-                  <span>{user.phone}</span>
+                  <span>{me?.phoneNumber}</span>
                 </div>
               </div>
             </CardContent>
@@ -279,11 +334,26 @@ export default function ProfilePage() {
                     rows={4}
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="w-full space-y-2">
                   <Label htmlFor="avatar">Profile Picture</Label>
-                  <div className="flex items-center gap-4">
-                    <Button>Change Picture</Button>
+                  <div className="flex items-center justify-center gap-4">
+                    <Form.Item style={{ maxWidth: 500 }}>
+                      <Dragger {...props}>
+                        <p className="ant-upload-drag-icon">
+                          <InboxOutlined />
+                        </p>
+                        <p className="ant-upload-text">
+                          Click or drag image to upload
+                        </p>
+                        <p className="ant-upload-hint">
+                          Only PNG and JPEG files are allowed.
+                        </p>
+                      </Dragger>
+                    </Form.Item>
                   </div>
+                  {/* <div className="flex items-center gap-4">
+                    <Button>Change Picture</Button>
+                  </div> */}
                 </div>
               </CardContent>
               <CardFooter className="flex justify-between">
@@ -333,7 +403,7 @@ export default function ProfilePage() {
                 <div className="grid gap-4 md:grid-cols-2">
                   <div>
                     <h3 className="mb-2 font-medium text-left">
-                    {t("profile.vehicle.details")}
+                      {t("profile.vehicle.details")}
                     </h3>
                     <ul className="space-y-1 text-sm">
                       <li className="flex justify-between">
@@ -361,7 +431,9 @@ export default function ProfilePage() {
                     </ul>
                   </div>
                   <div>
-                    <h3 className="mb-2 font-medium text-left">{t("profile.vehicle.features")}</h3>
+                    <h3 className="mb-2 font-medium text-left">
+                      {t("profile.vehicle.features")}
+                    </h3>
                     <ul className="space-y-1 text-sm">
                       <li className="flex items-center gap-2">
                         <span>✓</span>
@@ -401,7 +473,9 @@ export default function ProfilePage() {
 
           <Card className="border-gray-200">
             <CardHeader>
-              <CardTitle className="text-left">{t("profile.reviews")}</CardTitle>
+              <CardTitle className="text-left">
+                {t("profile.reviews")}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               {user.reviews.length > 0 ? (

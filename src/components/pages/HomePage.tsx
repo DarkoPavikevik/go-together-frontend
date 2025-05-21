@@ -290,7 +290,13 @@ export default function Home() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="w-full py-16 md:py-24 homepage-gradient-three-colors">
+      <section
+        className={`w-full py-16 md:py-24 ${
+          isAuthenticated
+            ? "homepage-gradient-bottom-color"
+            : "homepage-gradient-three-colors"
+        }`}
+      >
         <div className="flex flex-col items-center text-center">
           <div className="mb-10 text-center">
             <h2 className="text-3xl font-bold">{t("home.whatTheySay")}</h2>
@@ -335,36 +341,38 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="w-full py-26 homepage-gradient-bottom-color">
-        <div className="flex flex-col items-center text-center">
-          <div className="rounded-lg bg-primary p-8 text-center text-primary-foreground md:p-12">
-            <h2 className="mb-4 text-3xl font-bold">
-              {t("home.titlejourney")}
-            </h2>
-            <p className="mb-6 mx-auto max-w-[600px] text-primary-foreground/90 md:text-lg">
-              {t("home.titlejourney.description")}
-            </p>
-            <div className="flex flex-col gap-4 sm:flex-row justify-center">
-              <Button
-                size="lg"
-                variant="secondary"
-                style={{ color: "white", backgroundColor: "#646cff" }}
-                asChild
-              >
-                <Link to="/sign-up">{t("nav.signUp")}</Link>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="bg-transparent text-primary-foreground border-primary-foreground hover:bg-primary-foreground/10"
-                asChild
-              >
-                <Link to="/rides">{t("home.findRide")}</Link>
-              </Button>
+      {!isAuthenticated && (
+        <section className="w-full py-26 homepage-gradient-bottom-color">
+          <div className="flex flex-col items-center text-center">
+            <div className="rounded-lg bg-primary p-8 text-center text-primary-foreground md:p-12">
+              <h2 className="mb-4 text-3xl font-bold">
+                {t("home.titlejourney")}
+              </h2>
+              <p className="mb-6 mx-auto max-w-[600px] text-primary-foreground/90 md:text-lg">
+                {t("home.titlejourney.description")}
+              </p>
+              <div className="flex flex-col gap-4 sm:flex-row justify-center">
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  style={{ color: "white", backgroundColor: "#646cff" }}
+                  asChild
+                >
+                  <Link to="/sign-up">{t("nav.signUp")}</Link>
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="bg-transparent text-primary-foreground border-primary-foreground hover:bg-primary-foreground/10"
+                  asChild
+                >
+                  <Link to="/rides">{t("home.findRide")}</Link>
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 }

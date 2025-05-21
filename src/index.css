@@ -8,7 +8,7 @@
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
-
+  overflow-y: scroll;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -81,7 +81,12 @@ button:focus-visible {
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
 }
 
 @layer base {
@@ -140,10 +145,10 @@ body {
 }
 
 .homepage-gradient-bottom-color {
-  background: linear-gradient(to bottom,#f4f7fe, #d8e3fc );
+  background: linear-gradient(to bottom, #f4f7fe, #d8e3fc);
 }
 
-.user-ride-car-border > .ant-card-body{
+.user-ride-car-border > .ant-card-body {
   border: 1px solid;
   border-color: #e2e8f0;
 }

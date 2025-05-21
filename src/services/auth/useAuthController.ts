@@ -15,5 +15,16 @@ export default function useAuthController() {
     return response ? response.data : response;
   };
 
-  return { register, getUser };
+  const addProfilePicture = async (
+    id: number,
+    body: { profilePicture: string }
+  ) => {
+    console.log("body", body);
+    const response = await axios.put(`http://localhost:8080/api/user/${id}`, {
+      profilePicture: body.profilePicture,
+    });
+    return response ? response.data : response;
+  };
+
+  return { register, getUser, addProfilePicture };
 }

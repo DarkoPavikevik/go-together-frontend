@@ -81,7 +81,485 @@
   }
 }
 
+/* Dark mode enhancements */
+.dark {
+  color-scheme: dark;
+}
 
-.test{
+.dark input,
+.dark select,
+.dark textarea {
+  background-color: #1e1e2f;
+  border-color: #363654;
+  color: white;
+}
+
+/* Input placeholder styling in dark mode */
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #a8a8bf !important;
+  opacity: 0.7;
+}
+
+.dark .ant-modal-content {
+  background-color: #1e1e2f;
+}
+
+.dark .ant-modal-header {
+  background-color: #1e1e2f;
+}
+
+.dark .ant-card {
+  background-color: #1e1e2f !important;
+  border-color: #363654 !important;
+  color: white;
+}
+
+.dark .ant-table {
+  background-color: #1e1e2f;
+  color: white;
+}
+
+.dark .ant-table-thead > tr > th {
+  background-color: #252538;
+  color: white;
+}
+
+.dark .ant-table-tbody > tr > td {
+  border-color: #363654;
+}
+
+/* DatePicker dark mode styling */
+.dark .ant-picker {
+  background-color: #1e1e2f;
+  border-color: #363654;
+  color: white;
+}
+
+.dark .ant-picker-input > input {
+  color: white;
+}
+
+.dark .ant-picker-suffix {
+  color: #a8a8bf;
+}
+
+.dark .ant-picker-clear {
+  background-color: #1e1e2f;
+  color: #a8a8bf;
+}
+
+.dark .ant-picker-dropdown {
+  background-color: #1e1e2f;
+  border-color: #363654;
+}
+
+.dark .ant-picker-panel-container {
+  background-color: #1e1e2f;
+  border-color: #363654;
+}
+
+.dark .ant-picker-header {
+  color: white;
+  border-color: #363654;
+}
+
+.dark .ant-picker-header-view {
+  color: white;
+}
+
+.dark .ant-picker-header button {
+  color: #a8a8bf;
+}
+
+.dark .ant-picker-content th {
+  color: #a8a8bf;
+}
+
+.dark .ant-picker-cell {
+  color: #e0e0e0;
+}
+
+.dark .ant-picker-cell-in-view {
+  color: white;
+}
+
+.dark .ant-picker-cell:hover .ant-picker-cell-inner {
+  background-color: #363654;
+}
+
+.dark .ant-picker-cell-selected .ant-picker-cell-inner {
+  background-color: #6e3fac !important;
+  color: white !important;
+}
+
+.dark
+  .ant-picker-time-panel-column
+  > li.ant-picker-time-panel-cell-selected
+  .ant-picker-time-panel-cell-inner {
+  background-color: #6e3fac;
+}
+
+.dark .ant-picker-today-btn {
+  color: #a388ff;
+}
+
+/* Tag dark mode styling */
+.dark .ant-tag {
+  background-color: #252538 !important;
+  border-color: #363654 !important;
+  color: white !important;
+}
+
+/* Button dark mode styling */
+.dark .ant-btn {
+  background-color: #252538;
+  border-color: #363654;
+  color: white;
+}
+
+.dark .ant-btn-default:hover,
+.dark .ant-btn-default:focus {
+  background-color: #323248;
+  border-color: #464668;
+  color: white;
+}
+
+.dark .ant-btn-primary {
+  background-color: #6e3fac;
+  border-color: #6e3fac;
+}
+
+.dark .ant-btn-primary:hover,
+.dark .ant-btn-primary:focus {
+  background-color: #7b46c1 !important;
+  border-color: #7b46c1 !important;
+}
+
+/* Avatar dark mode styling */
+.dark .ant-avatar {
+  background-color: #6e3fac;
+  color: white;
+}
+
+/* Popover and dropdown dark mode styling */
+.dark .ant-dropdown-menu,
+.dark .ant-popover-inner {
+  background-color: #1e1e2f !important;
+  border-color: #363654 !important;
+}
+
+.dark .ant-dropdown-menu-item:hover,
+.dark .ant-dropdown-menu-submenu-title:hover {
+  background-color: #252538;
+}
+
+/* Card content background */
+.dark .ant-card .ant-card-content {
+  background-color: #1e1e2f !important;
+  color: white;
+}
+
+.dark .ant-card .ant-card-content .bg-\[\#f1f5f9\] {
+  background-color: #252538 !important;
+}
+
+/* BorderColor */
+.dark .border-gray-200 {
+  border-color: #363654 !important;
+}
+
+/* Text colors for dark mode */
+.dark .text-gray-400,
+.dark .text-gray-600 {
+  color: #a8a8bf !important;
+}
+
+.dark .text-gray-900 {
+  color: white !important;
+}
+
+/* Fancy scrollbar for dark mode */
+.dark ::-webkit-scrollbar {
+  width: 12px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #1e1e2f;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #6e3fac, #4c34b7);
+  border-radius: 6px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #7b46c1, #5b3fd1);
+}
+
+/* Social icon animations for dark mode */
+.dark .footer-social-icon {
+  transition: all 0.3s ease;
+}
+
+.dark .footer-social-icon:hover {
+  filter: drop-shadow(0 0 5px rgba(149, 76, 233, 0.6));
+  transform: translateY(-3px) scale(1.1);
+}
+
+@keyframes pulse-glow {
+  0% {
+    filter: drop-shadow(0 0 2px rgba(149, 76, 233, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 5px rgba(149, 76, 233, 0.7));
+  }
+  100% {
+    filter: drop-shadow(0 0 2px rgba(149, 76, 233, 0.4));
+  }
+}
+
+.dark .footer-social-icon:hover svg {
+  animation: pulse-glow 1.5s infinite;
+}
+
+/* Dark mode styling for Radix UI tabs */
+.dark [data-radix-tabs-trigger] {
+  color: #a8a8bf;
+  background-color: transparent;
+}
+
+.dark [data-radix-tabs-trigger][data-state="active"] {
+  color: white;
+  border-bottom: 2px solid #6e3fac;
+}
+
+.dark [data-radix-tabs-content] {
+  color: white;
+}
+
+.test {
   font-size: large;
+}
+
+/* Drawer dark mode styling */
+.dark .ant-drawer .ant-drawer-content {
+  background-color: #1e1e2f;
+  color: white;
+}
+
+.dark .ant-drawer .ant-drawer-header {
+  background-color: #1e1e2f;
+  border-bottom: 1px solid #363654;
+}
+
+.dark .ant-drawer .ant-drawer-title {
+  color: white;
+}
+
+.dark .ant-drawer .ant-drawer-close {
+  color: #a8a8bf;
+}
+
+.dark .ant-drawer .ant-drawer-close:hover {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .ant-drawer .ant-drawer-body {
+  background-color: #1e1e2f;
+  color: white;
+}
+
+.dark .ant-drawer .ant-drawer-mask {
+  background-color: rgba(0, 0, 0, 0.65);
+}
+
+/* Mobile navigation drawer links */
+.dark .ant-drawer .ant-drawer-body a {
+  color: #e0e0e0;
+  transition: color 0.3s ease;
+}
+
+.dark .ant-drawer .ant-drawer-body a:hover {
+  color: #9e72e3;
+}
+
+/* Hamburger menu button styling */
+.hamburger-menu-btn {
+  transition: all 0.2s ease-in-out;
+}
+
+.hamburger-menu-btn:hover {
+  transform: scale(1.05);
+  background-color: #7b46c1 !important;
+  box-shadow: 0 0 10px rgba(100, 108, 255, 0.5);
+}
+
+.dark .hamburger-menu-btn:hover {
+  background-color: #323248 !important;
+}
+
+.light .hamburger-menu-btn:hover {
+  background-color: #e8e8e8 !important;
+}
+
+/* Enhanced drawer styling */
+.ant-drawer .ant-drawer-content-wrapper {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.dark .ant-drawer .ant-drawer-content-wrapper {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Drawer navigation item animations */
+@keyframes slideInRight {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.drawer-nav-item {
+  opacity: 0;
+  animation: slideInRight 0.4s ease forwards;
+}
+
+.ant-drawer-open .drawer-nav-item {
+  opacity: 0;
+  animation: slideInRight 0.4s ease forwards;
+}
+
+/* Sign-in page gradient effects */
+.pink__gradient {
+  background: linear-gradient(90deg, #f4c4f3 0%, #fc67fa 100%);
+  filter: blur(900px);
+}
+
+.blue__gradient {
+  background: linear-gradient(
+    180deg,
+    rgba(188, 165, 255, 0.4) 0%,
+    rgba(100, 108, 255, 0.3) 100%
+  );
+  filter: blur(750px);
+}
+
+/* Dark mode for auth form */
+.dark .ant-input-affix-wrapper {
+  background-color: rgba(30, 30, 47, 0.4) !important;
+  border-color: rgba(54, 54, 84, 0.4) !important;
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark .ant-input-affix-wrapper:hover {
+  border-color: #6e3fac !important;
+}
+
+.dark .ant-input-affix-wrapper:focus,
+.dark .ant-input-affix-wrapper-focused {
+  border-color: #6e3fac !important;
+  box-shadow: 0 0 0 2px rgba(110, 63, 172, 0.2) !important;
+}
+
+.dark .ant-input-affix-wrapper input {
+  background-color: transparent !important;
+  color: white !important;
+}
+
+.dark .ant-input {
+  background-color: rgba(30, 30, 47, 0.4) !important;
+  border-color: rgba(54, 54, 84, 0.4) !important;
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark .ant-input:hover {
+  border-color: #6e3fac !important;
+}
+
+.dark .ant-input:focus,
+.dark .ant-input-focused {
+  border-color: #6e3fac !important;
+  box-shadow: 0 0 0 2px rgba(110, 63, 172, 0.2) !important;
+}
+
+.dark .ant-input-password-icon.anticon {
+  color: #a8a8bf !important;
+}
+
+/* Purple auth page form styling */
+.auth-page-form {
+  background-color: rgba(55, 33, 92, 0.5) !important;
+  backdrop-filter: blur(10px);
+}
+
+.dark .auth-input {
+  background-color: rgba(35, 23, 60, 0.6) !important;
+  border-color: rgba(75, 61, 119, 0.3) !important;
+  color: white !important;
+}
+
+.dark .auth-button-primary {
+  background-color: #646cff !important;
+  border: none !important;
+}
+
+.dark .auth-button-secondary {
+  background-color: rgba(35, 23, 60, 0.6) !important;
+  border: 1px solid rgba(100, 108, 255, 0.5) !important;
+  color: #646cff !important;
+}
+
+/* Phone input dark mode */
+.dark .react-tel-input .form-control {
+  background-color: rgba(35, 23, 60, 0.6) !important;
+  border-color: rgba(75, 61, 119, 0.3) !important;
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark .react-tel-input .selected-flag {
+  background-color: rgba(35, 23, 60, 0.8) !important;
+  border-color: rgba(75, 61, 119, 0.3) !important;
+}
+
+.dark .react-tel-input .country-list {
+  background-color: rgba(35, 23, 60, 0.95) !important;
+  border-color: rgba(75, 61, 119, 0.3) !important;
+  color: white !important;
+}
+
+.dark .react-tel-input .country-list .country:hover {
+  background-color: rgba(67, 39, 115, 0.8) !important;
+}
+
+.dark .react-tel-input .country-list .country.highlight {
+  background-color: rgba(75, 61, 119, 0.6) !important;
+}
+
+.dark .react-tel-input .selected-flag:hover,
+.dark .react-tel-input .selected-flag:focus {
+  background-color: rgba(35, 23, 60, 0.9) !important;
+}
+
+/* Fix password input icon spacing */
+.dark .ant-input-password .ant-input {
+  padding-left: 3rem !important;
+}
+
+.dark .ant-input-password-icon {
+  margin-right: 8px;
+}
+
+.dark .ant-input-affix-wrapper-focused,
+.dark .ant-input:focus {
+  border-color: #646cff !important;
+  box-shadow: 0 0 0 2px rgba(100, 108, 255, 0.2) !important;
 }

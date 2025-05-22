@@ -75,8 +75,8 @@ button:focus-visible {
 
 .dark {
   --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 0, 0, 0;
-  --background-end-rgb: 0, 0, 0;
+  --background-start-rgb: 13, 6, 36;
+  --background-end-rgb: 30, 11, 66;
 }
 
 body {
@@ -114,26 +114,50 @@ body {
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 263 75% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 276 76% 40%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 45%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 23%;
+    --input: 240 3.7% 23%;
+    --ring: 263 75% 65%;
   }
+}
+
+/* Add smooth transition for theme changes */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease,
+    color 0.3s ease;
+}
+
+/* Dark mode gradient backgrounds */
+.dark .homepage-gradient-color {
+  background: linear-gradient(to bottom, #2d0a54, #16083b);
+}
+
+.dark .homepage-gradient-three-colors {
+  background: linear-gradient(to bottom, #16083b 0%, #2d0a54 50%, #16083b 100%);
+}
+
+.dark .homepage-gradient-bottom-color {
+  background: linear-gradient(to bottom, #16083b, #2d0a54);
+}
+
+/* Dark mode card borders */
+.dark .user-ride-car-border > .ant-card-body {
+  border-color: #363636;
 }
 
 .homepage-gradient-color {
@@ -151,4 +175,31 @@ body {
 .user-ride-car-border > .ant-card-body {
   border: 1px solid;
   border-color: #e2e8f0;
+}
+
+/* Theme transition effects */
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+  transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out,
+    color 0.3s ease-in-out, box-shadow 0.3s ease-in-out,
+    transform 0.3s ease-in-out, fill 0.3s ease-in-out, stroke 0.3s ease-in-out !important;
+}
+
+/* Fancy animation for dark mode switching */
+.dark body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at var(--cursor-x, 50%) var(--cursor-y, 50%),
+    rgba(123, 76, 255, 0.1) 0%,
+    rgba(13, 6, 36, 0) 50%
+  );
+  pointer-events: none;
+  z-index: -1;
 }

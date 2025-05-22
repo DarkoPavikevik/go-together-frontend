@@ -1,10 +1,23 @@
-import * as React from "react"
+import * as React from "react";
+import { useTheme } from "./ThemeProvider";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, ...props }, ref) => {
+  ({ className, type, style, ...props }, ref) => {
+    const { theme } = useTheme();
+
+    const darkStyle =
+      theme === "dark"
+        ? {
+            backgroundColor: "#1e1e2f",
+            borderColor: "#363654",
+            color: "white",
+            ...style,
+          }
+        : style;
+
     return (
       <input
         type={type}
@@ -12,11 +25,12 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           ${className}
         `}
         ref={ref}
+        style={darkStyle}
         {...props}
       />
-    )
+    );
   }
-)
-Input.displayName = "Input"
+);
+Input.displayName = "Input";
 
-export { Input }
+export { Input };

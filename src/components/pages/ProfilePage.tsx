@@ -187,7 +187,7 @@ export default function ProfilePage() {
                 <h2 className="text-xl font-bold">{me?.username}</h2>
                 <div className="flex items-center text-sm">
                   <Star className="mr-1 h-4 w-4 fill-yellow-500 text-yellow-500" />
-                  <span className="font-medium">{user.rating}</span>
+                  <span className="font-medium">{me?.rating}</span>
                   <span className="mx-1 text-muted-foreground">·</span>
                   <span className="text-gray-400">
                     {user.ridesCompleted} {t("profile.rides")}
@@ -374,7 +374,7 @@ export default function ProfilePage() {
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-400 text-left">{user.bio}</p>
+                <p className="text-gray-400 text-left">{me?.bio}</p>
               </CardContent>
             </Card>
           )}

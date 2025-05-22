@@ -1,6 +1,19 @@
 "use client";
 
+import {
+  Button as AntdButton,
+  Avatar,
+  DatePicker,
+  type DatePickerProps,
+} from "antd";
 import { Car, CreditCard, MapPin, Search, Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { Link, useNavigate } from "react-router-dom";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick.css";
+import { useUser } from "../../context/AuthContext";
+import { Button } from "../ui/Button";
 import {
   Card,
   CardContent,
@@ -8,23 +21,9 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/Card";
-import { Label } from "../ui/Label";
 import { Input } from "../ui/Input";
-import { Link, useNavigate } from "react-router-dom";
-import Image from "../ui/Image";
-import { useTranslation } from "react-i18next";
-import {
-  Button as AntdButton,
-  Avatar,
-  Carousel,
-  DatePicker,
-  type DatePickerProps,
-} from "antd";
-import { Button } from "../ui/Button";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import Slider from "react-slick";
-import { useUser } from "../../context/AuthContext";
+import { Label } from "../ui/Label";
+import { useTheme } from "../ui/ThemeProvider";
 
 const sliderSettings = {
   infinite: true,
@@ -91,10 +90,16 @@ const mockReviews = [
 export default function Home() {
   const { t } = useTranslation();
   const { isAuthenticated } = useUser();
+  const { theme } = useTheme();
   const navigate = useNavigate();
   const onChange: DatePickerProps["onChange"] = (date, dateString) => {
     console.log(date, dateString);
   };
+
+  const buttonStyle =
+    theme === "dark"
+      ? { backgroundColor: "#6e3fac", borderColor: "#6e3fac", color: "white" }
+      : { color: "white", backgroundColor: "#646cff" };
 
   return (
     <div className="w-full flex flex-col items-center">
@@ -117,7 +122,7 @@ export default function Home() {
             <Button
               size="lg"
               variant="outline"
-              style={{ color: "white", backgroundColor: "#646cff" }}
+              style={buttonStyle}
               onClick={() => {
                 if (!isAuthenticated) {
                   navigate("/sign-in");
@@ -137,7 +142,11 @@ export default function Home() {
 
       {/* Search Section */}
       <section className="container py-12">
-        <Card className="mx-auto max-w-4xl shadow-2xl border-gray-200">
+        <Card
+          className={`mx-auto max-w-4xl shadow-2xl ${
+            theme === "dark" ? "border-[#363654]" : "border-gray-200"
+          }`}
+        >
           <CardHeader>
             <CardTitle>{t("rides.search")}</CardTitle>
             <CardDescription>{t("rides.search.description")}</CardDescription>
@@ -177,7 +186,15 @@ export default function Home() {
                 <DatePicker
                   onChange={onChange}
                   size="large"
-                  style={{ borderColor: "black" }}
+                  style={
+                    theme === "dark"
+                      ? {
+                          backgroundColor: "#1e1e2f",
+                          borderColor: "#363654",
+                          color: "white",
+                        }
+                      : { borderColor: "black" }
+                  }
                 />
               </div>
               <div className="grid gap-2 sm:col-span-2 md:col-span-1">
@@ -187,7 +204,7 @@ export default function Home() {
                   variant="solid"
                   size="large"
                   color="primary"
-                  style={{ backgroundColor: "#646cff" }}
+                  style={buttonStyle}
                 >
                   <Search className="mr-2 h-4 w-4" />
                   {t("rides.search")}
@@ -205,35 +222,71 @@ export default function Home() {
             <h2 className="text-3xl font-bold">{t("home.howItWorks")}</h2>
           </div>
           <div className="flex flex-col items-center gap-6 md:flex-row md:justify-center">
-            <Card className="w-[430px] border-gray-200 shadow-2xl">
+            <Card
+              className={`w-[430px] shadow-2xl ${
+                theme === "dark" ? "border-[#363654]" : "border-gray-200"
+              }`}
+            >
               <CardContent className="pt-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-foreground bg-[#646cff] text-white">
+                <div
+                  className={`mb-4 flex h-12 w-12 items-center justify-center rounded-full text-xl font-bold text-primary-foreground ${
+                    theme === "dark" ? "bg-[#6e3fac]" : "bg-[#646cff]"
+                  } text-white`}
+                >
                   1
                 </div>
                 <h3 className="mb-2 text-xl font-bold">{t("home.step1")}</h3>
-                <p className="text-muted-foreground">
+                <p
+                  className={
+                    theme === "dark" ? "text-gray-400" : "text-muted-foreground"
+                  }
+                >
                   {t("home.howItWorks.description")}
                 </p>
               </CardContent>
             </Card>
-            <Card className="w-[430px] border-gray-200 shadow-2xl">
+            <Card
+              className={`w-[430px] shadow-2xl ${
+                theme === "dark" ? "border-[#363654]" : "border-gray-200"
+              }`}
+            >
               <CardContent className="pt-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-foreground bg-[#646cff] text-white">
+                <div
+                  className={`mb-4 flex h-12 w-12 items-center justify-center rounded-full text-xl font-bold text-primary-foreground ${
+                    theme === "dark" ? "bg-[#6e3fac]" : "bg-[#646cff]"
+                  } text-white`}
+                >
                   2
                 </div>
                 <h3 className="mb-2 text-xl font-bold">{t("home.step2")}</h3>
-                <p className="text-muted-foreground">
+                <p
+                  className={
+                    theme === "dark" ? "text-gray-400" : "text-muted-foreground"
+                  }
+                >
                   {t("home.step2.description")}
                 </p>
               </CardContent>
             </Card>
-            <Card className="w-[430px] border-gray-200 shadow-2xl">
+            <Card
+              className={`w-[430px] shadow-2xl ${
+                theme === "dark" ? "border-[#363654]" : "border-gray-200"
+              }`}
+            >
               <CardContent className="pt-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-foreground bg-[#646cff] text-white">
+                <div
+                  className={`mb-4 flex h-12 w-12 items-center justify-center rounded-full text-xl font-bold text-primary-foreground ${
+                    theme === "dark" ? "bg-[#6e3fac]" : "bg-[#646cff]"
+                  } text-white`}
+                >
                   3
                 </div>
                 <h3 className="mb-2 text-xl font-bold">{t("home.step3")}</h3>
-                <p className="text-muted-foreground">
+                <p
+                  className={
+                    theme === "dark" ? "text-gray-400" : "text-muted-foreground"
+                  }
+                >
                   {t("home.step3.description")}
                 </p>
               </CardContent>
@@ -354,8 +407,8 @@ export default function Home() {
               <div className="flex flex-col gap-4 sm:flex-row justify-center">
                 <Button
                   size="lg"
-                  variant="secondary"
-                  style={{ color: "white", backgroundColor: "#646cff" }}
+                  variant="outline"
+                  className="bg-transparent text-primary-foreground border-primary-foreground hover:bg-primary-foreground/10"
                   asChild
                 >
                   <Link to="/sign-up">{t("nav.signUp")}</Link>

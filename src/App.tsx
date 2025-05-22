@@ -7,7 +7,6 @@ import Layout from "./components/layout/Layout";
 import { ThemeProvider } from "./components/ui/ThemeProvider";
 import MyRidesPage from "./components/pages/MyRidesPage";
 import SignInPage from "./components/pages/SignInPage";
-import SignUpPage from "./components/pages/SignUpPage";
 import ProfilePage from "./components/pages/ProfilePage";
 import ChatPage from "./components/pages/ChatPage";
 import RidesPage from "./components/pages/RidesPage";
@@ -21,7 +20,7 @@ function App() {
   const queryClient = new QueryClient();
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="system" storageKey="go-together-theme">
+      <ThemeProvider defaultTheme="dark" storageKey="go-together-theme">
         <BrowserRouter>
           <SnackbarProvider
             anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
@@ -32,7 +31,6 @@ function App() {
                   <Route path="/" element={<Navigate to={"/home"} replace />} />
                   <Route path="/home" element={<HomePage />} />
                   <Route path="/my-rides" element={<MyRidesPage />} />
-                  <Route path="/sign-up" element={<SignUpPage />} />
                   <Route path="/profile" element={<ProfilePage />} />
                   <Route path="/chat/:id" element={<ChatPage />} />
                   <Route path="/rides" element={<RidesPage />} />
@@ -40,6 +38,10 @@ function App() {
                   <Route path="/rides/:id" element={<RidesUserPage />} />
                 </Route>
                 <Route path="sign-in" element={<SignInPage />} />
+                <Route
+                  path="sign-up"
+                  element={<SignInPage initialMode="signup" />}
+                />
               </Routes>
             </UserProvider>
           </SnackbarProvider>

@@ -24,6 +24,7 @@ import {
 } from "../ui/Card";
 import { Label } from "@radix-ui/react-label";
 import { format } from "date-fns";
+import { useTheme } from "../ui/ThemeProvider";
 
 // Mock data for rides
 const mockRides = [
@@ -161,6 +162,7 @@ const mockRoutes = [
 export default function RidesPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { theme } = useTheme();
   const [rides, setRides] = useState(mockRides);
   const [searchParams, setSearchParams] = useState({
     from: "",
@@ -189,15 +191,26 @@ export default function RidesPage() {
     setRides(filtered);
   };
 
+  const buttonStyle =
+    theme === "dark"
+      ? { backgroundColor: "#6e3fac", borderColor: "#6e3fac", color: "white" }
+      : { color: "white", backgroundColor: "#646cff" };
+
   return (
     <div className="container py-8">
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl font-bold text-left">{t("nav.rides")}</h1>
-          <p className="text-gray-400">{t("nav.rides.description")}</p>
+          <p
+            className={`text-left ${
+              theme === "dark" ? "text-gray-400" : "text-gray-400"
+            }`}
+          >
+            {t("nav.rides.description")}
+          </p>
         </div>
         <Button
-          style={{ color: "white", backgroundColor: "#646cff" }}
+          style={buttonStyle}
           variant="solid"
           color="blue"
           onClick={() => navigate(`/rides/create`)}
@@ -208,15 +221,25 @@ export default function RidesPage() {
       </div>
 
       <Tabs defaultValue="search" className="mb-8 text-left">
-        <TabsList>
-          <TabsTrigger value="search">{t("rides.search.nav")}</TabsTrigger>
-          <TabsTrigger value="popular">{t("rides.popular.routes")}</TabsTrigger>
+        <TabsList className="flex gap-4">
+          <TabsTrigger style={buttonStyle} value="search">
+            {t("rides.search.nav")}
+          </TabsTrigger>
+          <TabsTrigger style={buttonStyle} value="popular">
+            {t("rides.popular.routes")}
+          </TabsTrigger>
         </TabsList>
-        <TabsContent value="search">
-          <Card className="border-gray-200">
+        <TabsContent value="search" className="mt-10">
+          <Card
+            className={
+              theme === "dark" ? "border-[#363654]" : "border-gray-200"
+            }
+          >
             <CardHeader>
               <CardTitle>{t("rides.search")}</CardTitle>
-              <CardDescription className="text-gray-400">
+              <CardDescription
+                className={theme === "dark" ? "text-gray-400" : "text-gray-400"}
+              >
                 {t("nav.rides.description")}
               </CardDescription>
             </CardHeader>
@@ -261,16 +284,25 @@ export default function RidesPage() {
                 <div className="grid gap-2">
                   <Label htmlFor="date">{t("rides.date")}</Label>
                   <DatePicker
+                    style={
+                      theme === "dark"
+                        ? {
+                            backgroundColor: "#1e1e2f",
+                            borderColor: "#363654",
+                            color: "white",
+                          }
+                        : {}
+                    }
                     value={searchParams.date ?? undefined}
-                    // onClick={(date) =>
-                    //   setSearchParams({ ...searchParams, date })
-                    // }
+                    onChange={(date) =>
+                      setSearchParams({ ...searchParams, date: date || null })
+                    }
                   />
                 </div>
                 <div className="grid gap-2 sm:col-span-2 md:col-span-1">
                   <Label>&nbsp;</Label>
                   <Button
-                    style={{ color: "white", backgroundColor: "#646cff" }}
+                    style={buttonStyle}
                     htmlType="submit"
                     className="w-full"
                     variant="solid"
@@ -285,25 +317,63 @@ export default function RidesPage() {
           </Card>
         </TabsContent>
         <TabsContent value="popular">
-          <Card className="border-gray-200">
+          <Card
+            className={
+              theme === "dark" ? "border-[#363654]" : "border-gray-200"
+            }
+          >
             <CardContent className="pt-6 ">
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {mockRoutes.map((route) => {
                   return (
                     <Button
                       key={route.id}
-                      style={{ height: "80px" }}
+                      style={{
+                        height: "80px",
+                        ...(theme === "dark"
+                          ? {
+                              backgroundColor: "#252538",
+                              borderColor: "#363654",
+                              color: "white",
+                            }
+                          : {}),
+                      }}
                       variant="solid"
+                      className={
+                        theme === "dark"
+                          ? "hover:bg-[#323248] hover:border-[#464668]"
+                          : ""
+                      }
                     >
                       <div>
                         <div className="flex flex-col items-start">
                           <div className="flex items-center gap-2">
-                            <MapPin className="h-4 w-4 text-muted-foreground" />
+                            <MapPin
+                              className={`h-4 w-4 ${
+                                theme === "dark"
+                                  ? "text-purple-300"
+                                  : "text-muted-foreground"
+                              }`}
+                            />
                             <span>{route.from}</span>
-                            <span className="text-muted-foreground">→</span>
+                            <span
+                              className={
+                                theme === "dark"
+                                  ? "text-purple-300"
+                                  : "text-muted-foreground"
+                              }
+                            >
+                              →
+                            </span>
                             <span>{route.to}</span>
                           </div>
-                          <p className="mt-1 text-xs text-muted-foreground">
+                          <p
+                            className={`mt-1 text-xs ${
+                              theme === "dark"
+                                ? "text-gray-400"
+                                : "text-muted-foreground"
+                            }`}
+                          >
                             {route.available_rides}
                           </p>
                         </div>
@@ -319,7 +389,13 @@ export default function RidesPage() {
 
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-xl font-bold">Available Rides</h2>
-        <Button>
+        <Button
+          style={
+            theme === "dark"
+              ? { backgroundColor: "#252538", borderColor: "#363654" }
+              : {}
+          }
+        >
           <Filter className="mr-2 h-4 w-4" />
           Filter
         </Button>
@@ -328,8 +404,17 @@ export default function RidesPage() {
       <div className="grid gap-4">
         {rides.length > 0 ? (
           rides.map((ride) => (
-            <Card key={ride.id} className="overflow-hidden border-gray-200">
-              <CardContent className="pb-0 pr-0 bg-[#f1f5f9]">
+            <Card
+              key={ride.id}
+              className={`overflow-hidden ${
+                theme === "dark" ? "border-[#363654]" : "border-gray-200"
+              }`}
+            >
+              <CardContent
+                className={`pb-0 pr-0 ${
+                  theme === "dark" ? "bg-[#252538]" : "bg-[#f1f5f9]"
+                }`}
+              >
                 <div className="grid md:grid-cols-[1fr_auto]">
                   <div className="p-6">
                     <div className="mb-4 flex items-center justify-between">
@@ -338,13 +423,24 @@ export default function RidesPage() {
                           src={ride.driver.avatar}
                           alt={ride.driver.name}
                           size={"large"}
+                          style={
+                            theme === "dark"
+                              ? { backgroundColor: "#6e3fac" }
+                              : {}
+                          }
                         >
                           {ride.driver.name.charAt(0)}
                         </Avatar>
 
                         <div className="text-left">
                           <div className="font-medium">{ride.driver.name}</div>
-                          <div className="flex items-center text-sm text-gray-400">
+                          <div
+                            className={`flex items-center text-sm ${
+                              theme === "dark"
+                                ? "text-gray-400"
+                                : "text-gray-400"
+                            }`}
+                          >
                             <Star className="mr-1 h-3 w-3 fill-yellow-500 text-yellow-500" />
                             {ride.driver.rating} · {ride.driver.rides} rides
                           </div>
@@ -354,7 +450,13 @@ export default function RidesPage() {
                         <div className="text-xl font-bold">
                           {ride.price} {ride.currency}
                         </div>
-                        <div className="text-sm text-gray-400">per person</div>
+                        <div
+                          className={`text-sm ${
+                            theme === "dark" ? "text-gray-400" : "text-gray-400"
+                          }`}
+                        >
+                          per person
+                        </div>
                       </div>
                     </div>
                     <div className="mb-4 grid gap-2 md:grid-cols-2">
@@ -362,7 +464,13 @@ export default function RidesPage() {
                         <MapPin />
                         <div className="text-left">
                           <div className="font-medium">{ride.from}</div>
-                          <div className="text-sm text-gray-400">
+                          <div
+                            className={`text-sm ${
+                              theme === "dark"
+                                ? "text-gray-400"
+                                : "text-gray-400"
+                            }`}
+                          >
                             {format(ride.date, "EEE, MMM d")} · {ride.time}
                           </div>
                         </div>
@@ -371,7 +479,13 @@ export default function RidesPage() {
                         <MapPin />
                         <div>
                           <div className="font-medium text-left">{ride.to}</div>
-                          <div className="text-sm text-gray-400">
+                          <div
+                            className={`text-sm ${
+                              theme === "dark"
+                                ? "text-gray-400"
+                                : "text-gray-400"
+                            }`}
+                          >
                             Estimated arrival: {ride.time.split(":")[0]}:
                             {(Number.parseInt(ride.time.split(":")[0]) + 2) %
                               24}
@@ -381,26 +495,74 @@ export default function RidesPage() {
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-1">
-                      <Tag color="default" style={{ borderRadius: "999px" }}>
+                      <Tag
+                        color="default"
+                        style={
+                          theme === "dark"
+                            ? {
+                                borderRadius: "999px",
+                                backgroundColor: "#252538",
+                                borderColor: "#363654",
+                                color: "white",
+                              }
+                            : { borderRadius: "999px" }
+                        }
+                      >
                         <div className="flex items-center gap-2">
                           <Car className="h-3 w-3" />
                           {ride.vehicle.model}
                         </div>
                       </Tag>
-                      <Tag color="default" style={{ borderRadius: "999px" }}>
+                      <Tag
+                        color="default"
+                        style={
+                          theme === "dark"
+                            ? {
+                                borderRadius: "999px",
+                                backgroundColor: "#252538",
+                                borderColor: "#363654",
+                                color: "white",
+                              }
+                            : { borderRadius: "999px" }
+                        }
+                      >
                         <div className="flex items-center gap-2">
                           <Users className="h-3 w-3" />
                           {ride.seats} {ride.seats === 1 ? "seat" : "seats"}{" "}
                           left
                         </div>
                       </Tag>
-                      <Tag color="default" style={{ borderRadius: "999px" }}>
+                      <Tag
+                        color="default"
+                        style={
+                          theme === "dark"
+                            ? {
+                                borderRadius: "999px",
+                                backgroundColor: "#252538",
+                                borderColor: "#363654",
+                                color: "white",
+                              }
+                            : { borderRadius: "999px" }
+                        }
+                      >
                         <div className="flex items-center gap-2">
                           <Luggage className="h-3 w-3" />
                           {ride.luggage} luggage
                         </div>
                       </Tag>
-                      <Tag color="default" style={{ borderRadius: "999px" }}>
+                      <Tag
+                        color="default"
+                        style={
+                          theme === "dark"
+                            ? {
+                                borderRadius: "999px",
+                                backgroundColor: "#252538",
+                                borderColor: "#363654",
+                                color: "white",
+                              }
+                            : { borderRadius: "999px" }
+                        }
+                      >
                         <div className="flex items-center gap-2">
                           <Clock className="h-3 w-3" />
                           ~2 hours
@@ -408,9 +570,15 @@ export default function RidesPage() {
                       </Tag>
                     </div>
                   </div>
-                  <div className="flex items-center justify-center border-t bg-muted p-6 md:border-l md:border-t-0 border-gray-200">
+                  <div
+                    className={`flex items-center justify-center border-t p-6 md:border-l md:border-t-0 ${
+                      theme === "dark"
+                        ? "border-[#363654] bg-[#1e1e2f]"
+                        : "border-gray-200 bg-muted"
+                    }`}
+                  >
                     <Button
-                      style={{ color: "white", backgroundColor: "#646cff" }}
+                      style={buttonStyle}
                       variant="solid"
                       color="blue"
                       onClick={() => navigate(`/rides/${ride.id}`)}
@@ -423,11 +591,20 @@ export default function RidesPage() {
             </Card>
           ))
         ) : (
-          <Card className="p-6 text-center border-gray-200">
-            <p className="mb-4 text-muted-foreground">
+          <Card
+            className={`p-6 text-center ${
+              theme === "dark" ? "border-[#363654]" : "border-gray-200"
+            }`}
+          >
+            <p
+              className={`mb-4 ${
+                theme === "dark" ? "text-gray-400" : "text-muted-foreground"
+              }`}
+            >
               No rides found matching your criteria.
             </p>
             <Button
+              style={buttonStyle}
               variant="solid"
               color="blue"
               onClick={() => setRides(mockRides)}

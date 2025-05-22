@@ -4,7 +4,9 @@ export interface Me {
   id: number;
   username: string;
   email: string;
+  bio?: string;
   profilePicture?: string;
+  rating?: number;
   created?: string;
   phoneNumber?: string;
 }

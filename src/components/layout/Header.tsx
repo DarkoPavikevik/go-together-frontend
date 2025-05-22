@@ -1,9 +1,14 @@
 "use client";
-import { useState } from "react";
+import { Car, Home, LogOut, Moon, Sun, User, X } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Car, Menu, Moon, Sun, User, LogOut } from "lucide-react";
 
-import { Sheet, SheetContent, SheetTrigger } from "../ui/Sheet";
+import { UserOutlined } from "@ant-design/icons";
+import { Avatar, Drawer } from "antd";
+import { useState } from "react";
+import ReactFlagsSelect from "react-flags-select";
+import { useTranslation } from "react-i18next";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { useUser } from "../../context/AuthContext";
 import { Button } from "../ui/Button";
 import {
   DropdownMenu,
@@ -11,13 +16,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/DropdownMenu";
-import { useTranslation } from "react-i18next";
-import ReactFlagsSelect from "react-flags-select";
-import { useTheme } from "../ui/ThemeProvider";
 import Image from "../ui/Image";
-import { useUser } from "../../context/AuthContext";
-import { Avatar } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { useTheme } from "../ui/ThemeProvider";
 
 const countryLangMap: Record<string, string> = {
   GB: "en", // English
@@ -30,57 +30,115 @@ export default function Header() {
   const { isAuthenticated, logout, me } = useUser();
   const location = useLocation();
   const navigate = useNavigate();
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   const changeLanguageHandler = (countryCode: string) => {
     const langCode = countryLangMap[countryCode];
     if (langCode) {
       i18n.changeLanguage(langCode);
     }
   };
-  const toggleTheme = () => {
-    const nextTheme = theme === "dark" ? "light" : "dark";
-    console.log(nextTheme);
-    setTheme(nextTheme);
-  };
+  // const toggleTheme = () => {
+  //   const nextTheme = theme === "dark" ? "light" : "dark";
+  //   console.log(nextTheme);
+  //   setTheme(nextTheme);
+  // };
   console.log(me);
   return (
     <header className="sticky top-0 z-50 w-full shadow-xl bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex items-center justify-around px-4 py-2">
         <div className="flex items-center gap-4">
-          <Sheet>
-            <SheetTrigger asChild className="lg:hidden">
-              <Button variant="ghost" size="icon" className="lg:hidden">
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Toggle menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left">
-              <nav className="grid gap-6 text-lg font-medium">
-                <Link
-                  to="/"
-                  className="flex items-center gap-2 text-lg font-semibold"
-                >
-                  <Car className="h-5 w-5" />
-                  <span>GoTogether</span>
-                </Link>
-                <Link to="/" className="hover:text-foreground/80">
-                  {t("nav.home")}
-                </Link>
-                <Link to="/rides" className="hover:text-foreground/80">
-                  {t("nav.rides")}
-                </Link>
-                {isAuthenticated && (
-                  <>
-                    <Link to="/my-rides" className="hover:text-foreground/80">
-                      {t("nav.myRides")}
-                    </Link>
-                    <Link to="/profile" className="hover:text-foreground/80">
-                      {t("nav.profile")}
-                    </Link>
-                  </>
-                )}
-              </nav>
-            </SheetContent>
-          </Sheet>
+          <Button
+            onClick={() => setDrawerOpen(true)}
+            variant="ghost"
+            className={`lg:hidden relative overflow-hidden transition-all duration-300 ${
+              theme === "dark"
+                ? "bg-gradient-to-r from-purple-900 to-indigo-900 text-white hover:from-purple-800 hover:to-indigo-800"
+                : "bg-gradient-to-r from-blue-100 to-indigo-100 text-indigo-800 hover:from-blue-200 hover:to-indigo-200"
+            } rounded-full p-2 h-10 w-10`}
+            aria-label="Toggle menu"
+          >
+            <GiHamburgerMenu className="h-5 w-5 absolute transform transition-transform duration-500 rotate-0" />
+          </Button>
+
+          <Drawer
+            title={
+              <div className="flex items-center gap-2 text-[#646cff]">
+                <Car className="h-5 w-5 text-[#646cff]" />
+                <span className="font-semibold">GoTogether</span>
+              </div>
+            }
+            placement="left"
+            onClose={() => setDrawerOpen(false)}
+            open={drawerOpen}
+            bodyStyle={{
+              padding: "16px",
+              backgroundColor: theme === "dark" ? "#1e1e2f" : "#fff",
+            }}
+            headerStyle={{
+              backgroundColor: theme === "dark" ? "#1e1e2f" : "#fff",
+              color: theme === "dark" ? "#fff" : "#000",
+              borderBottom:
+                theme === "dark" ? "1px solid #363654" : "1px solid #f0f0f0",
+            }}
+            className={theme === "dark" ? "dark-mode-drawer" : ""}
+            closeIcon={
+              <div
+                className={`p-1 rounded-full ${
+                  theme === "dark" ? "hover:bg-gray-800" : "hover:bg-gray-100"
+                }`}
+              >
+                <X
+                  className={`h-5 w-5 ${
+                    theme === "dark" ? "text-gray-300" : "text-[#646cff]"
+                  }`}
+                />
+              </div>
+            }
+          >
+            <nav className="grid gap-6 text-lg font-medium">
+              <Link
+                to="/"
+                className="hover:text-[#646cff] flex items-center gap-2 p-2 rounded-md transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 drawer-nav-item"
+                onClick={() => setDrawerOpen(false)}
+                style={{ animationDelay: "0.1s" }}
+              >
+                <Home className="h-5 w-5 text-[#646cff]" />
+                {t("nav.home")}
+              </Link>
+              <Link
+                to="/rides"
+                className="hover:text-[#646cff] flex items-center gap-2 p-2 rounded-md transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 drawer-nav-item"
+                onClick={() => setDrawerOpen(false)}
+                style={{ animationDelay: "0.2s" }}
+              >
+                <Car className="h-5 w-5 text-[#646cff]" />
+                {t("nav.rides")}
+              </Link>
+              {isAuthenticated && (
+                <>
+                  <Link
+                    to="/my-rides"
+                    className="hover:text-[#646cff] flex items-center gap-2 p-2 rounded-md transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 drawer-nav-item"
+                    onClick={() => setDrawerOpen(false)}
+                    style={{ animationDelay: "0.3s" }}
+                  >
+                    <Car className="h-5 w-5 text-[#646cff]" />
+                    {t("nav.myRides")}
+                  </Link>
+                  <Link
+                    to="/profile"
+                    className="hover:text-[#646cff] flex items-center gap-2 p-2 rounded-md transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 drawer-nav-item"
+                    onClick={() => setDrawerOpen(false)}
+                    style={{ animationDelay: "0.4s" }}
+                  >
+                    <User className="h-5 w-5 text-[#646cff]" />
+                    {t("nav.profile")}
+                  </Link>
+                </>
+              )}
+            </nav>
+          </Drawer>
 
           <Link
             to="/"
@@ -94,18 +152,46 @@ export default function Header() {
           </Link>
 
           <nav className="hidden lg:flex lg:gap-6 lg:text-sm lg:font-medium">
-            <Link to="/" className="hover:text-foreground/80">
+            <Link
+              to="/"
+              className={`hover:text-foreground/80 py-2 px-1 relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:transform after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:bg-primary/70 ${
+                location.pathname === "/"
+                  ? "after:scale-x-100 text-primary"
+                  : ""
+              }`}
+            >
               {t("nav.home")}
             </Link>
-            <Link to="/rides" className="hover:text-foreground/80">
+            <Link
+              to="/rides"
+              className={`hover:text-foreground/80 py-2 px-1 relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:transform after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:bg-primary/70 ${
+                location.pathname === "/rides"
+                  ? "after:scale-x-100 text-primary"
+                  : ""
+              }`}
+            >
               {t("nav.rides")}
             </Link>
             {isAuthenticated && (
               <>
-                <Link to="/my-rides" className="hover:text-foreground/80">
+                <Link
+                  to="/my-rides"
+                  className={`hover:text-foreground/80 py-2 px-1 relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:transform after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:bg-primary/70 ${
+                    location.pathname === "/my-rides"
+                      ? "after:scale-x-100 text-primary"
+                      : ""
+                  }`}
+                >
                   {t("nav.myRides")}
                 </Link>
-                <Link to="/profile" className="hover:text-foreground/80">
+                <Link
+                  to="/profile"
+                  className={`hover:text-foreground/80 py-2 px-1 relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:transform after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:bg-primary/70 ${
+                    location.pathname === "/profile"
+                      ? "after:scale-x-100 text-primary"
+                      : ""
+                  }`}
+                >
                   {t("nav.profile")}
                 </Link>
               </>
@@ -134,12 +220,16 @@ export default function Header() {
             aria-label={`Switch to ${
               theme === "dark" ? "light" : "dark"
             } theme`}
-            style={{ backgroundColor: theme !== "dark" ? "transparent" : "" }}
+            className={`relative overflow-hidden transition-all duration-300 ${
+              theme === "dark"
+                ? "bg-gradient-to-r from-purple-900 to-indigo-900 text-white hover:from-purple-800 hover:to-indigo-800"
+                : "bg-gradient-to-r from-blue-100 to-indigo-100 text-indigo-800 hover:from-blue-200 hover:to-indigo-200"
+            } rounded-full p-2 h-10 w-10`}
           >
             {theme === "dark" ? (
-              <Sun className="h-5 w-5 text-black" />
+              <Sun className="h-5 w-5 absolute transform transition-transform duration-500 rotate-0" />
             ) : (
-              <Moon className="h-5 w-5" />
+              <Moon className="h-5 w-5 absolute transform transition-transform duration-500 rotate-0" />
             )}
           </Button>
           {isAuthenticated ? (
@@ -159,7 +249,11 @@ export default function Header() {
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="end"
-                className="bg-gray-100 border-gray-200"
+                className={`${
+                  theme === "dark"
+                    ? "bg-[#1e1e2f] border-[#363654]"
+                    : "bg-gray-100 border-gray-200"
+                }`}
               >
                 <DropdownMenuItem asChild>
                   <Link to="/profile" className="flex items-center gap-2">
@@ -185,11 +279,23 @@ export default function Header() {
             </DropdownMenu>
           ) : (
             <div className="flex items-center gap-2">
-              <Button variant="ghost" asChild>
+              <Button
+                variant="ghost"
+                asChild
+                className={`${
+                  theme === "dark"
+                    ? "text-white hover:bg-purple-900/20"
+                    : "text-white"
+                }`}
+              >
                 <Link to="/sign-in">{t("nav.signIn")}</Link>
               </Button>
               <Button
-                style={{ color: "white", backgroundColor: "#646cff" }}
+                className={`${
+                  theme === "dark"
+                    ? "text-white hover:bg-purple-900/20"
+                    : "text-white"
+                }`}
                 asChild
               >
                 <Link to="/sign-up">{t("nav.signUp")}</Link>

@@ -1,5 +1,17 @@
 "use client";
-import { Car, Home, LogOut, Moon, Sun, User, X } from "lucide-react";
+import {
+  Car,
+  Facebook,
+  Github,
+  Home,
+  Instagram,
+  Linkedin,
+  LogOut,
+  Moon,
+  Sun,
+  User,
+  X,
+} from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { UserOutlined } from "@ant-design/icons";
@@ -63,9 +75,18 @@ export default function Header() {
 
           <Drawer
             title={
-              <div className="flex items-center gap-2 text-[#646cff]">
-                <Car className="h-5 w-5 text-[#646cff]" />
-                <span className="font-semibold">GoTogether</span>
+              <div className="flex items-center gap-3 text-[#646cff]">
+                <Link
+                  to="/"
+                  className="flex items-center gap-2 text-lg font-semibold"
+                >
+                  <Image
+                    alt={"GoTogether"}
+                    src="/GoTogetherLogo2.png"
+                    className="h-15 w-15"
+                  />
+                </Link>
+                <span className="font-bold text-3xl">GoTogether</span>
               </div>
             }
             placement="left"
@@ -74,6 +95,10 @@ export default function Header() {
             bodyStyle={{
               padding: "16px",
               backgroundColor: theme === "dark" ? "#1e1e2f" : "#fff",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between", // 👈 pushes bottom section down
+              height: "100%", // 👈 ensures the drawer uses full height
             }}
             headerStyle={{
               backgroundColor: theme === "dark" ? "#1e1e2f" : "#fff",
@@ -96,48 +121,101 @@ export default function Header() {
               </div>
             }
           >
-            <nav className="grid gap-6 text-lg font-medium">
-              <Link
-                to="/"
-                className="hover:text-[#646cff] flex items-center gap-2 p-2 rounded-md transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 drawer-nav-item"
-                onClick={() => setDrawerOpen(false)}
-                style={{ animationDelay: "0.1s" }}
-              >
-                <Home className="h-5 w-5 text-[#646cff]" />
-                {t("nav.home")}
-              </Link>
-              <Link
-                to="/rides"
-                className="hover:text-[#646cff] flex items-center gap-2 p-2 rounded-md transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 drawer-nav-item"
-                onClick={() => setDrawerOpen(false)}
-                style={{ animationDelay: "0.2s" }}
-              >
-                <Car className="h-5 w-5 text-[#646cff]" />
-                {t("nav.rides")}
-              </Link>
-              {isAuthenticated && (
-                <>
-                  <Link
-                    to="/my-rides"
-                    className="hover:text-[#646cff] flex items-center gap-2 p-2 rounded-md transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 drawer-nav-item"
-                    onClick={() => setDrawerOpen(false)}
-                    style={{ animationDelay: "0.3s" }}
+            <div className="flex flex-col justify-between h-full">
+              {/* Navigation links section */}
+              <nav className="grid gap-6 text-lg font-medium">
+                <Link
+                  to="/"
+                  className="hover:text-[#646cff] flex items-center gap-2 p-2 rounded-md transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 drawer-nav-item"
+                  onClick={() => setDrawerOpen(false)}
+                  style={{ animationDelay: "0.1s" }}
+                >
+                  <Home className="h-5 w-5 text-[#646cff]" />
+                  {t("nav.home")}
+                </Link>
+                <Link
+                  to="/rides"
+                  className="hover:text-[#646cff] flex items-center gap-2 p-2 rounded-md transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 drawer-nav-item"
+                  onClick={() => setDrawerOpen(false)}
+                  style={{ animationDelay: "0.2s" }}
+                >
+                  <Car className="h-5 w-5 text-[#646cff]" />
+                  {t("nav.rides")}
+                </Link>
+                {isAuthenticated && (
+                  <>
+                    <Link
+                      to="/my-rides"
+                      className="hover:text-[#646cff] flex items-center gap-2 p-2 rounded-md transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 drawer-nav-item"
+                      onClick={() => setDrawerOpen(false)}
+                      style={{ animationDelay: "0.3s" }}
+                    >
+                      <Car className="h-5 w-5 text-[#646cff]" />
+                      {t("nav.myRides")}
+                    </Link>
+                    <Link
+                      to="/profile"
+                      className="hover:text-[#646cff] flex items-center gap-2 p-2 rounded-md transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 drawer-nav-item"
+                      onClick={() => setDrawerOpen(false)}
+                      style={{ animationDelay: "0.4s" }}
+                    >
+                      <User className="h-5 w-5 text-[#646cff]" />
+                      {t("nav.profile")}
+                    </Link>
+                  </>
+                )}
+              </nav>
+
+              {/* Social media icons at bottom */}
+              <div className="flex flex-col items-center mt-8">
+                <div className="flex flex-wrap gap-4">
+                  <a
+                    href="#"
+                    className={`footer-social-icon ${
+                      theme === "dark"
+                        ? "text-gray-300 hover:text-purple-300 transition-all duration-200 transform hover:scale-110"
+                        : "text-gray-600 hover:text-gray-900 transition-all duration-200 transform hover:scale-110"
+                    }`}
+                    aria-label="Facebook"
                   >
-                    <Car className="h-5 w-5 text-[#646cff]" />
-                    {t("nav.myRides")}
-                  </Link>
-                  <Link
-                    to="/profile"
-                    className="hover:text-[#646cff] flex items-center gap-2 p-2 rounded-md transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 drawer-nav-item"
-                    onClick={() => setDrawerOpen(false)}
-                    style={{ animationDelay: "0.4s" }}
+                    <Facebook className="h-6 w-6" />
+                  </a>
+                  <a
+                    href="#"
+                    className={`footer-social-icon ${
+                      theme === "dark"
+                        ? "text-gray-300 hover:text-purple-300 transition-all duration-200 transform hover:scale-110"
+                        : "text-gray-600 hover:text-gray-900 transition-all duration-200 transform hover:scale-110"
+                    }`}
+                    aria-label="Instagram"
                   >
-                    <User className="h-5 w-5 text-[#646cff]" />
-                    {t("nav.profile")}
-                  </Link>
-                </>
-              )}
-            </nav>
+                    <Instagram className="h-6 w-6" />
+                  </a>
+                  <a
+                    href="#"
+                    className={`footer-social-icon ${
+                      theme === "dark"
+                        ? "text-gray-300 hover:text-purple-300 transition-all duration-200 transform hover:scale-110"
+                        : "text-gray-600 hover:text-gray-900 transition-all duration-200 transform hover:scale-110"
+                    }`}
+                    aria-label="GitHub"
+                  >
+                    <Github className="h-6 w-6" />
+                  </a>
+                  <a
+                    href="#"
+                    className={`footer-social-icon ${
+                      theme === "dark"
+                        ? "text-gray-300 hover:text-purple-300 transition-all duration-200 transform hover:scale-110"
+                        : "text-gray-600 hover:text-gray-900 transition-all duration-200 transform hover:scale-110"
+                    }`}
+                    aria-label="LinkedIn"
+                  >
+                    <Linkedin className="h-6 w-6" />
+                  </a>
+                </div>
+              </div>
+            </div>
           </Drawer>
 
           <Link

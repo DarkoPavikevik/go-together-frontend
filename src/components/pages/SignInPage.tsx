@@ -228,7 +228,7 @@ export default function SignIn({ initialMode = "signin" }: SignInProps) {
               >
                 <Label htmlFor="username">{t("auth.name")}</Label>
                 <Form.Item
-                  name="username"
+                  name={"username"}
                   rules={[
                     {
                       required: true,
@@ -329,7 +329,7 @@ export default function SignIn({ initialMode = "signin" }: SignInProps) {
                   <div className="relative">
                     <Lock className="h-5 w-5 absolute left-4 top-[50%] transform -translate-y-1/2 text-[#a8a8bf] z-1" />
                     <AntInput.Password
-                      className={`pl-12 ${
+                      className={`pl-12 w-full ${
                         theme === "dark" ? "auth-input" : ""
                       }`}
                       style={{
@@ -342,7 +342,6 @@ export default function SignIn({ initialMode = "signin" }: SignInProps) {
                             ? "rgba(75, 61, 119, 0.3)"
                             : "#e2e8f0",
                         color: theme === "dark" ? "#fff" : "#000",
-
                         paddingRight: "2.5rem",
                       }}
                       iconRender={(visible) => (

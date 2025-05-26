@@ -391,8 +391,10 @@ export default function RideDetailPage() {
                           {review.user.avatar === null &&
                             review.user.name.charAt(0)}
                         </Avatar>
+
                         <div className="text-left">
                           <div className="font-medium">{review.user.name}</div>
+
                           <div className="flex items-center text-xs text-muted-foreground">
                             <div className="flex text-yellow-500">
                               {[...Array(5)].map((_, i) => (
@@ -401,17 +403,19 @@ export default function RideDetailPage() {
                                   className={`h-3 w-3 ${
                                     i < review.rating
                                       ? "fill-yellow-500"
-                                      : "fill-muted stroke-muted"
+                                      : "fill-muted stroke-muted dark:fill-gray-700 dark:stroke-gray-700"
                                   }`}
                                 />
                               ))}
                             </div>
+
                             <span className="ml-2 text-gray-400">
                               {format(review.date, "MMM d, yyyy")}
                             </span>
                           </div>
                         </div>
                       </div>
+
                       <p className="text-sm text-gray-400 text-left">
                         {review.comment}
                       </p>
@@ -427,18 +431,20 @@ export default function RideDetailPage() {
           </Card>
         </div>
 
-        <div>
+        <div className="flex flex-col gap-4">
           <Card className="user-ride-car-border">
             <CardHeader className="text-left">
               <CardTitle>Request to Join</CardTitle>
+
               <CardDescription>
                 Send a request to join this ride
               </CardDescription>
             </CardHeader>
+
             <CardContent>
               {showRequestSent ? (
                 <div className="text-center py-4">
-                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600 mb-4">
+                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300 mb-4">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -454,31 +460,39 @@ export default function RideDetailPage() {
                       />
                     </svg>
                   </div>
+
                   <h3 className="text-lg font-medium mb-2">Request Sent!</h3>
+
                   <p className="text-sm text-muted-foreground mb-4">
                     The driver will review your request and respond soon.
                   </p>
+
                   <Button>
                     <Link to="/my-rides">View My Rides</Link>
                   </Button>
                 </div>
               ) : (
                 <div className="space-y-4">
-                  <div className="rounded-lg bg-[#f1f5f9] p-4">
+                  <div className="rounded-lg bg-[#f1f5f9] dark:bg-slate-800 p-4">
                     <div className="flex justify-between mb-2">
                       <span className="text-sm font-medium">
                         Price per seat
                       </span>
+
                       <span className="font-bold">
                         {ride.price} {ride.currency}
                       </span>
                     </div>
+
                     <div className="flex justify-between mb-2">
                       <span className="text-sm font-medium">Seats</span>
+
                       <span>1</span>
                     </div>
-                    <div className="flex justify-between pt-2 border-t">
+
+                    <div className="flex justify-between pt-2 border-t border-gray-200 dark:border-gray-700">
                       <span className="font-medium">Total</span>
+
                       <span className="font-bold">
                         {ride.price} {ride.currency}
                       </span>
@@ -489,11 +503,13 @@ export default function RideDetailPage() {
                     <Label htmlFor="message">
                       Message to driver (optional)
                     </Label>
+
                     <Textarea
                       id="message"
                       placeholder="Introduce yourself and let the driver know about any special requirements"
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
+                      className="dark:bg-slate-800 dark:border-gray-700"
                     />
                   </div>
 
@@ -522,6 +538,7 @@ export default function RideDetailPage() {
             <CardHeader>
               <CardTitle>Contact Driver</CardTitle>
             </CardHeader>
+
             <CardContent>
               <Button
                 className="w-full"
@@ -530,6 +547,7 @@ export default function RideDetailPage() {
               >
                 Message
               </Button>
+
               <Modal
                 open={openMessageDriver}
                 onOk={() => setOpenMessageDriver(false)}
@@ -537,6 +555,7 @@ export default function RideDetailPage() {
                 title={
                   <div>
                     <h2 className="text-xl">{`Message to ${ride.driver.name}`}</h2>
+
                     <p className="text-sm text-gray-400">
                       You can only message the driver after your request is
                       accepted
@@ -545,14 +564,16 @@ export default function RideDetailPage() {
                 }
                 centered
                 footer
+                className="driver-message-modal"
               >
                 <div className="space-y-4 py-4">
                   <Textarea
                     placeholder="Type your message here..."
-                    className="min-h-[100px]"
+                    className="min-h-[100px] dark:bg-slate-800 dark:border-gray-700"
                     disabled
                   />
                 </div>
+
                 <div className="flex flex-row-reverse">
                   <Button disabled>Send Message</Button>
                 </div>
@@ -564,26 +585,34 @@ export default function RideDetailPage() {
             <CardHeader className="text-left">
               <CardTitle>Safety Tips</CardTitle>
             </CardHeader>
+
             <CardContent>
               <ul className="space-y-2 text-sm">
                 <li className="flex items-start gap-2">
-                  <span className="text-green-500">✓</span>
+                  <span className="text-green-500 dark:text-green-400">✓</span>
+
                   <span>
                     Verify the driver's identity before getting in the car
                   </span>
                 </li>
+
                 <li className="flex items-start gap-2">
-                  <span className="text-green-500">✓</span>
+                  <span className="text-green-500 dark:text-green-400">✓</span>
+
                   <span>
                     Share your trip details with a friend or family member
                   </span>
                 </li>
+
                 <li className="flex items-start gap-2">
-                  <span className="text-green-500">✓</span>
+                  <span className="text-green-500 dark:text-green-400">✓</span>
+
                   <span>Meet the driver in a public place</span>
                 </li>
+
                 <li className="flex items-start gap-2">
-                  <span className="text-green-500">✓</span>
+                  <span className="text-green-500 dark:text-green-400">✓</span>
+
                   <span>
                     Trust your instincts and cancel if you feel uncomfortable
                   </span>

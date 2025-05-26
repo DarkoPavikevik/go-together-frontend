@@ -348,7 +348,7 @@ export default function Header() {
                   }}
                   className="flex items-center gap-2"
                 >
-                  <Link to="/sign-out" className="flex items-center gap-2">
+                  <Link to="/home" className="flex items-center gap-2">
                     <LogOut className="h-4 w-4" />
                     {t("nav.signOut")}
                   </Link>

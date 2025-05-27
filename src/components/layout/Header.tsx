@@ -333,7 +333,11 @@ export default function Header() {
                     : "bg-gray-100 border-gray-200"
                 }`}
               >
-                <DropdownMenuItem asChild>
+                <DropdownMenuItem
+                  onClick={() => {
+                    navigate("/profile");
+                  }}
+                >
                   <Link to="/profile" className="flex items-center gap-2">
                     <User className="h-4 w-4" />
                     {t("nav.profile")}

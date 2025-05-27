@@ -3,9 +3,19 @@ import { useMutation } from "@tanstack/react-query";
 import { Input as AntInput, Button, Form } from "antd";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { Eye, EyeOff, Loader2, Lock, Mail, User } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  Loader2,
+  Lock,
+  Mail,
+  Moon,
+  Sun,
+  User,
+} from "lucide-react";
 import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
+import ReactFlagsSelect from "react-flags-select";
 import { useTranslation } from "react-i18next";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
@@ -21,17 +31,22 @@ import AnimatedBackground from "../ui/animated-backgroud";
 interface SignInProps {
   initialMode?: "signin" | "signup";
 }
-
+const countryLangMap: Record<string, string> = {
+  GB: "en", // English
+  AL: "sq", // Albanian
+  MK: "mk", // Macedonian
+};
 export default function SignIn({ initialMode = "signin" }: SignInProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
   const [isLoading, setIsLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(initialMode === "signup");
   const navigate = useNavigate();
   const { login } = useUser();
-  const { theme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const { register } = useAuthController();
   const [form] = Form.useForm();
-
+  const [passwordVisible, setPasswordVisible] = useState(false);
   useEffect(() => {
     setIsSignUp(initialMode === "signup");
   }, [initialMode]);
@@ -82,7 +97,12 @@ export default function SignIn({ initialMode = "signin" }: SignInProps) {
     await registerMutation(data);
     setIsLoading(false);
   };
-
+  const changeLanguageHandler = (countryCode: string) => {
+    const langCode = countryLangMap[countryCode];
+    if (langCode) {
+      i18n.changeLanguage(langCode);
+    }
+  };
   return (
     <div className="flex h-screen w-full overflow-hidden bg-gradient-to-br from-[#37215c] to-[#2a1a47]">
       {/* Left side with animation - with rounded edges */}
@@ -131,6 +151,36 @@ export default function SignIn({ initialMode = "signin" }: SignInProps) {
       {/* Right side with unified sign-in/sign-up form */}
       <div className="flex flex-col justify-center items-center w-full md:w-1/2 p-4">
         <div className="absolute z-[0] w-[40%] h-[35%] top-0 right-20 pink__gradient" />
+        <div style={{ position: "absolute", top: 20, right: 20 }}>
+          <div className="flex flex-row gap-3">
+            <ReactFlagsSelect
+              selected={
+                Object.keys(countryLangMap).find(
+                  (key) => countryLangMap[key] === i18n.language
+                ) || "GB"
+              }
+              onSelect={(code) => changeLanguageHandler(code)}
+              countries={["GB", "MK", "AL"]}
+              showSelectedLabel={false}
+              showSecondarySelectedLabel={false}
+              showOptionLabel={false}
+              className="!w-14 !p-0 hover:border-1 border-[#646cff] rounded-lg"
+              selectButtonClassName="!pr-0 after:hidden !border-none"
+            />
+            <Button
+              size="large"
+              variant="text"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className={`relative overflow-hidden transition-all duration-300 rounded-full p-2 h-10 w-10 !bg-transparent !border-none !text-white`}
+            >
+              {theme === "dark" ? (
+                <Sun className="h-5 w-5 absolute transform transition-transform duration-500 rotate-0 " />
+              ) : (
+                <Moon className="h-5 w-5 absolute transform transition-transform duration-500 rotate-0" />
+              )}
+            </Button>
+          </div>
+        </div>
         <div className="absolute z-[0] w-[50%] h-[50%] right-20 bottom-20 blue__gradient" />
 
         <motion.div
@@ -145,7 +195,7 @@ export default function SignIn({ initialMode = "signin" }: SignInProps) {
               overflow: "hidden",
             }}
             animate={{
-              height: isSignUp ? "870px" : "600px",
+              height: isSignUp ? "85vh" : "60vh",
               opacity: 1,
             }}
             transition={{ duration: 0.5, ease: "easeInOut" }}
@@ -170,7 +220,7 @@ export default function SignIn({ initialMode = "signin" }: SignInProps) {
               form={form}
               name={isSignUp ? "sign_up" : "login"}
               onFinish={isSignUp ? handleSignUp : handleSignIn}
-              className="flex flex-col gap-2"
+              className="flex flex-col"
               layout="vertical"
               style={{
                 transition: "height 0.5s ease-in-out",
@@ -183,7 +233,7 @@ export default function SignIn({ initialMode = "signin" }: SignInProps) {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: 0.1 }}
-                  className="space-y-2 text-left"
+                  className="space-y-0 text-left"
                 >
                   <Label htmlFor="email">{t("auth.email")}</Label>
                   <Form.Item
@@ -326,9 +376,18 @@ export default function SignIn({ initialMode = "signin" }: SignInProps) {
                     },
                   ]}
                 >
-                  <div className="relative">
-                    <Lock className="h-5 w-5 absolute left-4 top-[50%] transform -translate-y-1/2 text-[#a8a8bf] z-1" />
-                    <AntInput.Password
+                  <div className="relative w-full">
+                    <span className="pr-3 pl-1 flex items-center">
+                      <Lock
+                        size={18}
+                        className={
+                          theme === "dark" ? "text-[#cfcfe9]" : "text-[#a8a8bf]"
+                        }
+                        style={{ position: "absolute", top: 10, left: 17 }}
+                      />
+                    </span>
+                    <input
+                      type={passwordVisible ? "text" : "password"}
                       className={`pl-12 w-full ${
                         theme === "dark" ? "auth-input" : ""
                       }`}
@@ -342,18 +401,33 @@ export default function SignIn({ initialMode = "signin" }: SignInProps) {
                             ? "rgba(75, 61, 119, 0.3)"
                             : "#e2e8f0",
                         color: theme === "dark" ? "#fff" : "#000",
-                        paddingRight: "2.5rem",
                       }}
-                      iconRender={(visible) => (
-                        <span
-                          style={{
-                            color: theme === "dark" ? "#a8a8bf" : "#666",
-                          }}
-                        >
-                          {visible ? <Eye size={16} /> : <EyeOff size={16} />}
-                        </span>
-                      )}
                     />
+                    <span
+                      style={{
+                        color: theme === "dark" ? "#cfcfe9" : "#666",
+                      }}
+                    >
+                      <Button
+                        onClick={() =>
+                          setPasswordVisible((prevState) => !prevState)
+                        }
+                        className="!border-none !shadow-none hover:!border-none focus:!border-none focus:!outline-none active:!border-none p-1"
+                        style={{
+                          position: "absolute",
+                          top: 4,
+                          right: 0,
+                          border: "none",
+                          backgroundColor: "transparent",
+                        }}
+                      >
+                        {passwordVisible ? (
+                          <Eye size={16} />
+                        ) : (
+                          <EyeOff size={16} />
+                        )}
+                      </Button>
+                    </span>
                   </div>
                 </Form.Item>
               </motion.div>
@@ -387,35 +461,64 @@ export default function SignIn({ initialMode = "signin" }: SignInProps) {
                       }),
                     ]}
                   >
-                    <div className="relative">
-                      <Lock className="h-5 w-5 absolute left-4 top-[50%] transform -translate-y-1/2 text-[#a8a8bf] z-1" />
-                      <AntInput.Password
-                        className={`pl-12 ${
-                          theme === "dark" ? "auth-input" : ""
-                        }`}
-                        style={{
-                          height: "40px",
-                          fontSize: "16px",
-                          backgroundColor:
-                            theme === "dark" ? "rgba(35, 23, 60, 0.6)" : "#fff",
-                          borderColor:
-                            theme === "dark"
-                              ? "rgba(75, 61, 119, 0.3)"
-                              : "#e2e8f0",
-                          color: theme === "dark" ? "#fff" : "#000",
-
-                          paddingRight: "2.5rem",
-                        }}
-                        iconRender={(visible) => (
-                          <span
+                    <div className="relative w-full">
+                      <div className="relative w-full">
+                        <span className="pr-3 pl-1 flex items-center">
+                          <Lock
+                            size={18}
+                            className={
+                              theme === "dark"
+                                ? "text-[#cfcfe9]"
+                                : "text-[#a8a8bf]"
+                            }
+                            style={{ position: "absolute", top: 10, left: 17 }}
+                          />
+                        </span>
+                        <input
+                          type={passwordVisible ? "text" : "password"}
+                          className={`pl-12 w-full ${
+                            theme === "dark" ? "auth-input" : ""
+                          }`}
+                          style={{
+                            height: "40px",
+                            fontSize: "16px",
+                            backgroundColor:
+                              theme === "dark"
+                                ? "rgba(35, 23, 60, 0.6)"
+                                : "#fff",
+                            borderColor:
+                              theme === "dark"
+                                ? "rgba(75, 61, 119, 0.3)"
+                                : "#e2e8f0",
+                            color: theme === "dark" ? "#fff" : "#000",
+                          }}
+                        />
+                        <span
+                          style={{
+                            color: theme === "dark" ? "#cfcfe9" : "#666",
+                          }}
+                        >
+                          <Button
+                            onClick={() =>
+                              setPasswordVisible((prevState) => !prevState)
+                            }
+                            className="!border-none !shadow-none hover:!border-none focus:!border-none focus:!outline-none active:!border-none p-1"
                             style={{
-                              color: theme === "dark" ? "#a8a8bf" : "#666",
+                              position: "absolute",
+                              top: 4,
+                              right: 0,
+                              border: "none",
+                              backgroundColor: "transparent",
                             }}
                           >
-                            {visible ? <Eye size={16} /> : <EyeOff size={16} />}
-                          </span>
-                        )}
-                      />
+                            {passwordVisible ? (
+                              <Eye size={16} />
+                            ) : (
+                              <EyeOff size={16} />
+                            )}
+                          </Button>
+                        </span>
+                      </div>
                     </div>
                   </Form.Item>
                 </motion.div>
@@ -434,7 +537,6 @@ export default function SignIn({ initialMode = "signin" }: SignInProps) {
                   type="primary"
                   style={{
                     backgroundColor: "#646cff",
-                    height: "50px",
                     borderRadius: "8px",
                     fontSize: "16px",
                     fontWeight: "500",
@@ -476,7 +578,6 @@ export default function SignIn({ initialMode = "signin" }: SignInProps) {
                 theme === "dark" ? "auth-button-secondary" : ""
               }`}
               style={{
-                height: "50px",
                 borderRadius: "8px",
                 background:
                   theme === "dark"

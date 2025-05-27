@@ -25,6 +25,8 @@ import {
 import { Label } from "@radix-ui/react-label";
 import { format } from "date-fns";
 import { useTheme } from "../ui/ThemeProvider";
+import { useQuery } from "@tanstack/react-query";
+import { getRides } from "../../services/rides/ridesServices";
 
 // Mock data for rides
 const mockRides = [
@@ -163,13 +165,16 @@ export default function RidesPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { theme } = useTheme();
-  const [rides, setRides] = useState(mockRides);
+  // const [rides, setRides] = useState(mockRides);
   const [searchParams, setSearchParams] = useState({
     from: "",
     to: "",
     date: null as Date | null,
   });
-
+  const { data: rides, isLoading } = useQuery({
+    queryKey: ["get-rides"],
+    queryFn: () => getRides(0, 10),
+  });
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     // In a real app, you would fetch from your API here
@@ -188,7 +193,7 @@ export default function RidesPage() {
       return matchFrom && matchTo && matchDate;
     });
 
-    setRides(filtered);
+    // setRides(filtered);
   };
 
   const buttonStyle =
@@ -402,8 +407,8 @@ export default function RidesPage() {
       </div>
 
       <div className="grid gap-4">
-        {rides.length > 0 ? (
-          rides.map((ride) => (
+        {!isLoading ? (
+          rides.content.map((ride) => (
             <Card
               key={ride.id}
               className={`overflow-hidden ${
@@ -420,8 +425,8 @@ export default function RidesPage() {
                     <div className="mb-4 flex items-center justify-between">
                       <div className="flex items-center gap-4">
                         <Avatar
-                          src={ride.driver.avatar}
-                          alt={ride.driver.name}
+                          src={ride.userInfo.avatar}
+                          alt={ride.userInfo.name}
                           size={"large"}
                           style={
                             theme === "dark"
@@ -429,11 +434,13 @@ export default function RidesPage() {
                               : {}
                           }
                         >
-                          {ride.driver.name.charAt(0)}
+                          {ride.userInfo.name.charAt(0)}
                         </Avatar>
 
                         <div className="text-left">
-                          <div className="font-medium">{ride.driver.name}</div>
+                          <div className="font-medium">
+                            {ride.userInfo.name}
+                          </div>
                           <div
                             className={`flex items-center text-sm ${
                               theme === "dark"
@@ -442,7 +449,7 @@ export default function RidesPage() {
                             }`}
                           >
                             <Star className="mr-1 h-3 w-3 fill-yellow-500 text-yellow-500" />
-                            {ride.driver.rating} · {ride.driver.rides} rides
+                            {ride.userInfo.rating} · {ride.userInfo.rides} rides
                           </div>
                         </div>
                       </div>
@@ -463,7 +470,7 @@ export default function RidesPage() {
                       <div className="flex items-start gap-2">
                         <MapPin />
                         <div className="text-left">
-                          <div className="font-medium">{ride.from}</div>
+                          <div className="font-medium">{ride.fromLocation}</div>
                           <div
                             className={`text-sm ${
                               theme === "dark"
@@ -478,7 +485,9 @@ export default function RidesPage() {
                       <div className="flex items-start gap-2">
                         <MapPin />
                         <div>
-                          <div className="font-medium text-left">{ride.to}</div>
+                          <div className="font-medium text-left">
+                            {ride.toLocation}
+                          </div>
                           <div
                             className={`text-sm ${
                               theme === "dark"
@@ -510,7 +519,7 @@ export default function RidesPage() {
                       >
                         <div className="flex items-center gap-2">
                           <Car className="h-3 w-3" />
-                          {ride.vehicle.model}
+                          {ride.userInfo.vehicle}
                         </div>
                       </Tag>
                       <Tag
@@ -528,8 +537,8 @@ export default function RidesPage() {
                       >
                         <div className="flex items-center gap-2">
                           <Users className="h-3 w-3" />
-                          {ride.seats} {ride.seats === 1 ? "seat" : "seats"}{" "}
-                          left
+                          {ride.seatsAvailable}{" "}
+                          {ride.seatsAvailable === 1 ? "seat" : "seats"} left
                         </div>
                       </Tag>
                       <Tag
@@ -547,7 +556,7 @@ export default function RidesPage() {
                       >
                         <div className="flex items-center gap-2">
                           <Luggage className="h-3 w-3" />
-                          {ride.luggage} luggage
+                          {ride.luggageSize} luggage
                         </div>
                       </Tag>
                       <Tag
@@ -607,7 +616,7 @@ export default function RidesPage() {
               style={buttonStyle}
               variant="solid"
               color="blue"
-              onClick={() => setRides(mockRides)}
+              // onClick={() => setRides(mockRides)}
             >
               Reset Search
             </Button>

@@ -1,6 +1,6 @@
 "use client";
 import { useMutation } from "@tanstack/react-query";
-import { Input as AntInput, Button, Form } from "antd";
+import { Button, Form } from "antd";
 import axios from "axios";
 import { motion } from "framer-motion";
 import {
@@ -354,6 +354,7 @@ export default function SignIn({ initialMode = "signin" }: SignInProps) {
                           theme === "dark" ? "rgba(35, 23, 60, 0.6)" : "white",
                         color: theme === "dark" ? "white" : "black",
                       }}
+                      onChange={(e, ev) => console.log(e, ev)}
                     />
                   </Form.Item>
                 </motion.div>

@@ -245,7 +245,7 @@
 /* Popover and dropdown dark mode styling */
 .dark .ant-dropdown-menu,
 .dark .ant-popover-inner {
-  background-color: #1e1e2f !important;
+  background-color: white !important;
   border-color: #363654 !important;
 }
 

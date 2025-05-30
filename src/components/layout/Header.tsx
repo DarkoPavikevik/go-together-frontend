@@ -15,19 +15,13 @@ import {
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { UserOutlined } from "@ant-design/icons";
-import { Avatar, Drawer } from "antd";
+import { Avatar, Button as ButtonTheme, Drawer, Dropdown, Menu } from "antd";
 import { useState } from "react";
 import ReactFlagsSelect from "react-flags-select";
 import { useTranslation } from "react-i18next";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { useUser } from "../../context/AuthContext";
 import { Button } from "../ui/Button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/DropdownMenu";
 import Image from "../ui/Image";
 import { useTheme } from "../ui/ThemeProvider";
 
@@ -50,11 +44,31 @@ export default function Header() {
       i18n.changeLanguage(langCode);
     }
   };
-  // const toggleTheme = () => {
-  //   const nextTheme = theme === "dark" ? "light" : "dark";
-  //   console.log(nextTheme);
-  //   setTheme(nextTheme);
-  // };
+
+  const menu = (
+    <Menu
+      className={
+        theme === "dark" ? "dark-dropdown-menu" : "light-dropdown-menu"
+      }
+    >
+      <Menu.Item key="profile" icon={<UserOutlined className="w-4 h-4" />}>
+        <Link to="/profile">{t("nav.profile")}</Link>
+      </Menu.Item>
+      <Menu.Item
+        key="logout"
+        icon={<LogOut className="w-4 h-4" />}
+        onClick={() => {
+          logout();
+          if (location.pathname !== "/home") {
+            navigate("/home");
+          }
+        }}
+      >
+        {t("nav.signOut")}
+      </Menu.Item>
+    </Menu>
+  );
+
   console.log(me);
   return (
     <header className="sticky top-0 z-50 w-full shadow-xl bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -292,73 +306,39 @@ export default function Header() {
             className="!w-14 !p-0 hover:border-1 border-[#646cff] rounded-lg"
             selectButtonClassName="!pr-0 after:hidden !border-none"
           />
-          <Button
-            variant="ghost"
+          <ButtonTheme
+            size="large"
+            variant="text"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            aria-label={`Switch to ${
-              theme === "dark" ? "light" : "dark"
-            } theme`}
-            className={`relative overflow-hidden transition-all duration-300 ${
-              theme === "dark"
-                ? "bg-gradient-to-r from-purple-900 to-indigo-900 text-white hover:from-purple-800 hover:to-indigo-800"
-                : "bg-gradient-to-r from-blue-100 to-indigo-100 text-indigo-800 hover:from-blue-200 hover:to-indigo-200"
-            } rounded-full p-2 h-10 w-10`}
+            className={`relative overflow-hidden transition-all duration-300 rounded-full p-2 h-10 w-10 !bg-transparent !border-none !text-white`}
           >
             {theme === "dark" ? (
               <Sun className="h-5 w-5 absolute transform transition-transform duration-500 rotate-0" />
             ) : (
-              <Moon className="h-5 w-5 absolute transform transition-transform duration-500 rotate-0" />
+              <Moon className="h-5 w-5 absolute transform transition-transform duration-500 rotate-0 text-black" />
             )}
-          </Button>
+          </ButtonTheme>
           {isAuthenticated ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Avatar
-                  style={{
-                    backgroundColor: "lightgray",
-                    verticalAlign: "middle",
-                    cursor: "pointer",
-                    marginLeft: 15,
-                  }}
-                  size="large"
-                  icon={<UserOutlined />}
-                  src={me?.profilePicture}
-                ></Avatar>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="end"
-                className={`${
-                  theme === "dark"
-                    ? "bg-[#1e1e2f] border-[#363654]"
-                    : "bg-gray-100 border-gray-200"
-                }`}
-              >
-                <DropdownMenuItem
-                  onClick={() => {
-                    navigate("/profile");
-                  }}
-                >
-                  <Link to="/profile" className="flex items-center gap-2">
-                    <User className="h-4 w-4" />
-                    {t("nav.profile")}
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    logout();
-                    if (location.pathname !== "/home") {
-                      navigate("/home");
-                    }
-                  }}
-                  className="flex items-center gap-2"
-                >
-                  <Link to="/home" className="flex items-center gap-2">
-                    <LogOut className="h-4 w-4" />
-                    {t("nav.signOut")}
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Dropdown
+              overlay={menu}
+              placement="bottomRight"
+              trigger={["click"]}
+              overlayClassName={
+                theme === "dark" ? "dark-dropdown" : "light-dropdown"
+              }
+              className="text-white"
+            >
+              <Avatar
+                style={{
+                  backgroundColor: "lightgray",
+                  cursor: "pointer",
+                  marginLeft: 15,
+                }}
+                size="large"
+                icon={<UserOutlined />}
+                src={me?.profilePicture}
+              />
+            </Dropdown>
           ) : (
             <div className="flex items-center gap-2">
               <Button

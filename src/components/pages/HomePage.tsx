@@ -3,17 +3,18 @@
 import {
   Button as AntdButton,
   Avatar,
+  Button,
   DatePicker,
   type DatePickerProps,
 } from "antd";
 import { Car, CreditCard, MapPin, Search, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 import { useUser } from "../../context/AuthContext";
-import { Button } from "../ui/Button";
+// import { Button } from "../ui/Button";
 import {
   Card,
   CardContent,
@@ -113,15 +114,21 @@ export default function Home() {
             {t("home.subtitle")}
           </p>
           <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-            <Button size="lg" asChild>
-              <Link to="/rides">
-                <Search className="mr-2 h-4 w-4" />
+            <Button
+              size="large"
+              onClick={() => {
+                navigate("/rides");
+              }}
+            >
+              <Search className="mr-2 h-4 w-4 text-[#646cff]" />
+              <div className="text-[#646cff] font-bold">
                 {t("home.findRide")}
-              </Link>
+              </div>
             </Button>
             <Button
-              size="lg"
-              variant="outline"
+              size="large"
+              className="text-amber-300"
+              // variant="outlined"
               style={buttonStyle}
               onClick={() => {
                 if (!isAuthenticated) {
@@ -131,10 +138,10 @@ export default function Home() {
                 }
               }}
             >
-              <>
+              <div className="flex items-center">
                 <Car className="mr-2 h-4 w-4" />
                 {t("home.offerRide")}
-              </>
+              </div>
             </Button>
           </div>
         </div>
@@ -406,20 +413,24 @@ export default function Home() {
               </p>
               <div className="flex flex-col gap-4 sm:flex-row justify-center">
                 <Button
-                  size="lg"
-                  variant="outline"
+                  size="large"
+                  variant="outlined"
                   className="bg-transparent text-primary-foreground border-primary-foreground hover:bg-primary-foreground/10"
-                  asChild
+                  onClick={() => {
+                    navigate("/sign-up");
+                  }}
                 >
-                  <Link to="/sign-up">{t("nav.signUp")}</Link>
+                  {t("nav.signUp")}
                 </Button>
                 <Button
-                  size="lg"
-                  variant="outline"
+                  size="large"
+                  variant="outlined"
                   className="bg-transparent text-primary-foreground border-primary-foreground hover:bg-primary-foreground/10"
-                  asChild
+                  onClick={() => {
+                    navigate("/rides");
+                  }}
                 >
-                  <Link to="/rides">{t("home.findRide")}</Link>
+                  {t("home.findRide")}
                 </Button>
               </div>
             </div>

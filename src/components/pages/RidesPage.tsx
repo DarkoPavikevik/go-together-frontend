@@ -1,7 +1,20 @@
 "use client";
 
-import { TabsContent, TabsList, Tabs, TabsTrigger } from "@radix-ui/react-tabs";
-import { Avatar, Input, Button, DatePicker, Tag } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import { Label } from "@radix-ui/react-label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
+import { useQuery } from "@tanstack/react-query";
+import {
+  Avatar,
+  Button,
+  DatePicker,
+  Pagination,
+  Select,
+  Spin,
+  Tag,
+} from "antd";
+import { format } from "date-fns";
+import dayjs from "dayjs";
 import {
   Car,
   Clock,
@@ -12,117 +25,52 @@ import {
   Star,
   Users,
 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../../context/AuthContext";
 import {
+  getCitiesByCountry,
+  getRides,
+  popularRides,
+  searchRide,
+} from "../../services/rides/ridesServices";
+import {
+  Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-  Card,
 } from "../ui/Card";
-import { Label } from "@radix-ui/react-label";
-import { format } from "date-fns";
 import { useTheme } from "../ui/ThemeProvider";
-import { useQuery } from "@tanstack/react-query";
-import { getRides } from "../../services/rides/ridesServices";
+import PriceFilterDropdown from "../ui/PriceFilterButton";
+import { getPaginationConfig } from "../../utils/paginationConfig";
+import { nanoid } from "nanoid";
 
-// Mock data for rides
-const mockRides = [
-  {
-    id: 1,
-    from: "Skopje",
-    to: "Ohrid",
-    date: new Date(2023, 6, 15),
-    time: "08:00",
-    price: 500,
-    currency: "MKD",
-    seats: 3,
-    driver: {
-      id: 1,
-      name: "Aleksandar M.",
-      rating: 4.8,
-      rides: 42,
-      avatar: null,
-    },
-    vehicle: {
-      model: "Volkswagen Golf",
-      color: "Blue",
-      year: 2018,
-    },
-    luggage: "Medium",
-  },
-  {
-    id: 2,
-    from: "Bitola",
-    to: "Skopje",
-    date: new Date(2023, 6, 16),
-    time: "10:30",
-    price: 450,
-    currency: "MKD",
-    seats: 2,
-    driver: {
-      id: 2,
-      name: "Elena S.",
-      rating: 4.9,
-      rides: 78,
-      avatar: null,
-    },
-    vehicle: {
-      model: "Toyota Corolla",
-      color: "Silver",
-      year: 2020,
-    },
-    luggage: "Large",
-  },
-  {
-    id: 3,
-    from: "Skopje",
-    to: "Tetovo",
-    date: new Date(2023, 6, 17),
-    time: "16:45",
-    price: 250,
-    currency: "MKD",
-    seats: 4,
-    driver: {
-      id: 3,
-      name: "Marko D.",
-      rating: 4.7,
-      rides: 35,
-      avatar: null,
-    },
-    vehicle: {
-      model: "Renault Clio",
-      color: "Red",
-      year: 2019,
-    },
-    luggage: "Small",
-  },
-  {
-    id: 4,
-    from: "Ohrid",
-    to: "Skopje",
-    date: new Date(2023, 6, 18),
-    time: "12:15",
-    price: 500,
-    currency: "MKD",
-    seats: 1,
-    driver: {
-      id: 4,
-      name: "Ana P.",
-      rating: 5.0,
-      rides: 56,
-      avatar: null,
-    },
-    vehicle: {
-      model: "Hyundai i30",
-      color: "White",
-      year: 2021,
-    },
-    luggage: "Medium",
-  },
-];
+export interface IRide {
+  id: number;
+  userInfo: {
+    id: number;
+    name: string;
+    avatar: string;
+    vehicle: string;
+    rating: string | null;
+    numberOfRides: number;
+  };
+  fromLocation: string;
+  toLocation: string;
+  date: string;
+  time: string;
+  price: number;
+  seatsAvailable: number;
+  status: "OPEN" | "CLOSED" | "CANCELLED";
+  luggageSize: "SMALL" | "MEDIUM" | "LARGE";
+  currency: string;
+  waypoints: string[];
+  notes: string;
+  estimate: { estimatedArrivalTimes: string[] };
+}
+
 const mockRoutes = [
   {
     id: 1,
@@ -165,42 +113,125 @@ export default function RidesPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { theme } = useTheme();
-  // const [rides, setRides] = useState(mockRides);
+  const { isAuthenticated } = useUser();
+  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [priceFilters, setPriceFilters] = useState<{
+    sortOrder?: "asc" | "desc";
+    priceRange?: string;
+  }>({});
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 5,
+    total: 0,
+  });
   const [searchParams, setSearchParams] = useState({
-    from: "",
-    to: "",
-    date: null as Date | null,
+    from: undefined,
+    to: undefined,
+    date: "",
   });
-  const { data: rides, isLoading } = useQuery({
-    queryKey: ["get-rides"],
-    queryFn: () => getRides(0, 10),
+  const { data: rides, isLoading: ridesLoading } = useQuery({
+    queryKey: ["get-rides", pagination.current, pagination.pageSize],
+    queryFn: () => getRides(pagination.current - 1, pagination.pageSize),
   });
-  const handleSearch = (e: React.FormEvent) => {
+
+  const { data: cities, isLoading: loadingCities } = useQuery({
+    queryKey: ["get-cities"],
+    queryFn: () => getCitiesByCountry("macedonia"),
+  });
+
+  const { data: popularRidesData, isLoading: loadingPopularRides } = useQuery({
+    queryKey: ["get-popular-rides"],
+    queryFn: () => popularRides(),
+  });
+
+  const {
+    data: searchedRides,
+    isLoading: searchedRidesLoading,
+    refetch: refetchSearchedRides,
+  } = useQuery({
+    queryKey: ["get-searched-rides", pagination.current, pagination.pageSize],
+    queryFn: () => {
+      if (searchParams.from || searchParams.to || searchParams.date) {
+        return searchRide(
+          searchParams.from,
+          searchParams.to,
+          searchParams.date
+        );
+      }
+    },
+  });
+  const handlePageChange = (page: number, pageSize?: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      current: page,
+      pageSize: pageSize || prev.pageSize,
+    }));
+  };
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, you would fetch from your API here
-    // For now, we'll just filter the mock data
-    const filtered = mockRides.filter((ride) => {
-      const matchFrom =
-        !searchParams.from ||
-        ride.from.toLowerCase().includes(searchParams.from.toLowerCase());
-      const matchTo =
-        !searchParams.to ||
-        ride.to.toLowerCase().includes(searchParams.to.toLowerCase());
-      const matchDate =
-        !searchParams.date ||
-        ride.date.toDateString() === searchParams.date.toDateString();
-
-      return matchFrom && matchTo && matchDate;
-    });
-
-    // setRides(filtered);
+    if (searchParams.from || searchParams.to || searchParams.date) {
+      setIsSearchActive(true);
+      try {
+        await refetchSearchedRides();
+      } catch (error) {
+        console.error("Error searching rides:", error);
+      }
+    } else {
+      setIsSearchActive(false);
+    }
   };
 
+  const handleResetSearch = () => {
+    setSearchParams({ from: undefined, to: undefined, date: "" });
+    setIsSearchActive(false);
+  };
+  const paginationConfig = getPaginationConfig({
+    currentPage: pagination.current,
+    pageSize: pagination.pageSize,
+    total: pagination.total,
+    handlePageChange,
+    t,
+  });
   const buttonStyle =
     theme === "dark"
       ? { backgroundColor: "#6e3fac", borderColor: "#6e3fac", color: "white" }
       : { color: "white", backgroundColor: "#646cff" };
 
+  const cityOptions = cities?.map((city: { label: string; value: string }) => ({
+    label: city,
+    value: city,
+  }));
+
+  const displayedRides = (
+    isSearchActive ? searchedRides?.content || [] : rides?.content || []
+  )
+    .filter((ride: IRide) => {
+      if (!priceFilters.priceRange) return true;
+
+      const [min, max] = priceFilters.priceRange.split(/-|\+/);
+      if (priceFilters.priceRange.endsWith("+")) {
+        return ride.price >= Number(min);
+      }
+      return ride.price >= Number(min) && ride.price <= Number(max);
+    })
+    .sort((a: IRide, b: IRide) => {
+      if (priceFilters.sortOrder === "asc") {
+        return a.price - b.price;
+      } else if (priceFilters.sortOrder === "desc") {
+        return b.price - a.price;
+      }
+      return 0;
+    });
+  useEffect(() => {
+    if (rides) {
+      setPagination((prev) => ({
+        ...prev,
+        total: rides.totalElements || 0,
+      }));
+    }
+  }, [rides]);
+
+  console.log(rides);
   return (
     <div className="container py-8">
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -226,7 +257,7 @@ export default function RidesPage() {
       </div>
 
       <Tabs defaultValue="search" className="mb-8 text-left">
-        <TabsList className="flex gap-4">
+        <TabsList className="flex gap-4 mb-5">
           <TabsTrigger style={buttonStyle} value="search">
             {t("rides.search.nav")}
           </TabsTrigger>
@@ -251,38 +282,87 @@ export default function RidesPage() {
             <CardContent>
               <form
                 onSubmit={handleSearch}
-                className="grid gap-6 sm:grid-cols-2 md:grid-cols-4"
+                className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 items-end"
               >
                 <div className="grid gap-2">
                   <Label htmlFor="from">{t("rides.from")}</Label>
                   <div className="relative">
                     <MapPin className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="from"
-                      placeholder="City or location"
-                      className="pl-8"
+                    <Select
                       value={searchParams.from}
-                      onChange={(e) =>
+                      options={loadingCities ? [] : cityOptions}
+                      placeholder="Select a city"
+                      style={{
+                        width: "100%",
+                        ...(theme === "dark"
+                          ? {
+                              backgroundColor: "#1e1e2f",
+                              borderColor: "#363654",
+                              color: "white",
+                            }
+                          : {}),
+                      }}
+                      showSearch
+                      dropdownStyle={
+                        theme === "dark"
+                          ? {
+                              backgroundColor: "#252538",
+                              borderColor: "#363654",
+                              color: "white",
+                            }
+                          : {}
+                      }
+                      onChange={(e) => {
                         setSearchParams({
                           ...searchParams,
-                          from: e.target.value,
-                        })
-                      }
+                          from: e,
+                        });
+                      }}
                     />
                   </div>
                 </div>
+
                 <div className="grid gap-2">
                   <Label htmlFor="to">{t("rides.to")}</Label>
                   <div className="relative">
                     <MapPin className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="to"
-                      placeholder="City or location"
-                      className="pl-8"
+                    <Select
                       value={searchParams.to}
-                      onChange={(e) =>
-                        setSearchParams({ ...searchParams, to: e.target.value })
+                      options={
+                        loadingCities
+                          ? []
+                          : cityOptions.filter(
+                              (to: { value: string }) =>
+                                to.value !== searchParams.from
+                            )
                       }
+                      placeholder="Select a city"
+                      style={{
+                        width: "100%",
+                        ...(theme === "dark"
+                          ? {
+                              backgroundColor: "#1e1e2f",
+                              borderColor: "#363654",
+                              color: "white",
+                            }
+                          : {}),
+                      }}
+                      showSearch
+                      dropdownStyle={
+                        theme === "dark"
+                          ? {
+                              backgroundColor: "#252538",
+                              borderColor: "#363654",
+                              color: "white",
+                            }
+                          : {}
+                      }
+                      onChange={(e) => {
+                        setSearchParams({
+                          ...searchParams,
+                          to: e,
+                        });
+                      }}
                     />
                   </div>
                 </div>
@@ -298,24 +378,40 @@ export default function RidesPage() {
                           }
                         : {}
                     }
-                    value={searchParams.date ?? undefined}
-                    onChange={(date) =>
-                      setSearchParams({ ...searchParams, date: date || null })
+                    value={
+                      searchParams.date ? dayjs(searchParams.date) : undefined
                     }
+                    onChange={(date) => {
+                      setSearchParams({
+                        ...searchParams,
+                        date: date ? dayjs(date).format("YYYY-MM-DD") : "",
+                      });
+                    }}
                   />
                 </div>
                 <div className="grid gap-2 sm:col-span-2 md:col-span-1">
-                  <Label>&nbsp;</Label>
-                  <Button
-                    style={buttonStyle}
-                    htmlType="submit"
-                    className="w-full"
-                    variant="solid"
-                    color="blue"
-                  >
-                    <Search className="mr-2 h-4 w-4" />
-                    {t("rides.search")}
-                  </Button>
+                  <div className="flex gap-2">
+                    <Label>&nbsp;</Label>
+                    <Button
+                      style={buttonStyle}
+                      htmlType="submit"
+                      className="w-full"
+                      variant="solid"
+                      color="blue"
+                    >
+                      <Search className="mr-2 h-4 w-4" />
+                      {t("rides.search")}
+                    </Button>
+                    {isSearchActive && (
+                      <Button
+                        onClick={handleResetSearch}
+                        className="w-full"
+                        variant="outlined"
+                      >
+                        Reset search
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </form>
             </CardContent>
@@ -329,63 +425,77 @@ export default function RidesPage() {
           >
             <CardContent className="pt-6 ">
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {mockRoutes.map((route) => {
-                  return (
-                    <Button
-                      key={route.id}
-                      style={{
-                        height: "80px",
-                        ...(theme === "dark"
-                          ? {
-                              backgroundColor: "#252538",
-                              borderColor: "#363654",
-                              color: "white",
-                            }
-                          : {}),
-                      }}
-                      variant="solid"
-                      className={
-                        theme === "dark"
-                          ? "hover:bg-[#323248] hover:border-[#464668]"
-                          : ""
-                      }
-                    >
-                      <div>
-                        <div className="flex flex-col items-start">
-                          <div className="flex items-center gap-2">
-                            <MapPin
-                              className={`h-4 w-4 ${
-                                theme === "dark"
-                                  ? "text-purple-300"
-                                  : "text-muted-foreground"
-                              }`}
-                            />
-                            <span>{route.from}</span>
-                            <span
-                              className={
-                                theme === "dark"
-                                  ? "text-purple-300"
-                                  : "text-muted-foreground"
-                              }
-                            >
-                              →
-                            </span>
-                            <span>{route.to}</span>
+                {loadingPopularRides ? (
+                  <Spin
+                    indicator={
+                      <LoadingOutlined style={{ fontSize: 48 }} spin />
+                    }
+                  />
+                ) : (
+                  popularRidesData.map(
+                    (route: {
+                      fromLocation: string;
+                      toLocation: string;
+                      rideCount: number;
+                    }) => {
+                      return (
+                        <Button
+                          key={nanoid()}
+                          style={{
+                            height: "80px",
+                            ...(theme === "dark"
+                              ? {
+                                  backgroundColor: "#252538",
+                                  borderColor: "#363654",
+                                  color: "white",
+                                }
+                              : {}),
+                          }}
+                          variant="solid"
+                          className={
+                            theme === "dark"
+                              ? "hover:bg-[#323248] hover:border-[#464668]"
+                              : ""
+                          }
+                        >
+                          <div>
+                            <div className="flex flex-col items-start">
+                              <div className="flex items-center gap-2">
+                                <MapPin
+                                  className={`h-4 w-4 ${
+                                    theme === "dark"
+                                      ? "text-purple-300"
+                                      : "text-muted-foreground"
+                                  }`}
+                                />
+                                <span>{route.fromLocation}</span>
+                                <span
+                                  className={
+                                    theme === "dark"
+                                      ? "text-purple-300"
+                                      : "text-muted-foreground"
+                                  }
+                                >
+                                  →
+                                </span>
+                                <span>{route.toLocation}</span>
+                              </div>
+                              <p
+                                className={`mt-1 text-xs ${
+                                  theme === "dark"
+                                    ? "text-gray-400"
+                                    : "text-muted-foreground"
+                                }`}
+                              >
+                                {route.rideCount + "+ rides available today"}
+                              </p>
+                            </div>
                           </div>
-                          <p
-                            className={`mt-1 text-xs ${
-                              theme === "dark"
-                                ? "text-gray-400"
-                                : "text-muted-foreground"
-                            }`}
-                          >
-                            {route.available_rides}
-                          </p>
-                        </div>
-                      </div>
-                    </Button>
-                  );
-                })}
+                        </Button>
+                      );
+                    }
+                  )
+                )}
               </div>
             </CardContent>
           </Card>
@@ -394,7 +504,10 @@ export default function RidesPage() {
 
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-xl font-bold">Available Rides</h2>
-        <Button
+        <PriceFilterDropdown
+          onFilterChange={(filters) => setPriceFilters(filters)}
+        />
+        {/* <Button
           style={
             theme === "dark"
               ? { backgroundColor: "#252538", borderColor: "#363654" }
@@ -403,12 +516,14 @@ export default function RidesPage() {
         >
           <Filter className="mr-2 h-4 w-4" />
           Filter
-        </Button>
+        </Button> */}
       </div>
 
       <div className="grid gap-4">
-        {!isLoading ? (
-          rides.content.map((ride) => (
+        {ridesLoading || searchedRidesLoading ? (
+          <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
+        ) : displayedRides.length > 0 ? (
+          displayedRides.map((ride: IRide) => (
             <Card
               key={ride.id}
               className={`overflow-hidden ${
@@ -449,7 +564,8 @@ export default function RidesPage() {
                             }`}
                           >
                             <Star className="mr-1 h-3 w-3 fill-yellow-500 text-yellow-500" />
-                            {ride.userInfo.rating} · {ride.userInfo.rides} rides
+                            {ride.userInfo.rating} ·{" "}
+                            {ride.userInfo.numberOfRides} rides
                           </div>
                         </div>
                       </div>
@@ -495,10 +611,13 @@ export default function RidesPage() {
                                 : "text-gray-400"
                             }`}
                           >
-                            Estimated arrival: {ride.time.split(":")[0]}:
-                            {(Number.parseInt(ride.time.split(":")[0]) + 2) %
-                              24}
-                            :{ride.time.split(":")[1]}
+                            Estimated arrival:{" "}
+                            {ride.estimate.estimatedArrivalTimes
+                              .find((timeStr) =>
+                                timeStr.includes(ride.toLocation)
+                              )
+                              ?.split(": ")
+                              .pop()}
                           </div>
                         </div>
                       </div>
@@ -574,7 +693,12 @@ export default function RidesPage() {
                       >
                         <div className="flex items-center gap-2">
                           <Clock className="h-3 w-3" />
-                          ~2 hours
+                          {ride.estimate.estimatedArrivalTimes
+                            .find((timeStr) =>
+                              timeStr.includes("Total trip duration")
+                            )
+                            ?.split(": ")
+                            .pop()}
                         </div>
                       </Tag>
                     </div>
@@ -590,7 +714,13 @@ export default function RidesPage() {
                       style={buttonStyle}
                       variant="solid"
                       color="blue"
-                      onClick={() => navigate(`/rides/${ride.id}`)}
+                      onClick={() => {
+                        if (!isAuthenticated) {
+                          navigate(`/sign-in`);
+                        } else {
+                          navigate(`/rides/${ride.id}`);
+                        }
+                      }}
                     >
                       {t("rides.join")}
                     </Button>
@@ -616,11 +746,23 @@ export default function RidesPage() {
               style={buttonStyle}
               variant="solid"
               color="blue"
-              // onClick={() => setRides(mockRides)}
+              onClick={() => {
+                setIsSearchActive(false);
+                setSearchParams({
+                  from: undefined,
+                  to: undefined,
+                  date: "",
+                });
+              }}
             >
-              Reset Search
+              {t("reset search")}
             </Button>
           </Card>
+        )}
+        {displayedRides.length > 0 && (
+          <div className="flex justify-center mt-6">
+            <Pagination {...paginationConfig} />
+          </div>
         )}
       </div>
     </div>

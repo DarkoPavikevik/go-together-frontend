@@ -1,5 +1,14 @@
+import { useMutation } from "@tanstack/react-query";
+import { Button, Form } from "antd";
+import { Car, Loader2 } from "lucide-react";
+import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import { Link, useNavigate } from "react-router-dom";
+import useAuthController from "../../services/auth/useAuthController";
+import type { IRegisterType } from "../../utils/types/RegisterType";
 import {
   Card,
   CardContent,
@@ -8,18 +17,8 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/Card";
-import { Car, Loader2 } from "lucide-react";
-import { Label } from "../ui/Label";
 import { Input } from "../ui/Input";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
-import { Button, Form } from "antd";
-import { Link, useNavigate } from "react-router-dom";
-import type { FieldType } from "../../utils/types/FieldTypes";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import useAuthController from "../../services/auth/useAuthController";
-import type { IRegisterType } from "../../utils/types/RegisterType";
-import { enqueueSnackbar } from "notistack";
+import { Label } from "../ui/Label";
 
 export default function SignUp() {
   const { t } = useTranslation();
@@ -103,6 +102,7 @@ export default function SignUp() {
                     borderRight: "none",
                     height: "40px",
                   }}
+                  onClick={(e) => console.log(e)}
                 />
               </Form.Item>
             </div>

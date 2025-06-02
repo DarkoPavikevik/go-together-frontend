@@ -9,6 +9,10 @@ export interface Me {
   rating?: number;
   created?: string;
   phoneNumber?: string;
+  smoking?: boolean;
+  pets?: boolean;
+  music?: boolean;
+  talking?: boolean;
 }
 export interface UserContextType {
   me: Me | null;

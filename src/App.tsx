@@ -15,6 +15,7 @@ import RidesUserPage from "./components/pages/RidesUserPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SnackbarProvider } from "notistack";
 import { UserProvider } from "./context/AuthContext";
+import EditVehicle from "./components/pages/EditVehiclePage";
 
 function App() {
   const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ function App() {
                   <Route path="/rides" element={<RidesPage />} />
                   <Route path="/rides/create" element={<CreateRidesPage />} />
                   <Route path="/rides/:id" element={<RidesUserPage />} />
+                  <Route path="/vehicle/:id" element={<EditVehicle />} />
                 </Route>
                 <Route path="sign-in" element={<SignInPage />} />
                 <Route

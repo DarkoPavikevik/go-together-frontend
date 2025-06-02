@@ -29,3 +29,8 @@ export const popularRides = async () => {
   const response = await axios.get(`http://localhost:8080/api/rides/popular`);
   return response ? response.data : response;
 };
+
+export const getRideById = async (id: number) => {
+  const response = await axios.get(`http://localhost:8080/api/rides/${id}`);
+  return response ? response.data : response;
+};

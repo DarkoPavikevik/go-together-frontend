@@ -164,6 +164,8 @@ export default function ProfilePage() {
   //         </p>
   //       </Dragger>
   //     </Form.Item>
+
+  console.log(me);
   return (
     <div className="container py-8">
       <div className="mb-8 text-left">
@@ -241,44 +243,36 @@ export default function ProfilePage() {
                   <span>Smoking</span>
                   <Tag
                     style={{ borderRadius: "999px" }}
-                    color={
-                      user.preferences.smoking ? "blue-inverse" : "red-inverse"
-                    }
+                    color={me?.smoking ? "blue-inverse" : "red-inverse"}
                   >
-                    {user.preferences.smoking ? "Allowed" : "Not allowed"}
+                    {me?.smoking ? "Allowed" : "Not allowed"}
                   </Tag>
                 </div>
                 <div className="flex items-center justify-between">
                   <span>Pets</span>
                   <Tag
                     style={{ borderRadius: "999px" }}
-                    color={
-                      user.preferences.pets ? "blue-inverse" : "red-inverse"
-                    }
+                    color={me?.pets ? "blue-inverse" : "red-inverse"}
                   >
-                    {user.preferences.pets ? "Allowed" : "Not allowed"}
+                    {me?.pets ? "Allowed" : "Not allowed"}
                   </Tag>
                 </div>
                 <div className="flex items-center justify-between">
                   <span>Music</span>
                   <Tag
                     style={{ borderRadius: "999px" }}
-                    color={
-                      user.preferences.music ? "blue-inverse" : "red-inverse"
-                    }
+                    color={me?.music ? "blue-inverse" : "red-inverse"}
                   >
-                    {user.preferences.music ? "Allowed" : "Not allowed"}
+                    {me?.music ? "Allowed" : "Not allowed"}
                   </Tag>
                 </div>
                 <div className="flex items-center justify-between">
                   <span>Talking</span>
                   <Tag
                     style={{ borderRadius: "999px" }}
-                    color={
-                      user.preferences.talking ? "blue-inverse" : "red-inverse"
-                    }
+                    color={me?.talking ? "blue-inverse" : "red-inverse"}
                   >
-                    {user.preferences.talking ? "Allowed" : "Not allowed"}
+                    {me?.talking ? "Allowed" : "Not allowed"}
                   </Tag>
                 </div>
               </div>
@@ -384,7 +378,7 @@ export default function ProfilePage() {
               <div className="flex items-center justify-between">
                 <CardTitle>{t("profile.vehicle")}</CardTitle>
                 <Button>
-                  <Link to="/profile/vehicle">
+                  <Link to="/vehicle">
                     {user.vehicle ? "Edit Vehicle" : t("profile.addVehicle")}
                   </Link>
                 </Button>

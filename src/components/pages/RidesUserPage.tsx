@@ -1,10 +1,20 @@
 "use client";
 
-import { Avatar, Badge, Button, Card, Divider, Image, Modal, Tag } from "antd";
+import {
+  Avatar,
+  Badge,
+  Button,
+  Card,
+  Divider,
+  Image,
+  Modal,
+  Skeleton,
+  Tag,
+} from "antd";
 import { format } from "date-fns";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   CardContent,
   CardDescription,
@@ -32,6 +42,8 @@ import {
   DialogTrigger,
 } from "@radix-ui/react-dialog";
 import { DialogFooter, DialogHeader } from "../ui/Dialog";
+import { useQuery } from "@tanstack/react-query";
+import { getRideById } from "../../services/rides/ridesServices";
 
 // Mock ride data
 const mockRide = {
@@ -97,11 +109,15 @@ export default function RideDetailPage() {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [ride, setRide] = useState(mockRide);
+  // const [ride, setRide] = useState(mockRide);
   const [showRequestSent, setShowRequestSent] = useState(false);
   const [openMessageDriver, setOpenMessageDriver] = useState(false);
   const navigate = useNavigate();
-
+  const { id } = useParams();
+  const { data: ride, isLoading: loadingRide } = useQuery({
+    queryKey: ["get-ride-by-id"],
+    queryFn: () => getRideById(Number(id)),
+  });
   const handleSendRequest = async () => {
     setIsLoading(true);
 
@@ -123,7 +139,33 @@ export default function RideDetailPage() {
       setIsLoading(false);
     }
   };
+  if (loadingRide) return <Skeleton />;
+  console.log(
+    ride.estimate.estimatedArrivalTimes.includes("Total trip duration")
+  );
+  const { estimatedArrivalTimes } = ride.estimate;
+  const toCity = ride.toLocation;
 
+  // Find the entry that starts with the toLocation city name (case-insensitive)
+  const toCityEntry = estimatedArrivalTimes.find((entry) =>
+    entry.toLowerCase().startsWith(toCity.toLowerCase())
+  );
+
+  let arrivalTime = null;
+
+  if (toCityEntry) {
+    // Extract time after last colon ":"
+    arrivalTime = toCityEntry.split(":").slice(1).join(":").trim();
+  }
+
+  const totalDurationEntry = ride.estimate.estimatedArrivalTimes.find((item) =>
+    item.toLowerCase().startsWith("total trip duration")
+  );
+
+  // Extract the time from that string or fallback to something
+  const totalDuration = totalDurationEntry
+    ? totalDurationEntry.split(":").slice(1).join(":").trim()
+    : "N/A";
   return (
     <div className="container py-8">
       <div className="mb-8 text-left">
@@ -132,7 +174,7 @@ export default function RideDetailPage() {
         </Button>
 
         <h2 className="text-4xl font-bold">
-          {ride.from} to {ride.to}
+          {ride.fromLocation} to {ride.toLocation}
         </h2>
         <p className="text-gray-400">
           {format(ride.date, "EEEE, MMMM d, yyyy")} · {ride.time}
@@ -147,27 +189,29 @@ export default function RideDetailPage() {
                 <div className="flex items-center gap-4">
                   <Avatar
                     size={"large"}
-                    src={ride.driver.avatar || "/placeholder.svg"}
-                    alt={ride.driver.name}
+                    src={ride.userInfo.profilePicture || "/placeholder.svg"}
+                    alt={ride.userInfo.name}
                   >
-                    {ride.driver.avatar === null && ride.driver.name.charAt(0)}
+                    {ride.userInfo.profilePicture === null &&
+                      ride.userInfo.name.charAt(0)}
                   </Avatar>
                   <div>
                     <h2 className="text-xl font-bold text-left">
-                      {ride.driver.name}
+                      {ride.userInfo.name}
                     </h2>
                     <div className="flex items-center text-sm">
                       <Star className="mr-1 h-4 w-4 fill-yellow-500 text-yellow-500 " />
                       <span className="font-medium text-gray-400">
-                        {ride.driver.rating}
+                        {ride.userInfo.rating}
                       </span>
                       <span className="mx-1 text-gray-400">·</span>
                       <span className="text-gray-400">
-                        {ride.driver.rides} rides
+                        {ride.userInfo.numberOfRides} rides
                       </span>
                     </div>
                     <p className="text-sm text-gray-400">
-                      Member since {format(ride.driver.joinedDate, "MMMM yyyy")}
+                      Member since{" "}
+                      {/* {format(ride?.driver?.joinedDate, "MMMM yyyy")} */}
                     </p>
                   </div>
                 </div>
@@ -180,8 +224,8 @@ export default function RideDetailPage() {
                     <Tag color="default" style={{ borderRadius: "999px" }}>
                       <div className="flex items-center gap-2">
                         <Users className="h-3 w-3" />
-                        {ride.seats} {ride.seats === 1 ? "seat" : "seats"}{" "}
-                        available
+                        {ride.seatsAvailable}{" "}
+                        {ride.seatsAvailable === 1 ? "seat" : "seats"} available
                       </div>
                     </Tag>
                   </div>
@@ -197,7 +241,9 @@ export default function RideDetailPage() {
                       </div>
                     </div>
                     <div>
-                      <div className="font-medium text-left">{ride.from}</div>
+                      <div className="font-medium text-left">
+                        {ride.fromLocation}
+                      </div>
                       <div className="text-sm text-gray-400">
                         {format(ride.date, "EEE, MMM d")} · {ride.time}
                       </div>
@@ -210,8 +256,7 @@ export default function RideDetailPage() {
                     <div>
                       <div className="font-medium text-left">{ride.to}</div>
                       <div className="text-sm text-gray-400">
-                        Estimated arrival:{" "}
-                        {ride.route[ride.route.length - 1].time}
+                        Estimated arrival: {arrivalTime}
                       </div>
                     </div>
                   </div>
@@ -224,7 +269,7 @@ export default function RideDetailPage() {
                   >
                     <div className="flex items-center gap-2">
                       <Car className="h-3 w-3" />
-                      {ride.vehicle.model}
+                      {ride.userInfo.vehicle}
                     </div>
                   </Tag>
                   <Tag
@@ -233,7 +278,7 @@ export default function RideDetailPage() {
                   >
                     <div className="flex items-center gap-2">
                       <Luggage className="h-3 w-3" />
-                      {ride.luggage} luggage
+                      {ride.luggageSize} luggage
                     </div>
                   </Tag>
                   <Tag
@@ -242,7 +287,7 @@ export default function RideDetailPage() {
                   >
                     <div className="flex items-center gap-2">
                       <Clock className="h-3 w-3" />
-                      ~2.5 hours
+                      {totalDuration}
                     </div>
                   </Tag>
                   <Tag
@@ -255,7 +300,7 @@ export default function RideDetailPage() {
                     </div>
                   </Tag>
                 </div>
-
+                {/*TO DOOOOOOOOOOO*/}
                 {ride.description && (
                   <div className="text-left">
                     <h3 className="mb-2 font-medium">About this ride</h3>
@@ -274,39 +319,60 @@ export default function RideDetailPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {ride.route.map((stop, index) => (
-                  <div key={index} className="flex items-start gap-3">
-                    <div className="flex h-full flex-col items-center">
-                      <div
-                        className={`flex h-8 w-8 items-center justify-center rounded-full ${
-                          stop.type === "departure"
-                            ? "bg-green-500 text-white"
-                            : stop.type === "arrival"
-                            ? "bg-[#646cff] text-white"
-                            : "bg-[#f1f5f9]"
-                        }`}
-                      >
-                        <MapPin className="h-4 w-4 " />
-                      </div>
-                      {index < ride.route.length - 1 && (
-                        <div className="h-8 w-0.5 bg-gray-200">
-                          <Divider type="vertical" />
+                {ride.estimate.estimatedArrivalTimes
+                  .filter(
+                    (stopString: string) =>
+                      !stopString
+                        .toLowerCase()
+                        .startsWith("total trip duration")
+                  )
+                  .map((stopString: string, index: number, arr: any) => {
+                    const city = stopString.split("(")[0].trim();
+
+                    const time = stopString
+                      .split(":")
+                      .slice(1)
+                      .join(":")
+                      .trim();
+
+                    let stopType = "stop";
+                    if (index === 0) stopType = "departure";
+                    else if (index === arr.length - 1) stopType = "arrival";
+
+                    return (
+                      <div key={index} className="flex items-start gap-3">
+                        <div className="flex h-full flex-col items-center">
+                          <div
+                            className={`flex h-8 w-8 items-center justify-center rounded-full ${
+                              stopType === "departure"
+                                ? "bg-green-500 text-white"
+                                : stopType === "arrival"
+                                ? "bg-[#646cff] text-white"
+                                : "bg-[#f1f5f9]"
+                            }`}
+                          >
+                            <MapPin className="h-4 w-4" />
+                          </div>
+                          {index < arr.length - 1 && (
+                            <div className="h-8 w-0.5 bg-gray-200">
+                              <Divider type="vertical" />
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                    <div>
-                      <div className="font-medium">{stop.name}</div>
-                      <div className="text-sm text-muted-foreground">
-                        {stop.time} ·{" "}
-                        {stop.type === "departure"
-                          ? "Departure"
-                          : stop.type === "arrival"
-                          ? "Arrival"
-                          : "Stop"}
+                        <div>
+                          <div className="font-medium text-left">{city}</div>
+                          <div className="text-sm text-muted-foreground">
+                            {time} ·{" "}
+                            {stopType === "departure"
+                              ? "Departure"
+                              : stopType === "arrival"
+                              ? "Arrival"
+                              : "Stop"}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                ))}
+                    );
+                  })}
               </div>
             </CardContent>
           </Card>

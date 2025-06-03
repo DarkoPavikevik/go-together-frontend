@@ -1,8 +1,9 @@
 "use client";
 
+import { Label } from "@radix-ui/react-label";
+import { useQuery } from "@tanstack/react-query";
 import {
   Avatar,
-  Badge,
   Button,
   Card,
   Divider,
@@ -12,15 +13,6 @@ import {
   Tag,
 } from "antd";
 import { format } from "date-fns";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import {
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/Card";
 import {
   Car,
   Clock,
@@ -28,96 +20,36 @@ import {
   Loader2,
   Luggage,
   MapPin,
-  MessageSquare,
   Star,
   Users,
 } from "lucide-react";
-import { Label } from "@radix-ui/react-label";
-import { Textarea } from "../ui/Textarea";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-  DialogTrigger,
-} from "@radix-ui/react-dialog";
-import { DialogFooter, DialogHeader } from "../ui/Dialog";
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { getRideById } from "../../services/rides/ridesServices";
-
-// Mock ride data
-const mockRide = {
-  id: 1,
-  from: "Skopje",
-  to: "Ohrid",
-  date: new Date(2023, 6, 15),
-  time: "08:00",
-  price: 500,
-  currency: "MKD",
-  seats: 3,
-  description:
-    "I'm driving to Ohrid for the weekend. Meeting point is at the City Mall parking lot. I'll be driving directly to Ohrid center. I can make small detours if needed.",
-  driver: {
-    id: 1,
-    name: "Aleksandar M.",
-    rating: 4.8,
-    rides: 42,
-    avatar: null,
-    joinedDate: new Date(2022, 1, 15),
-  },
-  vehicle: {
-    model: "Volkswagen Golf",
-    color: "Blue",
-    year: 2018,
-    plate: "SK-1234-AB",
-    image:
-      "https://www.mercedes-benz.co.uk/content/dam/hq/passengercars/cars/a-class/hatchback-w177-fl-pi/modeloverview/08-2022/images/mercedes-benz-a-class-w177-696x392-08-2022.jpg",
-  },
-  luggage: "Medium",
-  route: [
-    { name: "Skopje (City Mall)", time: "08:00", type: "departure" },
-    { name: "Tetovo", time: "08:45", type: "stop" },
-    { name: "Kičevo", time: "09:45", type: "stop" },
-    { name: "Ohrid (Center)", time: "10:30", type: "arrival" },
-  ],
-  reviews: [
-    {
-      id: 1,
-      user: {
-        name: "Elena T.",
-        avatar: null,
-      },
-      rating: 5,
-      date: new Date(2023, 5, 10),
-      comment:
-        "Great driver, very punctual and friendly. The car was clean and comfortable.",
-    },
-    {
-      id: 2,
-      user: {
-        name: "Marko D.",
-        avatar: null,
-      },
-      rating: 4,
-      date: new Date(2023, 4, 22),
-      comment: "Good experience overall. Would ride again.",
-    },
-  ],
-};
+import {
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/Card";
+import ReviewsList from "../ui/ReviewsList";
+import { Textarea } from "../ui/Textarea";
 
 export default function RideDetailPage() {
   const { t } = useTranslation();
-  const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  // const [ride, setRide] = useState(mockRide);
-  const [showRequestSent, setShowRequestSent] = useState(false);
-  const [openMessageDriver, setOpenMessageDriver] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [showRequestSent, setShowRequestSent] = useState(false);
+  const [openMessageDriver, setOpenMessageDriver] = useState(false);
+
   const { data: ride, isLoading: loadingRide } = useQuery({
     queryKey: ["get-ride-by-id"],
     queryFn: () => getRideById(Number(id)),
   });
+
   const handleSendRequest = async () => {
     setIsLoading(true);
 
@@ -139,30 +71,30 @@ export default function RideDetailPage() {
       setIsLoading(false);
     }
   };
-  if (loadingRide) return <Skeleton />;
-  console.log(
-    ride.estimate.estimatedArrivalTimes.includes("Total trip duration")
-  );
+  if (loadingRide)
+    return (
+      <div className="container py-10 h-screen">
+        <Skeleton />
+      </div>
+    );
+
   const { estimatedArrivalTimes } = ride.estimate;
   const toCity = ride.toLocation;
 
-  // Find the entry that starts with the toLocation city name (case-insensitive)
-  const toCityEntry = estimatedArrivalTimes.find((entry) =>
+  const toCityEntry = estimatedArrivalTimes.find((entry: string) =>
     entry.toLowerCase().startsWith(toCity.toLowerCase())
   );
 
   let arrivalTime = null;
 
   if (toCityEntry) {
-    // Extract time after last colon ":"
     arrivalTime = toCityEntry.split(":").slice(1).join(":").trim();
   }
 
-  const totalDurationEntry = ride.estimate.estimatedArrivalTimes.find((item) =>
-    item.toLowerCase().startsWith("total trip duration")
+  const totalDurationEntry = ride.estimate.estimatedArrivalTimes.find(
+    (item: string) => item.toLowerCase().startsWith("total trip duration")
   );
 
-  // Extract the time from that string or fallback to something
   const totalDuration = totalDurationEntry
     ? totalDurationEntry.split(":").slice(1).join(":").trim()
     : "N/A";
@@ -189,10 +121,10 @@ export default function RideDetailPage() {
                 <div className="flex items-center gap-4">
                   <Avatar
                     size={"large"}
-                    src={ride.userInfo.profilePicture || "/placeholder.svg"}
+                    src={ride.userInfo.avatar || "/placeholder.svg"}
                     alt={ride.userInfo.name}
                   >
-                    {ride.userInfo.profilePicture === null &&
+                    {ride.userInfo.avatar === null &&
                       ride.userInfo.name.charAt(0)}
                   </Avatar>
                   <div>
@@ -254,7 +186,9 @@ export default function RideDetailPage() {
                       <MapPin className=" h-4 w-4 text-white" />
                     </div>
                     <div>
-                      <div className="font-medium text-left">{ride.to}</div>
+                      <div className="font-medium text-left">
+                        {ride.toLocation}
+                      </div>
                       <div className="text-sm text-gray-400">
                         Estimated arrival: {arrivalTime}
                       </div>
@@ -384,7 +318,7 @@ export default function RideDetailPage() {
             <CardContent className="space-y-4">
               <div className="aspect-video overflow-hidden rounded-md">
                 <Image
-                  src={ride.vehicle.image || "/car-placeholder.png"}
+                  src={ride.vehicle.picture || "/car-placeholder.png"}
                   alt={ride.vehicle.model}
                   width={"100%"}
                   className="h-full w-full object-cover"
@@ -410,7 +344,7 @@ export default function RideDetailPage() {
                       <span className="text-muted-foreground">
                         License Plate:
                       </span>
-                      <span>{ride.vehicle.plate}</span>
+                      <span>{ride.vehicle.plateNumber}</span>
                     </li>
                   </ul>
                 </div>
@@ -418,19 +352,19 @@ export default function RideDetailPage() {
                   <h3 className="mb-2 font-bold text-left">Features</h3>
                   <ul className="space-y-1 text-sm">
                     <li className="flex items-center gap-2">
-                      <span>✓</span>
+                      <span>{ride.vehicle.airCondition ? "✓" : "X"}</span>
                       <span>Air conditioning</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <span>✓</span>
+                      <span>{ride.vehicle.usbCharging ? "✓" : "X"}</span>
                       <span>USB charging</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <span>✓</span>
+                      <span>{ride.vehicle.music ? "✓" : "X"}</span>
                       <span>Music</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <span>✓</span>
+                      <span>{ride.vehicle.comfortableSeats ? "✓" : "X"}</span>
                       <span>Comfortable seats</span>
                     </li>
                   </ul>
@@ -444,55 +378,7 @@ export default function RideDetailPage() {
               <CardTitle>Reviews</CardTitle>
             </CardHeader>
             <CardContent>
-              {ride.reviews.length > 0 ? (
-                <div className="space-y-6">
-                  {ride.reviews.map((review) => (
-                    <div key={review.id} className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <Avatar
-                          size={"large"}
-                          src={review.user.avatar || "/placeholder.svg"}
-                          alt={review.user.name}
-                        >
-                          {review.user.avatar === null &&
-                            review.user.name.charAt(0)}
-                        </Avatar>
-
-                        <div className="text-left">
-                          <div className="font-medium">{review.user.name}</div>
-
-                          <div className="flex items-center text-xs text-muted-foreground">
-                            <div className="flex text-yellow-500">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`h-3 w-3 ${
-                                    i < review.rating
-                                      ? "fill-yellow-500"
-                                      : "fill-muted stroke-muted dark:fill-gray-700 dark:stroke-gray-700"
-                                  }`}
-                                />
-                              ))}
-                            </div>
-
-                            <span className="ml-2 text-gray-400">
-                              {format(review.date, "MMM d, yyyy")}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <p className="text-sm text-gray-400 text-left">
-                        {review.comment}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-center text-muted-foreground">
-                  No reviews yet
-                </p>
-              )}
+              <ReviewsList reviews={ride.userInfo.reviews} />
             </CardContent>
           </Card>
         </div>
@@ -620,7 +506,7 @@ export default function RideDetailPage() {
                 onCancel={() => setOpenMessageDriver(false)}
                 title={
                   <div>
-                    <h2 className="text-xl">{`Message to ${ride.driver.name}`}</h2>
+                    <h2 className="text-xl">{`Message to ${ride.userInfo.name}`}</h2>
 
                     <p className="text-sm text-gray-400">
                       You can only message the driver after your request is

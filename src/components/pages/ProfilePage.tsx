@@ -15,16 +15,22 @@ import { format } from "date-fns";
 import { Label } from "../ui/Label";
 import { Input } from "../ui/Input";
 import { Textarea } from "../ui/Textarea";
-import { Avatar, Button, Form, Image, Tag } from "antd";
+import { Avatar, Button, Form, Image, Spin, Tag, Tooltip } from "antd";
 import { Link } from "react-router-dom";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { nanoid } from "nanoid";
 import Dragger from "antd/es/upload/Dragger";
-import { InboxOutlined } from "@ant-design/icons";
+import { InboxOutlined, LoadingOutlined } from "@ant-design/icons";
 import useAuthController from "../../services/auth/useAuthController";
 import { useUser } from "../../context/AuthContext";
 import { enqueueSnackbar } from "notistack";
 import type { RcFile } from "antd/es/upload";
+import { useMutation } from "@tanstack/react-query";
+import {
+  updatePreference,
+  updateProfile,
+} from "../../services/profile/profileServices";
+import ReviewsList from "../ui/ReviewsList";
 // Mock user data
 const mockUser = {
   id: 1,
@@ -75,7 +81,12 @@ const mockUser = {
     },
   ],
 };
-
+const preferences = [
+  { key: "smoking", label: "Smoking" },
+  { key: "pets", label: "Pets" },
+  { key: "music", label: "Music" },
+  { key: "talking", label: "Talking" },
+] as const;
 export default function ProfilePage() {
   const { t } = useTranslation();
   const { addProfilePicture } = useAuthController();
@@ -83,6 +94,7 @@ export default function ProfilePage() {
   const [user, setUser] = useState(mockUser);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<RcFile | null>(null);
   const [formData, setFormData] = useState({
     name: user.name,
     email: user.email,
@@ -91,55 +103,55 @@ export default function ProfilePage() {
   });
   // const userSupabase = useUser();
   const supabase = useSupabaseClient();
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
 
-  const handleSave = async () => {
-    setIsLoading(true);
-
-    try {
-      // Here you would connect to your Spring Boot backend
-      // const response = await fetch('/api/profile', {
-      //   method: 'PUT',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(formData),
-      // })
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Update local state
-      setUser((prev) => ({ ...prev, ...formData }));
-      setIsEditing(false);
-    } catch (error) {
-      console.error("Failed to update profile:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const uploadImage = async (e: RcFile) => {
-    let file = e;
-    const { data, error } = await supabase.storage
-      .from("storage")
-      .upload(user.id + "/" + nanoid(), file, {
-        cacheControl: "3600",
-        upsert: false,
-      });
-    await addProfilePicture(me?.id as number, {
-      profilePicture: `https://qloapwicswrnfibjjqsp.supabase.co/storage/v1/object/public/${data?.fullPath}`,
+  const { mutate: updatePreferenceMutation, isPending } = useMutation({
+    mutationKey: ["update-preference"],
+    mutationFn: (
+      body: Partial<Record<"smoking" | "pets" | "music" | "talking", boolean>>
+    ) => updatePreference(me?.id as number, body),
+    onSuccess: () => {
+      refetch();
+    },
+  });
+  const { mutate: updateProfileMutation, isPending: profilePending } =
+    useMutation({
+      mutationKey: ["update-profile"],
+      mutationFn: (id, body) => updateProfile(id, body),
+      onSuccess: () => {
+        refetch();
+      },
     });
-    if (data) {
-      enqueueSnackbar("Success with adding image", { variant: "success" });
+
+  const handleSubmit = async (data) => {
+    try {
+      let profilePictureUrl = me?.profilePicture;
+      if (selectedImage) {
+        const { data, error } = await supabase.storage
+          .from("storage")
+          .upload(user.id + "/" + nanoid(), selectedImage, {
+            cacheControl: "3600",
+            upsert: false,
+          });
+
+        if (error) {
+          enqueueSnackbar("Error uploading image", { variant: "error" });
+          console.log(error);
+          return;
+        }
+
+        profilePictureUrl = `https://qloapwicswrnfibjjqsp.supabase.co/storage/v1/object/public/${data.fullPath}`;
+      }
+      const body = {
+        ...data,
+        profilePicture: profilePictureUrl,
+      };
+      await updateProfileMutation(me?.id as number, body);
+      enqueueSnackbar("Profile updated successfully", { variant: "success" });
       refetch();
       setIsEditing(false);
-    } else {
-      enqueueSnackbar("Error with adding image", { variant: "error" });
-      console.log(error);
+    } catch (error) {
+      enqueueSnackbar("Error saving changes", { variant: "error" });
+      console.error(error);
     }
   };
 
@@ -148,24 +160,11 @@ export default function ProfilePage() {
     accept: "image/png,image/jpeg,image/jpg",
     maxCount: 1,
     beforeUpload: (file: RcFile) => {
-      uploadImage(file);
+      setSelectedImage(file);
       return false;
     },
   };
 
-  //  <Form.Item style={{ maxWidth: 500 }}>
-  //       <Dragger {...props}>
-  //         <p className="ant-upload-drag-icon">
-  //           <InboxOutlined />
-  //         </p>
-  //         <p className="ant-upload-text">Click or drag image to upload</p>
-  //         <p className="ant-upload-hint">
-  //           Only PNG and JPEG files are allowed.
-  //         </p>
-  //       </Dragger>
-  //     </Form.Item>
-
-  console.log(me);
   return (
     <div className="container py-8">
       <div className="mb-8 text-left">
@@ -192,7 +191,7 @@ export default function ProfilePage() {
                   <span className="font-medium">{me?.rating}</span>
                   <span className="mx-1 text-muted-foreground">·</span>
                   <span className="text-gray-400">
-                    {user.ridesCompleted} {t("profile.rides")}
+                    {me?.numberOfRides} {t("profile.rides")}
                   </span>
                 </div>
                 {me?.created && (
@@ -239,41 +238,56 @@ export default function ProfilePage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span>Smoking</span>
-                  <Tag
-                    style={{ borderRadius: "999px" }}
-                    color={me?.smoking ? "blue-inverse" : "red-inverse"}
-                  >
-                    {me?.smoking ? "Allowed" : "Not allowed"}
-                  </Tag>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Pets</span>
-                  <Tag
-                    style={{ borderRadius: "999px" }}
-                    color={me?.pets ? "blue-inverse" : "red-inverse"}
-                  >
-                    {me?.pets ? "Allowed" : "Not allowed"}
-                  </Tag>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Music</span>
-                  <Tag
-                    style={{ borderRadius: "999px" }}
-                    color={me?.music ? "blue-inverse" : "red-inverse"}
-                  >
-                    {me?.music ? "Allowed" : "Not allowed"}
-                  </Tag>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Talking</span>
-                  <Tag
-                    style={{ borderRadius: "999px" }}
-                    color={me?.talking ? "blue-inverse" : "red-inverse"}
-                  >
-                    {me?.talking ? "Allowed" : "Not allowed"}
-                  </Tag>
+                <div className="space-y-2">
+                  {preferences.map(({ key, label }) => {
+                    const currentValue = me?.[key];
+                    const isAllowed = currentValue === true;
+
+                    return (
+                      <div
+                        key={key}
+                        className="flex items-center justify-between"
+                      >
+                        <span>{label}</span>
+                        <Tag
+                          style={{ borderRadius: "999px", cursor: "pointer" }}
+                          color={isAllowed ? "blue-inverse" : "red-inverse"}
+                          onClick={() => {
+                            if (!me?.id) return;
+
+                            updatePreferenceMutation({
+                              ...["smoking", "pets", "music", "talking"].reduce(
+                                (acc, pref) => {
+                                  acc[pref] = me?.[pref as keyof typeof me];
+                                  return acc;
+                                },
+                                {} as any
+                              ),
+                              [key]: !isAllowed,
+                            });
+                          }}
+                        >
+                          <Tooltip title="Click to update">
+                            {isPending ? (
+                              <Spin
+                                indicator={
+                                  <LoadingOutlined
+                                    spin
+                                    style={{ color: "white" }}
+                                  />
+                                }
+                                size="small"
+                              />
+                            ) : isAllowed ? (
+                              "Allowed"
+                            ) : (
+                              "Not allowed"
+                            )}
+                          </Tooltip>
+                        </Tag>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </CardContent>
@@ -282,84 +296,81 @@ export default function ProfilePage() {
 
         <div className="lg:col-span-2 space-y-6">
           {isEditing ? (
-            <Card className="border-gray-200">
-              <CardHeader>
-                <CardTitle>Edit Profile</CardTitle>
-                <CardDescription>
-                  Update your personal information
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Full Name</Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone</Label>
-                  <Input
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="bio">Bio</Label>
-                  <Textarea
-                    id="bio"
-                    name="bio"
-                    value={formData.bio}
-                    onChange={handleChange}
-                    rows={4}
-                  />
-                </div>
-                <div className="w-full space-y-2">
-                  <Label htmlFor="avatar">Profile Picture</Label>
-                  <div className="flex items-center justify-center gap-4">
-                    <Form.Item style={{ maxWidth: 500 }}>
-                      <Dragger {...props}>
-                        <p className="ant-upload-drag-icon">
-                          <InboxOutlined />
-                        </p>
-                        <p className="ant-upload-text">
-                          Click or drag image to upload
-                        </p>
-                        <p className="ant-upload-hint">
-                          Only PNG and JPEG files are allowed.
-                        </p>
-                      </Dragger>
+            <Form
+              onFinish={handleSubmit}
+              initialValues={{
+                name: me?.username,
+                email: me?.email,
+                phone: me?.phoneNumber,
+                bio: me?.bio,
+              }}
+            >
+              <Card className="border-gray-200">
+                <CardHeader>
+                  <CardTitle>Edit Profile</CardTitle>
+                  <CardDescription>
+                    Update your personal information
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Full Name</Label>
+                    <Form.Item name="name">
+                      <Input />
                     </Form.Item>
                   </div>
-                  {/* <div className="flex items-center gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+
+                    <Form.Item name="email">
+                      <Input />
+                    </Form.Item>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Phone</Label>
+                    <Form.Item name="phone">
+                      <Input />
+                    </Form.Item>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="bio">Bio</Label>
+                    <Form.Item name="bio">
+                      <Textarea rows={4} />
+                    </Form.Item>
+                  </div>
+                  <div className="w-full space-y-2">
+                    <Label htmlFor="avatar">Profile Picture</Label>
+                    <div className="flex items-center justify-center gap-4">
+                      <Form.Item style={{ maxWidth: 500 }}>
+                        <Dragger {...props}>
+                          <p className="ant-upload-drag-icon">
+                            <InboxOutlined />
+                          </p>
+                          <p className="ant-upload-text">
+                            Click or drag image to upload
+                          </p>
+                          <p className="ant-upload-hint">
+                            Only PNG and JPEG files are allowed.
+                          </p>
+                        </Dragger>
+                      </Form.Item>
+                    </div>
+                    {/* <div className="flex items-center gap-4">
                     <Button>Change Picture</Button>
                   </div> */}
-                </div>
-              </CardContent>
-              <CardFooter className="flex justify-between">
-                <Button onClick={() => setIsEditing(false)}>Cancel</Button>
-                <Button onClick={handleSave} disabled={isLoading}>
-                  {isLoading && (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  )}
-                  Save Changes
-                </Button>
-              </CardFooter>
-            </Card>
+                  </div>
+                </CardContent>
+                <CardFooter className="flex justify-between">
+                  <Button onClick={() => setIsEditing(false)}>Cancel</Button>
+                  <Button disabled={isLoading} htmlType="submit">
+                    {(isLoading || profilePending) && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+                    Save Changes
+                  </Button>
+                </CardFooter>
+              </Card>
+            </Form>
           ) : (
             <Card className="border-gray-200">
               <CardHeader>
@@ -378,18 +389,18 @@ export default function ProfilePage() {
               <div className="flex items-center justify-between">
                 <CardTitle>{t("profile.vehicle")}</CardTitle>
                 <Button>
-                  <Link to="/vehicle">
-                    {user.vehicle ? "Edit Vehicle" : t("profile.addVehicle")}
+                  <Link to={`/vehicle/${me?.id}`}>
+                    {me?.vehicle ? "Edit Vehicle" : t("profile.addVehicle")}
                   </Link>
                 </Button>
               </div>
             </CardHeader>
-            {user.vehicle ? (
+            {me?.vehicle ? (
               <CardContent className="space-y-4">
                 <div className="aspect-video overflow-hidden rounded-md">
                   <Image
-                    src={user.vehicle.image || "/car-placeholder.png"}
-                    alt={user.vehicle.model}
+                    src={me.vehicle.picture || "/car-placeholder.png"}
+                    alt={me.vehicle.model}
                     width={"100%"}
                     className="h-full w-full object-cover"
                   />
@@ -402,25 +413,25 @@ export default function ProfilePage() {
                     <ul className="space-y-1 text-sm">
                       <li className="flex justify-between">
                         <span className="text-muted-foreground">Model:</span>
-                        <span>{user.vehicle.model}</span>
+                        <span>{me?.vehicle.model}</span>
                       </li>
                       <li className="flex justify-between">
                         <span className="text-muted-foreground">Color:</span>
-                        <span>{user.vehicle.color}</span>
+                        <span>{me?.vehicle.color}</span>
                       </li>
                       <li className="flex justify-between">
                         <span className="text-muted-foreground">Year:</span>
-                        <span>{user.vehicle.year}</span>
+                        <span>{me?.vehicle.year}</span>
                       </li>
                       <li className="flex justify-between">
                         <span className="text-muted-foreground">
                           License Plate:
                         </span>
-                        <span>{user.vehicle.plate}</span>
+                        <span>{me?.vehicle.plateNumber}</span>
                       </li>
                       <li className="flex justify-between">
                         <span className="text-muted-foreground">Seats:</span>
-                        <span>{user.vehicle.seats}</span>
+                        <span>{me?.vehicle.seats}</span>
                       </li>
                     </ul>
                   </div>
@@ -430,19 +441,19 @@ export default function ProfilePage() {
                     </h3>
                     <ul className="space-y-1 text-sm">
                       <li className="flex items-center gap-2">
-                        <span>✓</span>
+                        <span>{me?.vehicle.airCondition ? "✓" : "X"}</span>
                         <span>Air conditioning</span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <span>✓</span>
+                        <span>{me?.vehicle.usbCharging ? "✓" : "X"}</span>
                         <span>USB charging</span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <span>✓</span>
+                        <span>{me?.vehicle.music ? "✓" : "X"}</span>
                         <span>Music</span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <span>✓</span>
+                        <span>{me?.vehicle.comfortableSeats ? "✓" : "X"}</span>
                         <span>Comfortable seats</span>
                       </li>
                     </ul>
@@ -472,49 +483,7 @@ export default function ProfilePage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {user.reviews.length > 0 ? (
-                <div className="space-y-6">
-                  {user.reviews.map((review) => (
-                    <div key={review.id} className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <Avatar size={"large"} src={review.user.avatar}>
-                          {review.user.avatar === null &&
-                            review.user.name.charAt(0)}
-                        </Avatar>
-                        <div>
-                          <div className="font-medium text-left">
-                            {review.user.name}
-                          </div>
-                          <div className="flex items-center text-xs text-muted-foreground">
-                            <div className="flex text-yellow-500">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`h-3 w-3 ${
-                                    i < review.rating
-                                      ? "fill-yellow-500"
-                                      : "fill-muted stroke-muted"
-                                  }`}
-                                />
-                              ))}
-                            </div>
-                            <span className="ml-2 text-gray-400">
-                              {format(review.date, "MMM d, yyyy")}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      <p className="text-sm text-left text-gray-400">
-                        {review.comment}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-center text-muted-foreground">
-                  No reviews yet
-                </p>
-              )}
+              <ReviewsList reviews={me?.reviews} />
             </CardContent>
           </Card>
         </div>

@@ -169,7 +169,7 @@ export default function EditVehicle() {
 
   return (
     <div className="container py-8">
-      <div className="mb-8">
+      <div className="mb-8 text-left">
         <Button
           variant="outlined"
           className="mb-4"
@@ -187,7 +187,7 @@ export default function EditVehicle() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8">
+      <form onSubmit={handleSubmit} className="space-y-12">
         {/* Basic Information */}
         <Card>
           <CardHeader>
@@ -195,7 +195,7 @@ export default function EditVehicle() {
               <Car className="h-5 w-5" />
               Basic Information
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-left">
               Enter the basic details about your vehicle
             </CardDescription>
           </CardHeader>
@@ -209,7 +209,6 @@ export default function EditVehicle() {
                   onChange={(value) => handleInputChange("make", value)}
                   placeholder="Select car make"
                   className="w-full"
-                  size="large"
                   showSearch
                   filterOption={(input, option) =>
                     option.children
@@ -237,7 +236,7 @@ export default function EditVehicle() {
               </div>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-4">
               <div className="space-y-2">
                 <Label htmlFor="year">Year *</Label>
                 <Select
@@ -246,7 +245,6 @@ export default function EditVehicle() {
                   onChange={(value) => handleInputChange("year", value)}
                   placeholder="Select year"
                   className="w-full"
-                  size="large"
                 >
                   {years.map((year) => (
                     <Option key={year} value={year}>
@@ -264,7 +262,6 @@ export default function EditVehicle() {
                   onChange={(value) => handleInputChange("color", value)}
                   placeholder="Select color"
                   className="w-full"
-                  size="large"
                 >
                   {carColors.map((color) => (
                     <Option key={color} value={color}>
@@ -292,24 +289,7 @@ export default function EditVehicle() {
                   required
                 />
               </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Technical Details */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Settings className="h-5 w-5" />
-              Technical Details
-            </CardTitle>
-            <CardDescription>
-              Provide technical information about your vehicle
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-3">
-              <div className="space-y-2">
+              <div className="flex flex-col space-y-2">
                 <Label htmlFor="seats">Number of Seats *</Label>
                 <InputNumber
                   id="seats"
@@ -317,43 +297,9 @@ export default function EditVehicle() {
                   onChange={(value) => handleInputChange("seats", value)}
                   min={2}
                   max={9}
+                  style={{ width: "100%" }}
                   className="w-full"
-                  size="large"
                 />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="fuelType">Fuel Type</Label>
-                <Select
-                  id="fuelType"
-                  value={vehicleData.fuelType}
-                  onChange={(value) => handleInputChange("fuelType", value)}
-                  placeholder="Select fuel type"
-                  className="w-full"
-                  size="large"
-                >
-                  {fuelTypes.map((fuel) => (
-                    <Option key={fuel} value={fuel}>
-                      {fuel}
-                    </Option>
-                  ))}
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="transmission">Transmission</Label>
-                <Select
-                  id="transmission"
-                  value={vehicleData.transmission}
-                  onChange={(value) => handleInputChange("transmission", value)}
-                  placeholder="Select transmission"
-                  className="w-full"
-                  size="large"
-                >
-                  <Option value="Manual">Manual</Option>
-                  <Option value="Automatic">Automatic</Option>
-                  <Option value="Semi-Automatic">Semi-Automatic</Option>
-                </Select>
               </div>
             </div>
           </CardContent>
@@ -366,7 +312,7 @@ export default function EditVehicle() {
               <Shield className="h-5 w-5" />
               Features & Amenities
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-left">
               Select the features available in your vehicle
             </CardDescription>
           </CardHeader>
@@ -482,7 +428,7 @@ export default function EditVehicle() {
               <Camera className="h-5 w-5" />
               Vehicle Photos
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-left">
               Add photos of your vehicle to help passengers identify it
             </CardDescription>
           </CardHeader>
@@ -522,7 +468,7 @@ export default function EditVehicle() {
               )}
             </div>
 
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground text-left">
               You can upload up to 5 photos. The first photo will be used as the
               main image.
             </p>

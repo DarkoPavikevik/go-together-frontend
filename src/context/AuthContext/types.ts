@@ -9,6 +9,7 @@ export interface Me {
   rating?: number;
   created?: string;
   phoneNumber?: string;
+  numberOfRides?: number;
   smoking?: boolean;
   pets?: boolean;
   music?: boolean;

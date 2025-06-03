@@ -19,7 +19,6 @@ export default function useAuthController() {
     id: number,
     body: { profilePicture: string }
   ) => {
-    console.log("body", body);
     const response = await axios.put(`http://localhost:8080/api/user/${id}`, {
       profilePicture: body.profilePicture,
     });

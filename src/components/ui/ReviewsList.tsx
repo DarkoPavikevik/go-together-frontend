@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Avatar } from "antd";
 import { Star } from "lucide-react";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 interface Review {
   id: number;
@@ -43,6 +44,7 @@ const ReviewsList = ({ reviews }: IReviews) => {
       setVisibleReviews((prev) => [...prev, ...nextItems]);
     }, 500); // optional delay for UX
   };
+  const { t } = useTranslation();
 
   if (!reviews || !reviews.length) return <p>No reviews found.</p>;
 
@@ -54,7 +56,7 @@ const ReviewsList = ({ reviews }: IReviews) => {
       loader={<h4>Loading...</h4>}
       endMessage={
         <p style={{ textAlign: "center" }}>
-          <b>All reviews shown</b>
+          <b>{t("profile.reviews.shown")}</b>
         </p>
       }
     >

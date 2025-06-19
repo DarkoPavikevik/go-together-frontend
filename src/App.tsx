@@ -16,6 +16,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SnackbarProvider } from "notistack";
 import { UserProvider } from "./context/AuthContext";
 import EditVehicle from "./components/pages/EditVehiclePage";
+import AboutUs from "./components/pages/AboutUsPage";
+import ContactSupport from "./components/pages/ContactSupportPage";
+import TermsOfService from "./components/pages/TermsPage";
+import PrivacyPolicy from "./components/pages/PrivacyPage";
 
 function App() {
   const queryClient = new QueryClient();
@@ -38,6 +42,10 @@ function App() {
                   <Route path="/rides/create" element={<CreateRidesPage />} />
                   <Route path="/rides/:id" element={<RidesUserPage />} />
                   <Route path="/vehicle/:id" element={<EditVehicle />} />
+                  <Route path="/about-us" element={<AboutUs/>}/>
+                  <Route path="/contact" element={<ContactSupport/>} />
+                  <Route path="/terms" element={<TermsOfService/>} />
+                  <Route path="/privacy" element={<PrivacyPolicy/>} />
                 </Route>
                 <Route path="sign-in" element={<SignInPage />} />
                 <Route

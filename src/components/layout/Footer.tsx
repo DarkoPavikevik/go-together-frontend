@@ -65,7 +65,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  to="/about"
+                  to="/about-us"
                   className={`${
                     theme === "dark"
                       ? "text-gray-300 hover:text-purple-300 transition-colors duration-200"
@@ -134,7 +134,7 @@ export default function Footer() {
             </h3>
             <div className="flex flex-wrap gap-4">
               <a
-                href="#"
+                href="https://x.com/darkopavikevik"
                 className={`footer-social-icon ${
                   theme === "dark"
                     ? "text-gray-300 hover:text-purple-300 transition-all duration-200 transform hover:scale-110"
@@ -149,7 +149,7 @@ export default function Footer() {
                 />
               </a>
               <a
-                href="#"
+                href="https://www.facebook.com/darko.pavikevik.3/"
                 className={`footer-social-icon ${
                   theme === "dark"
                     ? "text-gray-300 hover:text-purple-300 transition-all duration-200 transform hover:scale-110"
@@ -164,7 +164,7 @@ export default function Footer() {
                 />
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/darkopavikevik/?next=%2F"
                 className={`footer-social-icon ${
                   theme === "dark"
                     ? "text-gray-300 hover:text-purple-300 transition-all duration-200 transform hover:scale-110"
@@ -179,7 +179,7 @@ export default function Footer() {
                 />
               </a>
               <a
-                href="#"
+                href="https://github.com/DarkoPavikevik"
                 className={`footer-social-icon ${
                   theme === "dark"
                     ? "text-gray-300 hover:text-purple-300 transition-all duration-200 transform hover:scale-110"
@@ -194,7 +194,7 @@ export default function Footer() {
                 />
               </a>
               <a
-                href="#"
+                href="https://www.linkedin.com/in/darko-pavikevik-0b297a1a2/"
                 className={`footer-social-icon ${
                   theme === "dark"
                     ? "text-gray-300 hover:text-purple-300 transition-all duration-200 transform hover:scale-110"

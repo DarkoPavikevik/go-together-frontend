@@ -412,25 +412,25 @@ export default function ProfilePage() {
                     </h3>
                     <ul className="space-y-1 text-sm">
                       <li className="flex justify-between">
-                        <span className="text-muted-foreground">Model:</span>
+                        <span className="text-muted-foreground">{t("profile.model")}:</span>
                         <span>{me?.vehicle.model}</span>
                       </li>
                       <li className="flex justify-between">
-                        <span className="text-muted-foreground">Color:</span>
+                        <span className="text-muted-foreground">{t("profile.color")}:</span>
                         <span>{me?.vehicle.color}</span>
                       </li>
                       <li className="flex justify-between">
-                        <span className="text-muted-foreground">Year:</span>
+                        <span className="text-muted-foreground">{t("profile.year")}:</span>
                         <span>{me?.vehicle.year}</span>
                       </li>
                       <li className="flex justify-between">
                         <span className="text-muted-foreground">
-                          License Plate:
+                          {t("profile.licensePlate")}:
                         </span>
                         <span>{me?.vehicle.plateNumber}</span>
                       </li>
                       <li className="flex justify-between">
-                        <span className="text-muted-foreground">Seats:</span>
+                        <span className="text-muted-foreground">{t("profile.seats")}:</span>
                         <span>{me?.vehicle.seats}</span>
                       </li>
                     </ul>
@@ -442,19 +442,19 @@ export default function ProfilePage() {
                     <ul className="space-y-1 text-sm">
                       <li className="flex items-center gap-2">
                         <span>{me?.vehicle.airCondition ? "✓" : "X"}</span>
-                        <span>Air conditioning</span>
+                        <span>{t("profile.air")}</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <span>{me?.vehicle.usbCharging ? "✓" : "X"}</span>
-                        <span>USB charging</span>
+                        <span>{t("profile.usb")}</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <span>{me?.vehicle.music ? "✓" : "X"}</span>
-                        <span>Music</span>
+                        <span>{t("profile.music")}</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <span>{me?.vehicle.comfortableSeats ? "✓" : "X"}</span>
-                        <span>Comfortable seats</span>
+                        <span>{t("profile.confiseats")}</span>
                       </li>
                     </ul>
                   </div>

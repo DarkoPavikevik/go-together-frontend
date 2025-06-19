@@ -424,14 +424,18 @@ export default function Home() {
                 </Button>
                 <Button
                   size="large"
-                  variant="outlined"
-                  className="bg-transparent text-primary-foreground border-primary-foreground hover:bg-primary-foreground/10"
+                  className="text-amber-300"
+                  style={buttonStyle}
                   onClick={() => {
                     navigate("/rides");
                   }}
                 >
+                  <div className="flex items-center">
+                <Car className="mr-2 h-4 w-4" />
                   {t("home.findRide")}
+                  </div>
                 </Button>
+
               </div>
             </div>
           </div>

@@ -503,7 +503,7 @@ export default function RidesPage() {
       </Tabs>
 
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-xl font-bold">Available Rides</h2>
+        <h2 className="text-xl font-bold">{t("available.rides")}</h2>
         <PriceFilterDropdown
           onFilterChange={(filters) => setPriceFilters(filters)}
         />

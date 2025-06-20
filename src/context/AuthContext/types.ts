@@ -22,3 +22,21 @@ export interface UserContextType {
   isAuthenticated: boolean | null;
   refetch(): Promise<QueryObserverResult<any, Error>>;
 }
+
+export interface RideDTO {
+  id?: number;
+  userInfo: {
+    id: number;
+  };
+  fromLocation: string;
+  toLocation: string;
+  date: string;
+  time: string; // Format: "HH:mm:ss"
+  price: number;
+  seatsAvailable: number;
+  status?: string;
+  luggageSize: 'SMALL' | 'MEDIUM' | 'LARGE'; // Uppercase to match backend
+  currency: string;
+  waypoints?: string[];
+  notes?: string;
+}

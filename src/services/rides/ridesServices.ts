@@ -1,4 +1,5 @@
 import axios from "axios";
+import type { RideDTO } from "../../context/AuthContext/types";
 
 export const getRides = async (page?: number, size?: number) => {
   const response = await axios.get(
@@ -12,6 +13,27 @@ export const getCitiesByCountry = async (country: string) => {
     `http://localhost:8080/api/cities/${country}`
   );
   return response ? response.data : response;
+};
+
+export const createRide = async (rideData: RideDTO): Promise<RideDTO> => {
+  const token = localStorage.getItem('accessToken');
+  
+  const response = await fetch('http://localhost:8080/api/rides/create', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(rideData),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    console.error('Backend error:', errorData);
+    throw new Error(errorData.message || 'Failed to create ride');
+  }
+
+  return response.json();
 };
 
 export const searchRide = async (

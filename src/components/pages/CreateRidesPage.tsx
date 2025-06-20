@@ -26,6 +26,9 @@ import { Label } from "@radix-ui/react-label";
 import { Clock, Container, Loader2, MapPin } from "lucide-react";
 import dayjs from "dayjs";
 import { Textarea } from "../ui/Textarea";
+import { useQuery } from "@tanstack/react-query";
+import { createRide, getCitiesByCountry } from "../../services/rides/ridesServices";
+import type { RideDTO } from "../../context/AuthContext/types";
 
 export default function CreateRidePage() {
   const { t } = useTranslation();
@@ -43,7 +46,21 @@ export default function CreateRidePage() {
     luggage: "Medium",
     description: "",
     stops: false,
+    waypoints: [] as string[],
   });
+
+  const validateForm = () => {
+  if (!formData.from || !formData.to) {
+    return "Please enter both departure and destination";
+  }
+  if (!formData.date) {
+    return "Please select a date";
+  }
+  if (!formData.time) {
+    return "Please select a time";
+  }
+  return null;
+};
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -51,6 +68,11 @@ export default function CreateRidePage() {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+  const { data: cities, isLoading: loadingCities } = useQuery({
+      queryKey: ["get-cities"],
+      queryFn: () => getCitiesByCountry("macedonia"),
+    });
 
   const handleSelectChange = (name: string, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -64,29 +86,79 @@ export default function CreateRidePage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+  const cityOptions = cities?.map((city: { label: string; value: string }) => ({
+    label: city,
+    value: city,
+  }));
 
-    try {
-      // Here you would connect to your Spring Boot backend
-      // const response = await fetch('/api/rides', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(formData),
-      // })
+  const formatTime = (timeString: string): string => {
+  if (!timeString) return '00:00:00'; // Default value
+  
+  // If already in HH:mm format, add seconds
+  if (timeString.includes(':')) {
+    const parts = timeString.split(':');
+    return `${parts[0].padStart(2, '0')}:${parts[1].padStart(2, '0')}:00`;
+  }
+  
+  // Default fallback
+  return '00:00:00';
+};
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+const formatTimeForBackend = (timeStr: string): string => {
+  if (!timeStr) return '00:00:00';
+  
+  // Convert from input format (HH:mm) to HH:mm:ss
+  if (timeStr.match(/^\d{2}:\d{2}$/)) {
+    return `${timeStr}:00`;
+  }
+  
+  // If already in correct format
+  if (timeStr.match(/^\d{2}:\d{2}:\d{2}$/)) {
+    return timeStr;
+  }
+  
+  // Default fallback
+  return '00:00:00';
+};
 
-      // Redirect to rides page after successful creation
-      navigate("/rides");
-    } catch (error) {
-      console.error("Failed to create ride:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  const validationError = validateForm();
+  if (validationError) {
+    alert(validationError);
+    return;
+  }
+
+  setIsLoading(true);
+
+  try {
+    const rideData: RideDTO = {
+      fromLocation: formData.from,
+      toLocation: formData.to,
+      date: dayjs(formData.date).format('YYYY-MM-DD'),
+      time: `${formData.time}:00`, // Add seconds if missing
+      price: formData.price,
+      seatsAvailable: formData.seats,
+      currency: formData.currency,
+      luggageSize: formData.luggage.toUpperCase() as 'SMALL' | 'MEDIUM' | 'LARGE',
+      waypoints: formData.stops ? formData.waypoints : undefined,
+      notes: formData.description,
+      status: "ACTIVE",
+      userInfo: { id: 1 } // Replace with actual user ID from auth
+    };
+
+    console.log("Submitting:", JSON.stringify(rideData, null, 2));
+    const createdRide = await createRide(rideData);
+    console.log("Created ride:", createdRide);
+    navigate("/rides");
+  } catch (error) {
+    console.error("Full error:", error);
+    alert(`Failed to create ride: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <div className="container py-8">
@@ -141,35 +213,30 @@ export default function CreateRidePage() {
                   <Label htmlFor="date">{t("rides.date")}</Label>
                   {/* Replace Popover and Calendar with Ant Design DatePicker */}
                   <DatePicker
-                    id="date"
-                    className="w-full"
-                    placeholder="Pick a date"
-                    onChange={(date) =>
-                      setFormData({
-                        ...formData,
-                        date: date ? date.toDate() : null,
-                      })
-                    }
-                    value={formData.date ? dayjs(formData.date) : null}
-                    format="MMM D, YYYY"
-                    disabledDate={(current) =>
-                      current && current < dayjs().startOf("day")
-                    }
-                  />
+  id="date"
+  className="w-full"
+  placeholder="Pick a date"
+  onChange={(date) => setFormData({...formData, date: date ? date.toDate() : null})}
+  value={formData.date ? dayjs(formData.date) : null}
+  // Display format (user-friendly)
+  format="MMM D, YYYY"
+  // Backend will receive YYYY-MM-DD
+  disabledDate={(current) => current && current < dayjs().startOf("day")}
+/>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="time">{t("rides.time")}</Label>
                   <div className="relative">
                     <Clock className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
-                      id="time"
-                      name="time"
-                      type="time"
-                      className="pl-8"
-                      required
-                      value={formData.time}
-                      onChange={handleChange}
-                    />
+  id="time"
+  name="time"
+  type="time"
+  className="pl-8"
+  required
+  value={formData.time}
+  onChange={handleChange}
+/>
                   </div>
                 </div>
               </div>
@@ -228,16 +295,15 @@ export default function CreateRidePage() {
                   <Label htmlFor="luggage">Luggage Size</Label>
                   {/* Replace Select with Ant Design Select */}
                   <Select
-                    id="luggage"
-                    value={formData.luggage}
-                    onChange={(value) => handleSelectChange("luggage", value)}
-                    style={{ width: "100%" }}
-                    options={[
-                      { value: "Small", label: "Small" },
-                      { value: "Medium", label: "Medium" },
-                      { value: "Large", label: "Large" },
-                    ]}
-                  />
+  id="luggage"
+  value={formData.luggage}
+  onChange={(value) => handleSelectChange("luggage", value)}
+  options={[
+    { value: "SMALL", label: "Small" },
+    { value: "MEDIUM", label: "Medium" },
+    { value: "LARGE", label: "Large" },
+  ]}
+/>
                 </div>
               </div>
 
@@ -247,7 +313,7 @@ export default function CreateRidePage() {
                   {/* Replace Switch with Ant Design Switch */}
                   <Switch
                     id="stops"
-                    checked={formData.stops}
+                    checked={formData.stops }
                     onChange={(checked) => {
                       handleSwitchChange("stops", checked);
                     }}
@@ -295,10 +361,14 @@ export default function CreateRidePage() {
             </CardContent>
             <CardFooter className="flex justify-between">
               <Button onClick={() => navigate(-1)}>Cancel</Button>
-              <Button disabled={isLoading}>
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Create Ride
-              </Button>
+              <Button 
+  htmlType="submit" // This is crucial
+  type="primary" 
+  disabled={isLoading}
+>
+  {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+  Create Ride
+</Button>
             </CardFooter>
           </form>
         </Card>

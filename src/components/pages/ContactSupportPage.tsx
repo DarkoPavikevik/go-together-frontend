@@ -1,10 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { Card, Input, Select } from "antd"
+import { Input, Select } from "antd"
 import { MessageSquare, Phone, Mail, Clock, CheckCircle, Loader2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { CardContent, CardHeader, CardTitle } from "../ui/Card"
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card"
 import { Button } from "../ui/Button"
 import { Label } from "@radix-ui/react-label"
 import { Textarea } from "../ui/Textarea"
@@ -88,38 +88,46 @@ export default function ContactSupport() {
         {/* Contact Information */}
         <div className="space-y-6">
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MessageSquare className="h-5 w-5" />
-                Get in Touch
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center gap-3">
-                <Mail className="h-5 w-5 text-primary" />
-                <div>
-                  <p className="font-medium">Email</p>
-                  <p className="text-sm text-muted-foreground">support@gotogether.mk</p>
-                </div>
-              </div>
+  <CardHeader>
+    <CardTitle className="flex items-center gap-2">
+      {/* <MessageSquare className="h-5 w-5" /> */}
+      <div className="flex-1">
+        Get in Touch
+        </div>
+    </CardTitle>
+  </CardHeader>
+  <CardContent className="space-y-4">
+    <div className="flex gap-3">
+      <div className="flex items-center justify-center h-5 w-5 text-primary shrink-0">
+        <Mail className="h-5 w-5" />
+      </div>
+      <div className="flex-1">
+        <p className="font-medium">Email</p>
+        <p className="text-sm text-muted-foreground">support@gotogether.mk</p>
+      </div>
+    </div>
 
-              <div className="flex items-center gap-3">
-                <Phone className="h-5 w-5 text-primary" />
-                <div>
-                  <p className="font-medium">Phone</p>
-                  <p className="text-sm text-muted-foreground">+389 70 123 456</p>
-                </div>
-              </div>
+    <div className="flex gap-3">
+      <div className="flex items-center justify-center h-5 w-5 text-primary shrink-0">
+        <Phone className="h-5 w-5" />
+      </div>
+      <div className="flex-1">
+        <p className="font-medium">Phone</p>
+        <p className="text-sm text-muted-foreground">+389 70 123 456</p>
+      </div>
+    </div>
 
-              <div className="flex items-center gap-3">
-                <Clock className="h-5 w-5 text-primary" />
-                <div>
-                  <p className="font-medium">Support Hours</p>
-                  <p className="text-sm text-muted-foreground">Mon-Fri: 9:00 AM - 6:00 PM</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+    <div className="flex gap-3">
+      <div className="flex items-center justify-center h-5 w-5 text-primary shrink-0">
+        <Clock className="h-5 w-5" />
+      </div>
+      <div className="flex-1">
+        <p className="font-medium">Support Hours</p>
+        <p className="text-sm text-muted-foreground">Mon-Fri: 9:00 AM - 6:00 PM</p>
+      </div>
+    </div>
+  </CardContent>
+</Card>
 
           {/* FAQ Quick Links */}
           <Card>
@@ -137,9 +145,6 @@ export default function ContactSupport() {
                   <li>• Account verification</li>
                 </ul>
               </div>
-              <Button variant="outline" className="w-full">
-                View FAQ
-              </Button>
             </CardContent>
           </Card>
         </div>

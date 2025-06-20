@@ -476,7 +476,7 @@ export default function EditVehicle() {
         </Card>
 
         {/* Description */}
-        <Card>
+        {/* <Card>
           <CardHeader>
             <CardTitle>Additional Information</CardTitle>
             <CardDescription>
@@ -497,7 +497,7 @@ export default function EditVehicle() {
               />
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
 
         {/* Action Buttons */}
         <Card>

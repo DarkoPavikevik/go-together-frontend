@@ -246,7 +246,7 @@ export default function TermsOfService() {
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 mt-6">
-              <Button asChild>
+              <Button variant="outline" asChild>
                 <Link to="/contact">Contact Support</Link>
               </Button>
               <Button variant="outline" asChild>

@@ -1,4 +1,4 @@
-import { Shield, Eye, Lock, Database, UserCheck, Globe } from "lucide-react"
+import { Shield, Eye, Lock, Database, UserCheck, Globe, Car } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card"
@@ -71,7 +71,7 @@ export default function PrivacyPolicy() {
 
               <div>
                 <h4 className="font-medium mb-2 flex items-center gap-2">
-                  <Database className="h-4 w-4" />
+                  <Car className="h-4 w-4" />
                   Vehicle Information (Drivers)
                 </h4>
                 <ul className="text-sm text-muted-foreground space-y-1 ml-6">

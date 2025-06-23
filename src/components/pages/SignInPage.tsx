@@ -68,7 +68,7 @@ export default function SignIn({ initialMode = "signin" }: SignInProps) {
     },
   });
 
-  const handleSignIn = async (data: any) => {
+  const handleSignIn = async (data: { username: string; password: string }) => {
     setIsLoading(true);
     axios({
       method: "post",

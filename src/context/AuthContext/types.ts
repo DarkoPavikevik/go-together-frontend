@@ -14,13 +14,27 @@ export interface Me {
   pets?: boolean;
   music?: boolean;
   talking?: boolean;
+  vehicle: {
+    id: number;
+    brand: string;
+    model: string;
+    picture: string;
+    plateNumber: string;
+    seats: number;
+    year: number;
+    color: string;
+    airCondition: boolean;
+    usbCharging: boolean;
+    music: boolean;
+    comfortableSeats: boolean;
+  };
 }
 export interface UserContextType {
   me: Me | null;
   login(jwt: string): Promise<void>;
   logout(): Promise<void>;
   isAuthenticated: boolean | null;
-  refetch(): Promise<QueryObserverResult<any, Error>>;
+  refetch(): Promise<QueryObserverResult<unknown, Error>>;
 }
 
 export interface RideDTO {
@@ -35,7 +49,7 @@ export interface RideDTO {
   price: number;
   seatsAvailable: number;
   status?: string;
-  luggageSize: 'SMALL' | 'MEDIUM' | 'LARGE'; // Uppercase to match backend
+  luggageSize: "SMALL" | "MEDIUM" | "LARGE"; // Uppercase to match backend
   currency: string;
   waypoints?: string[];
   notes?: string;

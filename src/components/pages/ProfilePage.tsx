@@ -29,6 +29,7 @@ import { useMutation } from "@tanstack/react-query";
 import {
   updatePreference,
   updateProfile,
+  type IUpdateProfile,
 } from "../../services/profile/profileServices";
 import ReviewsList from "../ui/ReviewsList";
 // Mock user data
@@ -91,16 +92,10 @@ export default function ProfilePage() {
   const { t } = useTranslation();
   const { addProfilePicture } = useAuthController();
   const { me, refetch } = useUser();
-  const [user, setUser] = useState(mockUser);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<RcFile | null>(null);
-  const [formData, setFormData] = useState({
-    name: user.name,
-    email: user.email,
-    phone: user.phone,
-    bio: user.bio,
-  });
+
   // const userSupabase = useUser();
   const supabase = useSupabaseClient();
 
@@ -116,19 +111,20 @@ export default function ProfilePage() {
   const { mutate: updateProfileMutation, isPending: profilePending } =
     useMutation({
       mutationKey: ["update-profile"],
-      mutationFn: (id, body) => updateProfile(id, body),
+      mutationFn: (body: IUpdateProfile) =>
+        updateProfile(me?.id as number, body),
       onSuccess: () => {
         refetch();
       },
     });
 
-  const handleSubmit = async (data) => {
+  const handleSubmit = async (data: IUpdateProfile) => {
     try {
       let profilePictureUrl = me?.profilePicture;
       if (selectedImage) {
         const { data, error } = await supabase.storage
           .from("storage")
-          .upload(user.id + "/" + nanoid(), selectedImage, {
+          .upload(me?.id + "/" + nanoid(), selectedImage, {
             cacheControl: "3600",
             upsert: false,
           });
@@ -145,7 +141,7 @@ export default function ProfilePage() {
         ...data,
         profilePicture: profilePictureUrl,
       };
-      await updateProfileMutation(me?.id as number, body);
+      await updateProfileMutation(body);
       enqueueSnackbar("Profile updated successfully", { variant: "success" });
       refetch();
       setIsEditing(false);
@@ -166,7 +162,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="container py-8">
+    <div className="container px-24 py-8">
       <div className="mb-8 text-left">
         <h1 className="text-3xl font-bold">{t("nav.profile")}</h1>
         <p className="text-gray-400">{t("profile.description")}</p>
@@ -301,7 +297,7 @@ export default function ProfilePage() {
               initialValues={{
                 name: me?.username,
                 email: me?.email,
-                phone: me?.phoneNumber,
+                phoneNumber: me?.phoneNumber,
                 bio: me?.bio,
               }}
             >
@@ -327,8 +323,8 @@ export default function ProfilePage() {
                     </Form.Item>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="phone">Phone</Label>
-                    <Form.Item name="phone">
+                    <Label htmlFor="phoneNumber">Phone</Label>
+                    <Form.Item name="phoneNumber">
                       <Input />
                     </Form.Item>
                   </div>
@@ -412,15 +408,21 @@ export default function ProfilePage() {
                     </h3>
                     <ul className="space-y-1 text-sm">
                       <li className="flex justify-between">
-                        <span className="text-muted-foreground">{t("profile.model")}:</span>
+                        <span className="text-muted-foreground">
+                          {t("profile.model")}:
+                        </span>
                         <span>{me?.vehicle.model}</span>
                       </li>
                       <li className="flex justify-between">
-                        <span className="text-muted-foreground">{t("profile.color")}:</span>
+                        <span className="text-muted-foreground">
+                          {t("profile.color")}:
+                        </span>
                         <span>{me?.vehicle.color}</span>
                       </li>
                       <li className="flex justify-between">
-                        <span className="text-muted-foreground">{t("profile.year")}:</span>
+                        <span className="text-muted-foreground">
+                          {t("profile.year")}:
+                        </span>
                         <span>{me?.vehicle.year}</span>
                       </li>
                       <li className="flex justify-between">
@@ -430,7 +432,9 @@ export default function ProfilePage() {
                         <span>{me?.vehicle.plateNumber}</span>
                       </li>
                       <li className="flex justify-between">
-                        <span className="text-muted-foreground">{t("profile.seats")}:</span>
+                        <span className="text-muted-foreground">
+                          {t("profile.seats")}:
+                        </span>
                         <span>{me?.vehicle.seats}</span>
                       </li>
                     </ul>

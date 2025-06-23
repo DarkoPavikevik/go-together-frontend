@@ -108,7 +108,7 @@ export default function MyRidesPage() {
   const [pastRides, setPastRides] = useState(mockPastRides);
 
   return (
-    <div className="container py-8">
+    <div className="container px-24 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold">{t("nav.myRides")}</h1>
         <p className="text-muted-foreground">

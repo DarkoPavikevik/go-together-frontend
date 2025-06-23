@@ -15,16 +15,7 @@ import {
 } from "antd";
 import { format } from "date-fns";
 import dayjs from "dayjs";
-import {
-  Car,
-  Clock,
-  Filter,
-  Luggage,
-  MapPin,
-  Search,
-  Star,
-  Users,
-} from "lucide-react";
+import { Car, Clock, Luggage, MapPin, Search, Star, Users } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -71,44 +62,6 @@ export interface IRide {
   estimate: { estimatedArrivalTimes: string[] };
 }
 
-const mockRoutes = [
-  {
-    id: 1,
-    from: "Skopje",
-    to: "Ohrid",
-    available_rides: "1+ rides available today",
-  },
-  {
-    id: 2,
-    from: "Skopje",
-    to: "Tetovo",
-    available_rides: "69+ rides available today",
-  },
-  {
-    id: 3,
-    from: "Skopje",
-    to: "Bitola",
-    available_rides: "11+ rides available today",
-  },
-  {
-    id: 4,
-    from: "Ohrid",
-    to: "Skopje",
-    available_rides: "10+ rides available today",
-  },
-  {
-    id: 5,
-    from: "Bitola",
-    to: "Skopje",
-    available_rides: "8+ rides available today",
-  },
-  {
-    id: 6,
-    from: "Tetovo",
-    to: "Skopje",
-    available_rides: "6+ rides available today",
-  },
-];
 export default function RidesPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -233,7 +186,7 @@ export default function RidesPage() {
 
   console.log(rides);
   return (
-    <div className="container py-8">
+    <div className="container px-24 py-8">
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl font-bold text-left">{t("nav.rides")}</h1>

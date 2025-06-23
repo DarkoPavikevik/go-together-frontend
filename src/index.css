@@ -203,3 +203,7 @@ body {
   pointer-events: none;
   z-index: -1;
 }
+
+.custom-spin .ant-spin-dot-item {
+  background-color: white !important; /* or any color you want */
+}

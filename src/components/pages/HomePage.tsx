@@ -128,7 +128,6 @@ export default function Home() {
             <Button
               size="large"
               className="text-amber-300"
-              // variant="outlined"
               style={buttonStyle}
               onClick={() => {
                 if (!isAuthenticated) {
@@ -431,11 +430,10 @@ export default function Home() {
                   }}
                 >
                   <div className="flex items-center">
-                <Car className="mr-2 h-4 w-4" />
-                  {t("home.findRide")}
+                    <Car className="mr-2 h-4 w-4" />
+                    {t("home.findRide")}
                   </div>
                 </Button>
-
               </div>
             </div>
           </div>

@@ -5,6 +5,15 @@ export type PreferenceUpdateBody = {
   music?: boolean;
   talking?: boolean;
 };
+
+export interface IUpdateProfile {
+  name: string;
+  email: string;
+  phone: string;
+  bio: string;
+  profilePicture?: string;
+}
+
 export const updatePreference = async (
   id: number,
   body: PreferenceUpdateBody
@@ -16,8 +25,8 @@ export const updatePreference = async (
   return response ? response.data : response;
 };
 
-export const updateProfile = async (id: number, body) => {
-  console.log("bodybodybodybody", body);
+export const updateProfile = async (id: number, body: IUpdateProfile) => {
+  console.log("body vnatre", body);
   const response = await axios.put(
     `http://localhost:8080/api/user/${id}`,
     body

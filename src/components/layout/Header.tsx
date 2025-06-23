@@ -24,6 +24,7 @@ import { useUser } from "../../context/AuthContext";
 import { Button } from "../ui/Button";
 import Image from "../ui/Image";
 import { useTheme } from "../ui/ThemeProvider";
+import Notifications from "./Notifications";
 
 const countryLangMap: Record<string, string> = {
   GB: "en", // English
@@ -69,7 +70,6 @@ export default function Header() {
     </Menu>
   );
 
-  console.log(me);
   return (
     <header className="sticky top-0 z-50 w-full shadow-xl bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex items-center justify-around px-4 py-2">
@@ -318,6 +318,7 @@ export default function Header() {
               <Moon className="h-5 w-5 absolute transform transition-transform duration-500 rotate-0 text-black" />
             )}
           </ButtonTheme>
+          {isAuthenticated && <Notifications />}
           {isAuthenticated ? (
             <Dropdown
               overlay={menu}

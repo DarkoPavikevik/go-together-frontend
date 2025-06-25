@@ -32,16 +32,8 @@ export default function ContactSupport() {
     setIsLoading(true)
 
     try {
-      // Here you would connect to your Spring Boot backend
-      // const response = await fetch('/api/support/contact', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(formData),
-      // })
-
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1500))
-
       setIsSubmitted(true)
     } catch (error) {
       console.error("Failed to send message:", error)
@@ -57,14 +49,16 @@ export default function ContactSupport() {
           <Card>
             <CardContent className="pt-8 pb-8">
               <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-              <h1 className="text-2xl font-bold mb-4">Message Sent Successfully!</h1>
+              <h1 className="text-2xl font-bold mb-4">{t("contact.successTitle")}</h1>
               <p className="text-muted-foreground mb-6">
-                Thank you for contacting us. We've received your message and will get back to you within 24 hours.
+                {t("contact.successMessage")}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button onClick={() => setIsSubmitted(false)}>Send Another Message</Button>
+                <Button onClick={() => setIsSubmitted(false)}>
+                  {t("contact.anotherMessage")}
+                </Button>
                 <Button variant="outline" onClick={() => (window.location.href = "/")}>
-                  Back to Home
+                  {t("contact.backHome")}
                 </Button>
               </div>
             </CardContent>
@@ -78,9 +72,9 @@ export default function ContactSupport() {
     <div className="container py-8">
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold mb-4">Contact Support</h1>
+        <h1 className="text-3xl font-bold mb-4">{t("contact.title")}</h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Need help? Have a question? We're here to assist you. Send us a message and we'll get back to you soon.
+          {t("contact.description")}
         </p>
       </div>
 
@@ -88,61 +82,62 @@ export default function ContactSupport() {
         {/* Contact Information */}
         <div className="space-y-6">
           <Card>
-  <CardHeader>
-    <CardTitle className="flex items-center gap-2">
-      {/* <MessageSquare className="h-5 w-5" /> */}
-      <div className="flex-1">
-        Get in Touch
-        </div>
-    </CardTitle>
-  </CardHeader>
-  <CardContent className="space-y-4">
-    <div className="flex gap-3">
-      <div className="flex items-center justify-center h-5 w-5 text-primary shrink-0">
-        <Mail className="h-5 w-5" />
-      </div>
-      <div className="flex-1">
-        <p className="font-medium">Email</p>
-        <p className="text-sm text-muted-foreground">support@gotogether.mk</p>
-      </div>
-    </div>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <div className="flex-1">
+                  {t("contact.getInTouch")}
+                </div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex gap-3">
+                <div className="flex items-center justify-center h-5 w-5 text-primary shrink-0">
+                  <Mail className="h-5 w-5" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium">{t("contact.email")}</p>
+                  <p className="text-sm text-muted-foreground">support@gotogether.mk</p>
+                </div>
+              </div>
 
-    <div className="flex gap-3">
-      <div className="flex items-center justify-center h-5 w-5 text-primary shrink-0">
-        <Phone className="h-5 w-5" />
-      </div>
-      <div className="flex-1">
-        <p className="font-medium">Phone</p>
-        <p className="text-sm text-muted-foreground">+389 70 123 456</p>
-      </div>
-    </div>
+              <div className="flex gap-3">
+                <div className="flex items-center justify-center h-5 w-5 text-primary shrink-0">
+                  <Phone className="h-5 w-5" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium">{t("contact.phone")}</p>
+                  <p className="text-sm text-muted-foreground">+389 70 123 456</p>
+                </div>
+              </div>
 
-    <div className="flex gap-3">
-      <div className="flex items-center justify-center h-5 w-5 text-primary shrink-0">
-        <Clock className="h-5 w-5" />
-      </div>
-      <div className="flex-1">
-        <p className="font-medium">Support Hours</p>
-        <p className="text-sm text-muted-foreground">Mon-Fri: 9:00 AM - 6:00 PM</p>
-      </div>
-    </div>
-  </CardContent>
-</Card>
+              <div className="flex gap-3">
+                <div className="flex items-center justify-center h-5 w-5 text-primary shrink-0">
+                  <Clock className="h-5 w-5" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium">{t("contact.supportHours")}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {t("contact.supportHoursValue")}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* FAQ Quick Links */}
           <Card>
             <CardHeader>
-              <CardTitle>Quick Help</CardTitle>
+              <CardTitle>{t("contact.quickHelp")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="space-y-2">
-                <h4 className="font-medium">Common Questions:</h4>
+                <h4 className="font-medium">{t("contact.commonQuestions")}</h4>
                 <ul className="text-sm text-muted-foreground space-y-1">
-                  <li>• How do I book a ride?</li>
-                  <li>• How do I cancel a booking?</li>
-                  <li>• Payment and refund policy</li>
-                  <li>• Safety guidelines</li>
-                  <li>• Account verification</li>
+                  <li>• {t("contact.question1")}</li>
+                  <li>• {t("contact.question2")}</li>
+                  <li>• {t("contact.question3")}</li>
+                  <li>• {t("contact.question4")}</li>
+                  <li>• {t("contact.question5")}</li>
                 </ul>
               </div>
             </CardContent>
@@ -153,24 +148,24 @@ export default function ContactSupport() {
         <div className="lg:col-span-2">
           <Card>
             <CardHeader>
-              <CardTitle>Send us a Message</CardTitle>
+              <CardTitle>{t("contact.sendMessage")}</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Full Name *</Label>
+                    <Label htmlFor="name">{t("contact.fullName")}</Label>
                     <Input
                       id="name"
                       value={formData.name}
                       onChange={(e) => handleInputChange("name", e.target.value)}
-                      placeholder="Your full name"
+                      placeholder={t("contact.fullName")}
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email Address *</Label>
+                    <Label htmlFor="email">{t("contact.emailAddress")}</Label>
                     <Input
                       id="email"
                       type="email"
@@ -184,44 +179,44 @@ export default function ContactSupport() {
 
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="category">Category *</Label>
+                    <Label htmlFor="category">{t("contact.category")}</Label>
                     <Select
                       id="category"
                       value={formData.category}
                       onChange={(value) => handleInputChange("category", value)}
-                      placeholder="Select a category"
+                      placeholder={t("contact.category")}
                       className="w-full"
                       size="large"
                     >
-                      <Option value="booking">Booking Issues</Option>
-                      <Option value="payment">Payment & Billing</Option>
-                      <Option value="account">Account Problems</Option>
-                      <Option value="safety">Safety Concerns</Option>
-                      <Option value="technical">Technical Issues</Option>
-                      <Option value="feedback">Feedback & Suggestions</Option>
-                      <Option value="other">Other</Option>
+                      <Option value="booking">{t("contact.categories.booking")}</Option>
+                      <Option value="payment">{t("contact.categories.payment")}</Option>
+                      <Option value="account">{t("contact.categories.account")}</Option>
+                      <Option value="safety">{t("contact.categories.safety")}</Option>
+                      <Option value="technical">{t("contact.categories.technical")}</Option>
+                      <Option value="feedback">{t("contact.categories.feedback")}</Option>
+                      <Option value="other">{t("contact.categories.other")}</Option>
                     </Select>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="subject">Subject *</Label>
+                    <Label htmlFor="subject">{t("contact.subject")}</Label>
                     <Input
                       id="subject"
                       value={formData.subject}
                       onChange={(e) => handleInputChange("subject", e.target.value)}
-                      placeholder="Brief description of your issue"
+                      placeholder={t("contact.subject")}
                       required
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="message">Message *</Label>
+                  <Label htmlFor="message">{t("contact.message")}</Label>
                   <Textarea
                     id="message"
                     value={formData.message}
                     onChange={(e) => handleInputChange("message", e.target.value)}
-                    placeholder="Please describe your issue or question in detail..."
+                    placeholder={t("contact.message")}
                     rows={6}
                     required
                   />
@@ -232,10 +227,10 @@ export default function ContactSupport() {
                     {isLoading ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Sending...
+                        {t("contact.sending")}
                       </>
                     ) : (
-                      "Send Message"
+                      t("contact.sendButton")
                     )}
                   </Button>
                 </div>

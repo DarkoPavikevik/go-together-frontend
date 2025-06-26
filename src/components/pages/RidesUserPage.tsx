@@ -1,7 +1,7 @@
 "use client";
 
 import { Label } from "@radix-ui/react-label";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Avatar,
   Button,
@@ -24,7 +24,6 @@ import {
   Users,
 } from "lucide-react";
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getRideById } from "../../services/rides/ridesServices";
 import {
@@ -35,9 +34,9 @@ import {
 } from "../ui/Card";
 import ReviewsList from "../ui/ReviewsList";
 import { Textarea } from "../ui/Textarea";
+import { requestToJoin } from "../../services/booking/bookingService";
 
 export default function RideDetailPage() {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(false);
@@ -50,27 +49,20 @@ export default function RideDetailPage() {
     queryFn: () => getRideById(Number(id)),
   });
 
+  const { mutate: requestToJoinMutation } = useMutation({
+    mutationKey: ["request-join"],
+    mutationFn: (body: { rideId: number; numberOfSeats: number }) =>
+      requestToJoin(body),
+  });
+
   const handleSendRequest = async () => {
-    setIsLoading(true);
-
-    try {
-      // Here you would connect to your Spring Boot backend
-      // const response = await fetch(`/api/rides/${params.id}/request`, {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ message }),
-      // })
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      setShowRequestSent(true);
-    } catch (error) {
-      console.error("Failed to send request:", error);
-    } finally {
-      setIsLoading(false);
-    }
+    const dataToSend: { rideId: number; numberOfSeats: number } = {
+      rideId: ride.id,
+      numberOfSeats: ride.seatsAvailable,
+    };
+    await requestToJoinMutation(dataToSend);
   };
+
   if (loadingRide)
     return (
       <div className="container py-10 h-screen">
@@ -98,8 +90,9 @@ export default function RideDetailPage() {
   const totalDuration = totalDurationEntry
     ? totalDurationEntry.split(":").slice(1).join(":").trim()
     : "N/A";
+
   return (
-    <div className="container py-8">
+    <div className="container px-24 py-8">
       <div className="mb-8 text-left">
         <Button className="mb-4" onClick={() => navigate("/rides")}>
           ← Back to rides
@@ -260,7 +253,7 @@ export default function RideDetailPage() {
                         .toLowerCase()
                         .startsWith("total trip duration")
                   )
-                  .map((stopString: string, index: number, arr: any) => {
+                  .map((stopString: string, index: number, arr: string[]) => {
                     const city = stopString.split("(")[0].trim();
 
                     const time = stopString

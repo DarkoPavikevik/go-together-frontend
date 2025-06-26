@@ -16,21 +16,21 @@ export const getCitiesByCountry = async (country: string) => {
 };
 
 export const createRide = async (rideData: RideDTO): Promise<RideDTO> => {
-  const token = localStorage.getItem('accessToken');
-  
-  const response = await fetch('http://localhost:8080/api/rides/create', {
-    method: 'POST',
+  const token = localStorage.getItem("accessToken");
+
+  const response = await fetch("http://localhost:8080/api/rides/create", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(rideData),
   });
 
   if (!response.ok) {
     const errorData = await response.json();
-    console.error('Backend error:', errorData);
-    throw new Error(errorData.message || 'Failed to create ride');
+    console.error("Backend error:", errorData);
+    throw new Error(errorData.message || "Failed to create ride");
   }
 
   return response.json();
@@ -54,5 +54,19 @@ export const popularRides = async () => {
 
 export const getRideById = async (id: number) => {
   const response = await axios.get(`http://localhost:8080/api/rides/${id}`);
+  return response ? response.data : response;
+};
+
+export const pastRides = async (userId: number) => {
+  const response = await axios.get(
+    `http://localhost:8080/api/rides/past/${userId}`
+  );
+  return response ? response.data : response;
+};
+
+export const upcomingRides = async (userId: number) => {
+  const response = await axios.get(
+    `http://localhost:8080/api/rides/future/${userId}`
+  );
   return response ? response.data : response;
 };

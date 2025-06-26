@@ -8,6 +8,10 @@ export interface IUpdateBody {
   username: string;
   phoneNumber: string | null;
 }
+export interface IRequestBody {
+  rideId: number;
+  numberOfSeats: number;
+}
 
 export const getAllBookings = async () => {
   const response = await axios.get(`http://localhost:8080/api/bookings`);
@@ -20,4 +24,13 @@ export const updateBooking = async (id: number, body: IUpdateBody) => {
     body
   );
   return response ? response.data : response;
+};
+
+export const requestToJoin = async (body: IRequestBody) => {
+  console.log("body", body);
+  // const response = await axios.post(
+  //   `http://localhost:8080/api/bookings/request`,
+  //   body
+  // );
+  // return response ? response.data : response;
 };

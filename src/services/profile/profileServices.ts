@@ -26,7 +26,6 @@ export const updatePreference = async (
 };
 
 export const updateProfile = async (id: number, body: IUpdateProfile) => {
-  console.log("body vnatre", body);
   const response = await axios.put(
     `http://localhost:8080/api/user/${id}`,
     body

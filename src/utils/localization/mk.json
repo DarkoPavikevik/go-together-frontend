@@ -263,24 +263,64 @@
   "privacy.contact.support": "Генерална Поддршка:",
   "privacy.contact.address": "Адреса:",
   "privacy.contact.contactSupport": "Контактирајте Поддршка",
-  "privacy.contact.terms": "Услови за Користење"
-
-
+  "privacy.contact.terms": "Услови за Користење",
+  "contact.title": "Контакт поддршка",
+  "contact.description": "Ви треба помош? Имате прашање? Ние сме тука за да ви помогнеме. Испратете ни порака и ќе ви одговориме наскоро.",
+  "contact.getInTouch": "Контактирајте не",
+  "contact.email": "Е-пошта",
+  "contact.emailValue": "support@gotogether.mk",
+  "contact.phone": "Телефон",
+  "contact.phoneValue": "+389 70 123 456",
+  "contact.supportHours": "Работно време",
+  "contact.supportHoursValue": "Пон-Пет: 9:00 - 18:00",
+  "contact.quickHelp": "Брза помош",
+  "contact.commonQuestions": "Често поставувани прашања:",
+  "contact.question1": "• Како да резервирам превоз?",
+  "contact.question2": "• Како да откажам резервација?",
+  "contact.question3": "• Политика за плаќање и рефундирање",
+  "contact.question4": "• Безбедносни упатства",
+  "contact.question5": "• Верификација на сметка",
+  "contact.sendMessage": "Испратете ни порака",
+  "contact.fullName": "Целосно име *",
+  "contact.emailAddress": "Е-пошта *",
+  "contact.category": "Категорија *",
+  "contact.subject": "Наслов *",
+  "contact.message": "Порака *",
+  "contact.sendButton": "Испрати порака",
+  "contact.sending": "Испраќање...",
+  "contact.successTitle": "Пораката е успешно испратена!",
+  "contact.successMessage": "Ви благодариме што не контактиравте. Ја примивме вашата порака и ќе ви одговориме во рок од 24 часа.",
+  "contact.anotherMessage": "Испрати друга порака",
+  "contact.backHome": "Назад кон почетна",
+  "contact.categories.booking": "Проблеми со резервација",
+  "contact.categories.payment": "Плаќање и наплата",
+  "contact.categories.account": "Проблеми со сметка",
+  "contact.categories.safety": "Безбедносни проблеми",
+  "contact.categories.technical": "Технички проблеми",
+  "contact.categories.feedback": "Фидбек и сугестии",
+  "contact.categories.other": "Друго",
+  "about.title": "За GoTogether",
+  "about.subtitle": "Ние ги поврзуваме луѓето кои патуваат по ист пат за да го направиме превозот поевтин и поодржлив.",
   
+  "about.whatWeDo.title": "Што правиме",
+  "about.whatWeDo.content": "GoTogether е платформа за споделување на превоз што им помага на луѓето да најдат и понудат превоз низ Северна Македонија. Без разлика дали патувате на работа, помеѓу градови или на универзитет, ние ви помагаме да се поврзете со други кои одат по ист пат.",
 
+  "about.whyChooseUs": "Зошто да не изберете нас",
+  "about.feature1.title": "Безбедна заедница",
+  "about.feature1.desc": "Верифицирани корисници и систем за оценување за безбедни патувања",
+  "about.feature2.title": "Еколошки",
+  "about.feature2.desc": "Намалете го јаглеродниот отпечаток со споделување на превоз",
+  "about.feature3.title": "Достапно",
+  "about.feature3.desc": "Заштедете пари на транспортни трошоци",
 
+  "about.mission.title": "Нашата мисија",
+  "about.mission.content1": "Да го направиме превозот достапен и достапен за сите, а истовремено да го намалиме влијанието врз животната средина. Веруваме дека со споделување на превоз, можеме да изградиме посилни заедници и да создадеме поодржлива иднина.",
+  "about.mission.content2": "Основана во 2025 година во Скопје, GoTogether им помогна на илјадници луѓе низ Северна Македонија да заштедат пари и да го намалат својот јаглероден отпечаток.",
 
-
-
-
-
-
-
-
-
-
-
-
+  "about.contact.title": "Контактирајте не",
+  "about.contact.content": "Имате прашања или ви треба помош? Ние сме тука за да ви помогнеме.",
+  "about.contact.support": "Контактирајте поддршка",
+  "about.contact.join": "Придружете се на GoTogether"
 
 
 }

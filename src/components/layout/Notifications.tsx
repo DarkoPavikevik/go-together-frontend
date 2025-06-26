@@ -40,12 +40,12 @@ export default function Notifications() {
       <Button
         size="large"
         variant="text"
-        style={{ border: "none" }}
+        style={{ border: "none", backgroundColor: "transparent" }}
         icon={<BellOutlined style={{ fontSize: "20px", margin: 6 }} />}
         onClick={showDrawer}
       ></Button>
       <Drawer
-        title="Basic Drawer"
+        title="Notifications"
         closable={{ "aria-label": "Close Button" }}
         onClose={onClose}
         open={open}

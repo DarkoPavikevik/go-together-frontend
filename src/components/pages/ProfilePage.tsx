@@ -1,7 +1,25 @@
 "use client";
 
-import React, { useState } from "react";
+import { InboxOutlined, LoadingOutlined } from "@ant-design/icons";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useMutation } from "@tanstack/react-query";
+import { Avatar, Button, Form, Image, Spin, Tag, Tooltip } from "antd";
+import type { RcFile } from "antd/es/upload";
+import Dragger from "antd/es/upload/Dragger";
+import { format } from "date-fns";
+import { Car, Edit, Loader2, Phone, Star, User } from "lucide-react";
+import { nanoid } from "nanoid";
+import { enqueueSnackbar } from "notistack";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import { useUser } from "../../context/AuthContext";
+import useAuthController from "../../services/auth/useAuthController";
+import {
+  updatePreference,
+  updateProfile,
+  type IUpdateProfile,
+} from "../../services/profile/profileServices";
 import {
   Card,
   CardContent,
@@ -10,84 +28,17 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/Card";
-import { Car, Edit, Loader2, Phone, Star, User } from "lucide-react";
-import { format } from "date-fns";
-import { Label } from "../ui/Label";
 import { Input } from "../ui/Input";
-import { Textarea } from "../ui/Textarea";
-import { Avatar, Button, Form, Image, Spin, Tag, Tooltip } from "antd";
-import { Link } from "react-router-dom";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
-import { nanoid } from "nanoid";
-import Dragger from "antd/es/upload/Dragger";
-import { InboxOutlined, LoadingOutlined } from "@ant-design/icons";
-import useAuthController from "../../services/auth/useAuthController";
-import { useUser } from "../../context/AuthContext";
-import { enqueueSnackbar } from "notistack";
-import type { RcFile } from "antd/es/upload";
-import { useMutation } from "@tanstack/react-query";
-import {
-  updatePreference,
-  updateProfile,
-  type IUpdateProfile,
-} from "../../services/profile/profileServices";
+import { Label } from "../ui/Label";
 import ReviewsList from "../ui/ReviewsList";
-// Mock user data
-const mockUser = {
-  id: 1,
-  name: "Aleksandar Markovski",
-  email: "aleksandar@example.com",
-  phone: "+389 70 123 456",
-  avatar: null,
-  bio: "I travel frequently between Skopje and Ohrid. I'm a safe driver and enjoy good conversation during trips.",
-  rating: 4.8,
-  ridesCompleted: 42,
-  joinedDate: new Date(2022, 1, 15),
-  preferences: {
-    smoking: false,
-    pets: true,
-    music: true,
-    talking: true,
-  },
-  vehicle: {
-    model: "Volkswagen Golf",
-    color: "Blue",
-    year: 2018,
-    plate: "SK-1234-AB",
-    seats: 4,
-    image:
-      "https://www.mercedes-benz.co.uk/content/dam/hq/passengercars/cars/a-class/hatchback-w177-fl-pi/modeloverview/08-2022/images/mercedes-benz-a-class-w177-696x392-08-2022.jpg",
-  },
-  reviews: [
-    {
-      id: 1,
-      user: {
-        name: "Elena T.",
-        avatar: null,
-      },
-      rating: 5,
-      date: new Date(2023, 5, 10),
-      comment:
-        "Great driver, very punctual and friendly. The car was clean and comfortable.",
-    },
-    {
-      id: 2,
-      user: {
-        name: "Marko D.",
-        avatar: null,
-      },
-      rating: 4,
-      date: new Date(2023, 4, 22),
-      comment: "Good experience overall. Would ride again.",
-    },
-  ],
-};
+import { Textarea } from "../ui/Textarea";
 const preferences = [
   { key: "smoking", label: "Smoking" },
   { key: "pets", label: "Pets" },
   { key: "music", label: "Music" },
   { key: "talking", label: "Talking" },
 ] as const;
+
 export default function ProfilePage() {
   const { t } = useTranslation();
   const { addProfilePicture } = useAuthController();

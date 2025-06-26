@@ -27,6 +27,7 @@ import Image from "../ui/Image";
 import { Label } from "../ui/Label";
 import { useTheme } from "../ui/ThemeProvider";
 import AnimatedBackground from "../ui/animated-backgroud";
+import { HomeOutlined } from "@ant-design/icons";
 
 interface SignInProps {
   initialMode?: "signin" | "signup";
@@ -107,6 +108,18 @@ export default function SignIn({ initialMode = "signin" }: SignInProps) {
     <div className="flex h-screen w-full overflow-hidden bg-gradient-to-br from-[#37215c] to-[#2a1a47]">
       {/* Left side with animation - with rounded edges */}
       <div className="hidden md:block md:w-1/2 p-6 relative">
+        <div className="absolute top-4 left-4 z-20">
+          <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm">
+            <Button
+              type="text"
+              className="!bg-transparent !border-none !hover:border-none !focus:!shadow-none !active:!shadow-none !outline-none !ring-0 !rounded-none !p-0"
+              icon={
+                <HomeOutlined style={{ fontSize: "20px", color: "white" }} />
+              }
+              onClick={() => navigate("/home")}
+            />
+          </div>
+        </div>
         <div className="absolute inset-0 rounded-r-3xl overflow-hidden">
           <div className="w-full h-full bg-gradient-to-br from-[#37215c] to-[#4f2c8d] flex items-center justify-center">
             <AnimatedBackground />
@@ -151,6 +164,7 @@ export default function SignIn({ initialMode = "signin" }: SignInProps) {
       {/* Right side with unified sign-in/sign-up form */}
       <div className="flex flex-col justify-center items-center w-full md:w-1/2 p-4">
         <div className="absolute z-[0] w-[40%] h-[35%] top-0 right-20 pink__gradient" />
+
         <div style={{ position: "absolute", top: 20, right: 20 }}>
           <div className="flex flex-row gap-3">
             <ReactFlagsSelect

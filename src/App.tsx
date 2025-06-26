@@ -20,6 +20,7 @@ import AboutUs from "./components/pages/AboutUsPage";
 import ContactSupport from "./components/pages/ContactSupportPage";
 import TermsOfService from "./components/pages/TermsPage";
 import PrivacyPolicy from "./components/pages/PrivacyPage";
+import { SearchProvider } from "./context/SearchContext";
 
 function App() {
   const queryClient = new QueryClient();
@@ -31,28 +32,33 @@ function App() {
             anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
           >
             <UserProvider>
-              <Routes>
-                <Route path="/" element={<Layout />}>
-                  <Route path="/" element={<Navigate to={"/home"} replace />} />
-                  <Route path="/home" element={<HomePage />} />
-                  <Route path="/my-rides" element={<MyRidesPage />} />
-                  <Route path="/profile" element={<ProfilePage />} />
-                  <Route path="/chat/:id" element={<ChatPage />} />
-                  <Route path="/rides" element={<RidesPage />} />
-                  <Route path="/rides/create" element={<CreateRidesPage />} />
-                  <Route path="/rides/:id" element={<RidesUserPage />} />
-                  <Route path="/vehicle/:id" element={<EditVehicle />} />
-                  <Route path="/about-us" element={<AboutUs/>}/>
-                  <Route path="/contact" element={<ContactSupport/>} />
-                  <Route path="/terms" element={<TermsOfService/>} />
-                  <Route path="/privacy" element={<PrivacyPolicy/>} />
-                </Route>
-                <Route path="sign-in" element={<SignInPage />} />
-                <Route
-                  path="sign-up"
-                  element={<SignInPage initialMode="signup" />}
-                />
-              </Routes>
+              <SearchProvider>
+                <Routes>
+                  <Route path="/" element={<Layout />}>
+                    <Route
+                      path="/"
+                      element={<Navigate to={"/home"} replace />}
+                    />
+                    <Route path="/home" element={<HomePage />} />
+                    <Route path="/my-rides" element={<MyRidesPage />} />
+                    <Route path="/profile" element={<ProfilePage />} />
+                    <Route path="/chat/:id" element={<ChatPage />} />
+                    <Route path="/rides" element={<RidesPage />} />
+                    <Route path="/rides/create" element={<CreateRidesPage />} />
+                    <Route path="/rides/:id" element={<RidesUserPage />} />
+                    <Route path="/vehicle/:id" element={<EditVehicle />} />
+                    <Route path="/about-us" element={<AboutUs />} />
+                    <Route path="/contact" element={<ContactSupport />} />
+                    <Route path="/terms" element={<TermsOfService />} />
+                    <Route path="/privacy" element={<PrivacyPolicy />} />
+                  </Route>
+                  <Route path="sign-in" element={<SignInPage />} />
+                  <Route
+                    path="sign-up"
+                    element={<SignInPage initialMode="signup" />}
+                  />
+                </Routes>
+              </SearchProvider>
             </UserProvider>
           </SnackbarProvider>
         </BrowserRouter>

@@ -37,6 +37,8 @@ import { useTheme } from "../ui/ThemeProvider";
 import PriceFilterDropdown from "../ui/PriceFilterButton";
 import { getPaginationConfig } from "../../utils/paginationConfig";
 import { nanoid } from "nanoid";
+import { useSearch } from "../../context/SearchContext";
+
 
 export interface IRide {
   id: number;
@@ -67,7 +69,16 @@ export default function RidesPage() {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { isAuthenticated } = useUser();
-  const [isSearchActive, setIsSearchActive] = useState(false);
+  const {
+    from,
+    to,
+    date,
+    setFrom,
+    setTo,
+    setDate,
+    isSearchActive,
+    setIsSearchActive,
+  } = useSearch();
   const [priceFilters, setPriceFilters] = useState<{
     sortOrder?: "asc" | "desc";
     priceRange?: string;
@@ -77,11 +88,7 @@ export default function RidesPage() {
     pageSize: 5,
     total: 0,
   });
-  const [searchParams, setSearchParams] = useState({
-    from: undefined,
-    to: undefined,
-    date: "",
-  });
+
   const { data: rides, isLoading: ridesLoading } = useQuery({
     queryKey: ["get-rides", pagination.current, pagination.pageSize],
     queryFn: () => getRides(pagination.current - 1, pagination.pageSize),
@@ -104,12 +111,8 @@ export default function RidesPage() {
   } = useQuery({
     queryKey: ["get-searched-rides", pagination.current, pagination.pageSize],
     queryFn: () => {
-      if (searchParams.from || searchParams.to || searchParams.date) {
-        return searchRide(
-          searchParams.from,
-          searchParams.to,
-          searchParams.date
-        );
+      if (from || to || date) {
+        return searchRide(from, to, date);
       }
     },
   });
@@ -122,7 +125,7 @@ export default function RidesPage() {
   };
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchParams.from || searchParams.to || searchParams.date) {
+    if (from || to || date) {
       setIsSearchActive(true);
       try {
         await refetchSearchedRides();
@@ -135,7 +138,9 @@ export default function RidesPage() {
   };
 
   const handleResetSearch = () => {
-    setSearchParams({ from: undefined, to: undefined, date: "" });
+    setFrom("");
+    setTo("");
+    setDate("");
     setIsSearchActive(false);
   };
   const paginationConfig = getPaginationConfig({
@@ -184,7 +189,6 @@ export default function RidesPage() {
     }
   }, [rides]);
 
-  console.log(rides);
   return (
     <div className="container px-24 py-8">
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -242,7 +246,7 @@ export default function RidesPage() {
                   <div className="relative">
                     <MapPin className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Select
-                      value={searchParams.from}
+                      value={from}
                       options={loadingCities ? [] : cityOptions}
                       placeholder="Select a city"
                       style={{
@@ -266,10 +270,7 @@ export default function RidesPage() {
                           : {}
                       }
                       onChange={(e) => {
-                        setSearchParams({
-                          ...searchParams,
-                          from: e,
-                        });
+                        setFrom(e);
                       }}
                     />
                   </div>
@@ -280,13 +281,12 @@ export default function RidesPage() {
                   <div className="relative">
                     <MapPin className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Select
-                      value={searchParams.to}
+                      value={to}
                       options={
                         loadingCities
                           ? []
                           : cityOptions.filter(
-                              (to: { value: string }) =>
-                                to.value !== searchParams.from
+                              (to: { value: string }) => to.value !== from
                             )
                       }
                       placeholder="Select a city"
@@ -311,10 +311,7 @@ export default function RidesPage() {
                           : {}
                       }
                       onChange={(e) => {
-                        setSearchParams({
-                          ...searchParams,
-                          to: e,
-                        });
+                        setTo(e);
                       }}
                     />
                   </div>
@@ -331,14 +328,9 @@ export default function RidesPage() {
                           }
                         : {}
                     }
-                    value={
-                      searchParams.date ? dayjs(searchParams.date) : undefined
-                    }
+                    value={date ? dayjs(date) : undefined}
                     onChange={(date) => {
-                      setSearchParams({
-                        ...searchParams,
-                        date: date ? dayjs(date).format("YYYY-MM-DD") : "",
-                      });
+                      setDate(date ? dayjs(date).format("YYYY-MM-DD") : "");
                     }}
                   />
                 </div>
@@ -699,16 +691,9 @@ export default function RidesPage() {
               style={buttonStyle}
               variant="solid"
               color="blue"
-              onClick={() => {
-                setIsSearchActive(false);
-                setSearchParams({
-                  from: undefined,
-                  to: undefined,
-                  date: "",
-                });
-              }}
+              onClick={() => handleResetSearch()}
             >
-              {t("reset search")}
+              {t("Reset search")}
             </Button>
           </Card>
         )}

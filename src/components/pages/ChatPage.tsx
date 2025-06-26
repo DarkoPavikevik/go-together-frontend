@@ -215,7 +215,6 @@ export default function ChatPage() {
                   const sender = chat.participants.find(
                     (p) => p.id === message.senderId
                   );
-                  console.log(sender?.name.charAt(0));
                   return (
                     <div
                       key={message.id}

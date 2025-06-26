@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Button as AntdButton,
-  Avatar,
-  Button,
-  DatePicker,
-  type DatePickerProps,
-} from "antd";
+import { Button as AntdButton, Avatar, Button, DatePicker, Select } from "antd";
 import { Car, CreditCard, MapPin, Search, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +9,9 @@ import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 import { useUser } from "../../context/AuthContext";
 // import { Button } from "../ui/Button";
+import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import { getCitiesByCountry } from "../../services/rides/ridesServices";
 import {
   Card,
   CardContent,
@@ -22,9 +19,10 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/Card";
-import { Input } from "../ui/Input";
 import { Label } from "../ui/Label";
 import { useTheme } from "../ui/ThemeProvider";
+import { useSearch } from "../../context/SearchContext";
+import { getReviews } from "../../services/review/reviewServices";
 
 const sliderSettings = {
   infinite: true,
@@ -35,72 +33,33 @@ const sliderSettings = {
   arrows: false,
 };
 
-const mockReviews = [
-  {
-    id: 1,
-    user: {
-      name: "Elena D.",
-      avatar: null,
-    },
-    rating: 5,
-    comment:
-      "I've been using GoTogether for my daily commute to work. It's saved me so much money and I've made some great friends!",
-  },
-  {
-    id: 2,
-    user: {
-      name: "Marko D.",
-      avatar: null,
-    },
-    rating: 4,
-    comment:
-      "Good experience As a driver, I can offset my travel costs and help others. The app makes it easy to find passengers going my way.",
-  },
-  {
-    id: 3,
-    user: {
-      name: "Josif D.",
-      avatar: null,
-    },
-    rating: 4,
-    comment:
-      "Good experience As a driver, I can offset my travel costs and help others. The app makes it easy to find passengers going my way.",
-  },
-  {
-    id: 4,
-    user: {
-      name: "Boris D.",
-      avatar: null,
-    },
-    rating: 4,
-    comment:
-      "Good experience As a driver, I can offset my travel costs and help others. The app makes it easy to find passengers going my way.",
-  },
-  {
-    id: 5,
-    user: {
-      name: "Pegja D.",
-      avatar: null,
-    },
-    rating: 4,
-    comment:
-      "Good experience As a driver, I can offset my travel costs and help others. The app makes it easy to find passengers going my way.",
-  },
-];
-
 export default function Home() {
   const { t } = useTranslation();
   const { isAuthenticated } = useUser();
   const { theme } = useTheme();
   const navigate = useNavigate();
-  const onChange: DatePickerProps["onChange"] = (date, dateString) => {
-    console.log(date, dateString);
-  };
+  const { from, to, date, setFrom, setTo, setDate, setIsSearchActive } =
+    useSearch();
+
+  const { data: cities, isLoading: loadingCities } = useQuery({
+    queryKey: ["get-cities"],
+    queryFn: () => getCitiesByCountry("macedonia"),
+  });
+
+  const { data: reviews, isLoading: loadingReviews } = useQuery({
+    queryKey: ["get-reviews"],
+    queryFn: () => getReviews(),
+  });
 
   const buttonStyle =
     theme === "dark"
       ? { backgroundColor: "#6e3fac", borderColor: "#6e3fac", color: "white" }
       : { color: "white", backgroundColor: "#646cff" };
+
+  const cityOptions = cities?.map((city: { label: string; value: string }) => ({
+    label: city,
+    value: city,
+  }));
 
   return (
     <div className="w-full flex flex-col items-center">
@@ -147,9 +106,9 @@ export default function Home() {
       </section>
 
       {/* Search Section */}
-      <section className="container py-12">
+      <section className="w-full py-26 md:py-24 homepage-gradient-three-colors">
         <Card
-          className={`mx-auto max-w-4xl shadow-2xl ${
+          className={`mx-auto max-w-4xl shadow-2xl bg-white  ${
             theme === "dark" ? "border-[#363654]" : "border-gray-200"
           }`}
         >
@@ -165,10 +124,33 @@ export default function Home() {
                 </Label>
                 <div className="relative">
                   <MapPin className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="from"
-                    placeholder="City or location"
-                    className="pl-8"
+                  <Select
+                    value={from}
+                    options={loadingCities ? [] : cityOptions}
+                    placeholder="Select a city"
+                    style={{
+                      width: "100%",
+                      ...(theme === "dark"
+                        ? {
+                            backgroundColor: "#1e1e2f",
+                            borderColor: "#363654",
+                            color: "white",
+                          }
+                        : {}),
+                    }}
+                    showSearch
+                    dropdownStyle={
+                      theme === "dark"
+                        ? {
+                            backgroundColor: "#252538",
+                            borderColor: "#363654",
+                            color: "white",
+                          }
+                        : {}
+                    }
+                    onChange={(e) => {
+                      setFrom(e);
+                    }}
                   />
                 </div>
               </div>
@@ -178,10 +160,39 @@ export default function Home() {
                 </Label>
                 <div className="relative">
                   <MapPin className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="to"
-                    placeholder="City or location"
-                    className="pl-8"
+                  <Select
+                    value={to}
+                    options={
+                      loadingCities
+                        ? []
+                        : cityOptions.filter(
+                            (to: { value: string }) => to.value !== from
+                          )
+                    }
+                    placeholder="Select a city"
+                    style={{
+                      width: "100%",
+                      ...(theme === "dark"
+                        ? {
+                            backgroundColor: "#1e1e2f",
+                            borderColor: "#363654",
+                            color: "white",
+                          }
+                        : {}),
+                    }}
+                    showSearch
+                    dropdownStyle={
+                      theme === "dark"
+                        ? {
+                            backgroundColor: "#252538",
+                            borderColor: "#363654",
+                            color: "white",
+                          }
+                        : {}
+                    }
+                    onChange={(e) => {
+                      setTo(e);
+                    }}
                   />
                 </div>
               </div>
@@ -190,8 +201,6 @@ export default function Home() {
                   {t("rides.date")}
                 </Label>
                 <DatePicker
-                  onChange={onChange}
-                  size="large"
                   style={
                     theme === "dark"
                       ? {
@@ -199,8 +208,12 @@ export default function Home() {
                           borderColor: "#363654",
                           color: "white",
                         }
-                      : { borderColor: "black" }
+                      : {}
                   }
+                  value={date ? dayjs(date) : undefined}
+                  onChange={(date) => {
+                    setDate(date ? dayjs(date).format("YYYY-MM-DD") : "");
+                  }}
                 />
               </div>
               <div className="grid gap-2 sm:col-span-2 md:col-span-1">
@@ -208,9 +221,13 @@ export default function Home() {
                 <AntdButton
                   className="w-full"
                   variant="solid"
-                  size="large"
+                  size="middle"
                   color="primary"
                   style={buttonStyle}
+                  onClick={() => {
+                    setIsSearchActive(true);
+                    navigate("/rides");
+                  }}
                 >
                   <Search className="mr-2 h-4 w-4" />
                   {t("rides.search")}
@@ -220,7 +237,6 @@ export default function Home() {
           </CardContent>
         </Card>
       </section>
-
       {/* How It Works Section */}
       <section className="w-full py-26 md:py-24 homepage-gradient-three-colors">
         <div className="flex flex-col items-center text-center">
@@ -363,37 +379,48 @@ export default function Home() {
 
           <div className="w-full max-w-7xl">
             <Slider {...sliderSettings}>
-              {mockReviews.map((review) => (
-                <div key={review.id} className="px-4">
-                  <Card className="h-full border-gray-200 shadow-lg">
-                    <CardContent className="pt-6">
-                      <div className="mb-4 flex items-center gap-4">
-                        <Avatar
-                          alt="test"
-                          size={"large"}
-                          src={review.user.avatar}
-                        >
-                          {review.user.avatar === null &&
-                            review.user.name.charAt(0)}
-                        </Avatar>
-                        <div>
-                          <h4 className="font-bold">{review.user.name}</h4>
-                          <div className="flex text-yellow-500">
-                            {[...Array(5)].map((_, i) => (
-                              <span key={i}>
-                                {i < review.rating ? "★" : "☆"}
-                              </span>
-                            ))}
+              {!loadingReviews &&
+                reviews.map(
+                  (review: {
+                    id: number;
+                    reviewerPicture: string;
+                    reviewerName: string;
+                    rating: number;
+                    comment: string;
+                  }) => (
+                    <div key={review.id} className="px-4">
+                      <Card className="h-full border-gray-200 shadow-lg">
+                        <CardContent className="pt-6">
+                          <div className="mb-4 flex items-center gap-4">
+                            <Avatar
+                              alt="test"
+                              size={"large"}
+                              src={review.reviewerPicture}
+                            >
+                              {review.reviewerPicture === null &&
+                                review.reviewerName.charAt(0)}
+                            </Avatar>
+                            <div>
+                              <h4 className="font-bold">
+                                {review.reviewerName}
+                              </h4>
+                              <div className="flex text-yellow-500">
+                                {[...Array(5)].map((_, i) => (
+                                  <span key={i}>
+                                    {i < review.rating ? "★" : "☆"}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                      <p className="italic text-muted-foreground">
-                        {review.comment}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </div>
-              ))}
+                          <p className="italic text-muted-foreground">
+                            {review.comment}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  )
+                )}
             </Slider>
           </div>
         </div>

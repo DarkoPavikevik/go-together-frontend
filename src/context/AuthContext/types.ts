@@ -45,11 +45,11 @@ export interface RideDTO {
   fromLocation: string;
   toLocation: string;
   date: string;
-  time: string; // Format: "HH:mm:ss"
+  time: string; 
   price: number;
   seatsAvailable: number;
   status?: string;
-  luggageSize: "SMALL" | "MEDIUM" | "LARGE"; // Uppercase to match backend
+  luggageSize: "SMALL" | "MEDIUM" | "LARGE"; 
   currency: string;
   waypoints?: string[];
   notes?: string;

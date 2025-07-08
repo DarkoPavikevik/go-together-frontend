@@ -111,8 +111,8 @@ export default function Header() {
               backgroundColor: theme === "dark" ? "#1e1e2f" : "#fff",
               display: "flex",
               flexDirection: "column",
-              justifyContent: "space-between", // 👈 pushes bottom section down
-              height: "100%", // 👈 ensures the drawer uses full height
+              justifyContent: "space-between", 
+              height: "100%", 
             }}
             headerStyle={{
               backgroundColor: theme === "dark" ? "#1e1e2f" : "#fff",

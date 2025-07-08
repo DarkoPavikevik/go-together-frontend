@@ -5,7 +5,6 @@ import App from "./App.tsx";
 import { createClient } from "@supabase/supabase-js";
 import { SessionContextProvider } from "@supabase/auth-helpers-react";
 
-// Dark mode cursor tracking for radial gradient effect
 if (typeof window !== "undefined") {
   document.addEventListener("mousemove", (e) => {
     document.documentElement.style.setProperty("--cursor-x", `${e.clientX}px`);

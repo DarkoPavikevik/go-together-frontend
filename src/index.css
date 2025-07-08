@@ -142,7 +142,7 @@ body {
     color 0.3s ease;
 }
 
-/* Dark mode gradient backgrounds */
+
 .dark .homepage-gradient-color {
   background: linear-gradient(to bottom, #2d0a54, #16083b);
 }
@@ -187,7 +187,7 @@ body {
     transform 0.3s ease-in-out, fill 0.3s ease-in-out, stroke 0.3s ease-in-out !important;
 }
 
-/* Fancy animation for dark mode switching */
+
 .dark body::before {
   content: "";
   position: fixed;

@@ -362,7 +362,7 @@ export default function ProfilePage() {
                         <span className="text-muted-foreground">
                           {t("profile.model")}:
                         </span>
-                        <span>{me?.vehicle.model}</span>
+                        <span>{me?.vehicle?.brand} {me?.vehicle.model}</span>
                       </li>
                       <li className="flex justify-between">
                         <span className="text-muted-foreground">

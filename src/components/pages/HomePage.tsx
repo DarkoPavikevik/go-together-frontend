@@ -8,7 +8,6 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 import { useUser } from "../../context/AuthContext";
-// import { Button } from "../ui/Button";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { getCitiesByCountry } from "../../services/rides/ridesServices";

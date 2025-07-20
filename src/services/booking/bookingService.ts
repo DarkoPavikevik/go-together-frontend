@@ -10,7 +10,9 @@ export interface IUpdateBody {
 }
 export interface IRequestBody {
   rideId: number;
-  numberOfSeats: number;
+  pickupLocation: string;
+  dropoffLocation: string;
+  note: string;
 }
 
 export const getAllBookings = async () => {
@@ -27,10 +29,21 @@ export const updateBooking = async (id: number, body: IUpdateBody) => {
 };
 
 export const requestToJoin = async (body: IRequestBody) => {
-  console.log("body", body);
-  // const response = await axios.post(
-  //   `http://localhost:8080/api/bookings/request`,
-  //   body
-  // );
-  // return response ? response.data : response;
+  const response = await axios.post(
+    `http://localhost:8080/api/bookings/request`,
+    body
+  );
+  return response ? response.data : response;
+};
+
+export const sendMessage = async (body: {
+  receiverId: number;
+  senderId: number;
+  message: string;
+}) => {
+  const response = await axios.post(
+    `http://localhost:8080/api/chat/send`,
+    body
+  );
+  return response ? response.data : response;
 };

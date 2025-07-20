@@ -9,6 +9,7 @@ import {
   Divider,
   Image,
   Modal,
+  Select,
   Skeleton,
   Tag,
 } from "antd";
@@ -17,15 +18,25 @@ import {
   Car,
   Clock,
   CreditCard,
-  Loader2,
   Luggage,
   MapPin,
   Star,
   Users,
 } from "lucide-react";
+import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { getRideById } from "../../services/rides/ridesServices";
+import { useTranslation } from "react-i18next";
+import { useNavigate, useParams } from "react-router-dom";
+import { useUser } from "../../context/AuthContext";
+import { useSearch } from "../../context/SearchContext";
+import {
+  requestToJoin,
+  sendMessage,
+} from "../../services/booking/bookingService";
+import {
+  getCitiesByCountry,
+  getRideById,
+} from "../../services/rides/ridesServices";
 import {
   CardContent,
   CardDescription,
@@ -34,33 +45,94 @@ import {
 } from "../ui/Card";
 import ReviewsList from "../ui/ReviewsList";
 import { Textarea } from "../ui/Textarea";
-import { requestToJoin } from "../../services/booking/bookingService";
+import { useTheme } from "../ui/ThemeProvider";
 
 export default function RideDetailPage() {
+  const { t } = useTranslation();
+  const { me, isAuthenticated } = useUser();
   const navigate = useNavigate();
   const { id } = useParams();
-  const [isLoading, setIsLoading] = useState(false);
+  const { from, to, setFrom, setTo } = useSearch();
   const [message, setMessage] = useState("");
+  const [note, setNote] = useState("");
+
   const [showRequestSent, setShowRequestSent] = useState(false);
   const [openMessageDriver, setOpenMessageDriver] = useState(false);
+  const { theme } = useTheme();
 
   const { data: ride, isLoading: loadingRide } = useQuery({
     queryKey: ["get-ride-by-id"],
     queryFn: () => getRideById(Number(id)),
   });
 
-  const { mutate: requestToJoinMutation } = useMutation({
-    mutationKey: ["request-join"],
-    mutationFn: (body: { rideId: number; numberOfSeats: number }) =>
-      requestToJoin(body),
+  const { data: cities, isLoading: loadingCities } = useQuery({
+    queryKey: ["get-cities"],
+    queryFn: () => getCitiesByCountry("macedonia"),
   });
 
+  const cityOptions = cities?.map((city: { label: string; value: string }) => ({
+    label: city,
+    value: city,
+  }));
+
+  const { mutate: requestToJoinMutation, isPending } = useMutation({
+    mutationKey: ["request-join"],
+    mutationFn: (body: {
+      rideId: number;
+      pickupLocation: string;
+      dropoffLocation: string;
+      note: string;
+    }) => requestToJoin(body),
+    onSuccess: (res) => {
+      enqueueSnackbar(res, { variant: "success" });
+      setShowRequestSent(true);
+      setNote("");
+      setFrom("");
+      setTo("");
+    },
+  });
+
+  const { mutate: sendMessageToDriverMutation, isPending: pendingMessage } =
+    useMutation({
+      mutationKey: ["send-message"],
+      mutationFn: (body: {
+        receiverId: number;
+        senderId: number;
+        message: string;
+      }) => sendMessage(body),
+      onSuccess: (res) => {
+        enqueueSnackbar(res, { variant: "success" });
+        setMessage("");
+        setOpenMessageDriver(false);
+      },
+    });
+
   const handleSendRequest = async () => {
-    const dataToSend: { rideId: number; numberOfSeats: number } = {
+    const dataToSend: {
+      rideId: number;
+      pickupLocation: string;
+      dropoffLocation: string;
+      note: string;
+    } = {
       rideId: ride.id,
-      numberOfSeats: ride.seatsAvailable,
+      pickupLocation: from,
+      dropoffLocation: to,
+      note: note,
     };
-    await requestToJoinMutation(dataToSend);
+    requestToJoinMutation(dataToSend);
+  };
+
+  const sendMessageToDriverHandle = () => {
+    const dataToSend: {
+      receiverId: number;
+      senderId: number;
+      message: string;
+    } = {
+      receiverId: ride?.userInfo.id,
+      senderId: Number(me?.id),
+      message: message,
+    };
+    sendMessageToDriverMutation(dataToSend);
   };
 
   if (loadingRide)
@@ -377,154 +449,251 @@ export default function RideDetailPage() {
         </div>
 
         <div className="flex flex-col gap-4">
-          <Card className="user-ride-car-border">
-            <CardHeader className="text-left">
-              <CardTitle>Request to Join</CardTitle>
+          {me?.id !== ride?.userInfo.id && (
+            <>
+              <Card className="user-ride-car-border">
+                <CardHeader className="text-left">
+                  <CardTitle>Request to Join</CardTitle>
 
-              <CardDescription>
-                Send a request to join this ride
-              </CardDescription>
-            </CardHeader>
+                  <CardDescription>
+                    Send a request to join this ride
+                  </CardDescription>
+                </CardHeader>
 
-            <CardContent>
-              {showRequestSent ? (
-                <div className="text-center py-4">
-                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300 mb-4">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-6 h-6"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M4.5 12.75l6 6 9-13.5"
-                      />
-                    </svg>
-                  </div>
+                <CardContent>
+                  {showRequestSent ? (
+                    <div className="text-center py-4">
+                      <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300 mb-4">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="w-6 h-6"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M4.5 12.75l6 6 9-13.5"
+                          />
+                        </svg>
+                      </div>
 
-                  <h3 className="text-lg font-medium mb-2">Request Sent!</h3>
+                      <h3 className="text-lg font-medium mb-2">
+                        Request Sent!
+                      </h3>
 
-                  <p className="text-sm text-muted-foreground mb-4">
-                    The driver will review your request and respond soon.
-                  </p>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        The driver will review your request and respond soon.
+                      </p>
 
-                  <Button>
-                    <Link to="/my-rides">View My Rides</Link>
-                  </Button>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  <div className="rounded-lg bg-[#f1f5f9] dark:bg-slate-800 p-4">
-                    <div className="flex justify-between mb-2">
-                      <span className="text-sm font-medium">
-                        Price per seat
-                      </span>
-
-                      <span className="font-bold">
-                        {ride.price} {ride.currency}
-                      </span>
+                      <Button
+                        onClick={() => {
+                          navigate("/rides");
+                        }}
+                      >
+                        View My Rides
+                      </Button>
                     </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="rounded-lg bg-[#f1f5f9] dark:bg-slate-800 p-4">
+                        <div className="flex justify-between mb-2">
+                          <span className="text-sm font-medium">
+                            Price per seat
+                          </span>
 
-                    <div className="flex justify-between mb-2">
-                      <span className="text-sm font-medium">Seats</span>
+                          <span className="font-bold">
+                            {ride.price} {ride.currency}
+                          </span>
+                        </div>
 
-                      <span>1</span>
+                        <div className="flex justify-between mb-2">
+                          <span className="text-sm font-medium">Seats</span>
+
+                          <span>1</span>
+                        </div>
+
+                        <div className="flex justify-between pt-2 border-t border-gray-200 dark:border-gray-700">
+                          <span className="font-medium">Total</span>
+
+                          <span className="font-bold">
+                            {ride.price} {ride.currency}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="from" className="text-left">
+                          {t("rides.from")}
+                        </Label>
+                        <div className="relative">
+                          <MapPin className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                          <Select
+                            value={from}
+                            options={loadingCities ? [] : cityOptions}
+                            placeholder="Select a city"
+                            style={{
+                              width: "100%",
+                              ...(theme === "dark"
+                                ? {
+                                    backgroundColor: "#1e1e2f",
+                                    borderColor: "#363654",
+                                    color: "white",
+                                  }
+                                : {}),
+                            }}
+                            showSearch
+                            dropdownStyle={
+                              theme === "dark"
+                                ? {
+                                    backgroundColor: "#252538",
+                                    borderColor: "#363654",
+                                    color: "white",
+                                  }
+                                : {}
+                            }
+                            onChange={(e) => {
+                              setFrom(e);
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="to" className="text-left">
+                          {t("rides.to")}
+                        </Label>
+                        <div className="relative">
+                          <MapPin className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                          <Select
+                            value={to}
+                            options={
+                              loadingCities
+                                ? []
+                                : cityOptions.filter(
+                                    (to: { value: string }) => to.value !== from
+                                  )
+                            }
+                            placeholder="Select a city"
+                            style={{
+                              width: "100%",
+                              ...(theme === "dark"
+                                ? {
+                                    backgroundColor: "#1e1e2f",
+                                    borderColor: "#363654",
+                                    color: "white",
+                                  }
+                                : {}),
+                            }}
+                            showSearch
+                            dropdownStyle={
+                              theme === "dark"
+                                ? {
+                                    backgroundColor: "#252538",
+                                    borderColor: "#363654",
+                                    color: "white",
+                                  }
+                                : {}
+                            }
+                            onChange={(e) => {
+                              setTo(e);
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2 text-left">
+                        <Label htmlFor="message">
+                          Message to driver (optional)
+                        </Label>
+
+                        <Textarea
+                          id="message"
+                          placeholder="Introduce yourself and let the driver know about any special requirements"
+                          value={note}
+                          onChange={(e) => setNote(e.target.value)}
+                          className="dark:bg-slate-800 dark:border-gray-700"
+                        />
+                      </div>
+
+                      <Button
+                        className="w-full"
+                        onClick={handleSendRequest}
+                        variant="solid"
+                        style={
+                          isAuthenticated
+                            ? { backgroundColor: "#646cff", color: "white" }
+                            : {}
+                        }
+                        loading={isPending}
+                        disabled={!isAuthenticated}
+                      >
+                        Request to Join
+                      </Button>
+
+                      <p className="text-xs text-muted-foreground text-center">
+                        You won't be charged until the driver accepts your
+                        request
+                      </p>
                     </div>
+                  )}
+                </CardContent>
+              </Card>
 
-                    <div className="flex justify-between pt-2 border-t border-gray-200 dark:border-gray-700">
-                      <span className="font-medium">Total</span>
+              <Card className="user-ride-car-border">
+                <CardHeader>
+                  <CardTitle>Contact Driver</CardTitle>
+                </CardHeader>
 
-                      <span className="font-bold">
-                        {ride.price} {ride.currency}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2 text-left">
-                    <Label htmlFor="message">
-                      Message to driver (optional)
-                    </Label>
-
-                    <Textarea
-                      id="message"
-                      placeholder="Introduce yourself and let the driver know about any special requirements"
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      className="dark:bg-slate-800 dark:border-gray-700"
-                    />
-                  </div>
-
+                <CardContent>
                   <Button
                     className="w-full"
-                    onClick={handleSendRequest}
-                    disabled={isLoading}
                     variant="solid"
-                    style={{ backgroundColor: "#646cff", color: "white" }}
+                    onClick={() => setOpenMessageDriver(!openMessageDriver)}
+                    disabled={!isAuthenticated}
                   >
-                    {isLoading && (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    )}
-                    Request to Join
+                    Message
                   </Button>
 
-                  <p className="text-xs text-muted-foreground text-center">
-                    You won't be charged until the driver accepts your request
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                  <Modal
+                    open={openMessageDriver}
+                    onOk={() => setOpenMessageDriver(false)}
+                    onCancel={() => setOpenMessageDriver(false)}
+                    title={
+                      <div>
+                        <h2 className="text-xl">{`Message to ${ride.userInfo.name}`}</h2>
 
-          <Card className="user-ride-car-border">
-            <CardHeader>
-              <CardTitle>Contact Driver</CardTitle>
-            </CardHeader>
+                        <p className="text-sm text-gray-400">
+                          You can only message the driver after your request is
+                          accepted
+                        </p>
+                      </div>
+                    }
+                    centered
+                    footer
+                    className="driver-message-modal"
+                  >
+                    <div className="space-y-4 py-4">
+                      <Textarea
+                        value={message}
+                        placeholder="Type your message here..."
+                        className="min-h-[100px] dark:bg-slate-800 dark:border-gray-700"
+                        onChange={(e) => setMessage(e.target.value)}
+                      />
+                    </div>
 
-            <CardContent>
-              <Button
-                className="w-full"
-                variant="solid"
-                onClick={() => setOpenMessageDriver(!openMessageDriver)}
-              >
-                Message
-              </Button>
-
-              <Modal
-                open={openMessageDriver}
-                onOk={() => setOpenMessageDriver(false)}
-                onCancel={() => setOpenMessageDriver(false)}
-                title={
-                  <div>
-                    <h2 className="text-xl">{`Message to ${ride.userInfo.name}`}</h2>
-
-                    <p className="text-sm text-gray-400">
-                      You can only message the driver after your request is
-                      accepted
-                    </p>
-                  </div>
-                }
-                centered
-                footer
-                className="driver-message-modal"
-              >
-                <div className="space-y-4 py-4">
-                  <Textarea
-                    placeholder="Type your message here..."
-                    className="min-h-[100px] dark:bg-slate-800 dark:border-gray-700"
-                    disabled
-                  />
-                </div>
-
-                <div className="flex flex-row-reverse">
-                  <Button disabled>Send Message</Button>
-                </div>
-              </Modal>
-            </CardContent>
-          </Card>
+                    <div className="flex flex-row-reverse">
+                      <Button
+                        loading={pendingMessage}
+                        onClick={sendMessageToDriverHandle}
+                      >
+                        Send Message
+                      </Button>
+                    </div>
+                  </Modal>
+                </CardContent>
+              </Card>
+            </>
+          )}
 
           <Card className="user-ride-car-border">
             <CardHeader className="text-left">

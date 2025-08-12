@@ -29,7 +29,7 @@ body {
   display: flex;
   place-items: center;
   min-width: 100%;
-  min-height: 100vh;
+  min-height: 100%;
 }
 
 h1 {
@@ -142,7 +142,6 @@ body {
     color 0.3s ease;
 }
 
-
 .dark .homepage-gradient-color {
   background: linear-gradient(to bottom, #2d0a54, #16083b);
 }
@@ -186,7 +185,6 @@ body {
     color 0.3s ease-in-out, box-shadow 0.3s ease-in-out,
     transform 0.3s ease-in-out, fill 0.3s ease-in-out, stroke 0.3s ease-in-out !important;
 }
-
 
 .dark body::before {
   content: "";

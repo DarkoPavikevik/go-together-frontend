@@ -19,7 +19,6 @@ import { upcomingRides } from "../../services/rides/ridesServices";
 import { Button } from "../ui/Button";
 import type { IRidesData } from "../../utils/types/RideTypes";
 
-
 export default function MyRidesPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -280,8 +279,8 @@ export default function MyRidesPage() {
         </TabsContent>
         <TabsContent value="past" className="space-y-4">
           {!loadingPastRides ? (
-            pastRidesData.length > 0 ? (
-              pastRidesData.map((data: IRidesData) => {
+            pastRidesData?.length > 0 ? (
+              pastRidesData?.map((data: IRidesData) => {
                 const ride = data.ride;
                 const avatarPastRidePlaceholder = ride.userInfo?.name.slice(
                   0,

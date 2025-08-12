@@ -10,6 +10,7 @@ import {
   updateBooking,
   type IUpdateBody,
 } from "../../../services/booking/bookingService";
+import { useTranslation } from "react-i18next";
 
 interface INotificationCards {
   notification: INotification;
@@ -24,6 +25,8 @@ export default function NotificationCards({
   notification,
   refetchNotifications,
 }: INotificationCards) {
+  const { t } = useTranslation();
+
   const { mutate: updateBookingMutation, isPending } = useMutation({
     mutationKey: ["update-booking"],
     mutationFn: ({ id, body }: { id: number; body: IUpdateBody }) =>
@@ -36,15 +39,29 @@ export default function NotificationCards({
   const handleUpdateBooking = (id: number, body: IUpdateBody) => {
     updateBookingMutation({ id, body });
   };
+
   return (
     <Card>
       <CardContent className="!p-0">
         <div className="w-full flex items-center justify-between">
-          <div>
+          <div className="w-1/3">
             <Title level={5}>{notification.username}</Title>
             <p>{notification.phoneNumber}</p>
           </div>
-          <div>
+          <div className="w-2/3">
+            <p>
+              <strong>{t("rides.from")}:</strong> {notification.pickupLocation}
+            </p>
+            <p>
+              <strong>{t("rides.to")}:</strong> {notification.dropoffLocation}
+            </p>
+            {notification.note && (
+              <p>
+                <strong>{t("rides.note")}:</strong> {notification.note}
+              </p>
+            )}
+          </div>
+          <div className="flex w-1/3 justify-end">
             {notification.status === "CONFIRMED" ? (
               <Button
                 size="small"

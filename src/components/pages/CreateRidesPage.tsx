@@ -1,7 +1,7 @@
 "use client";
 
 import { Label } from "@radix-ui/react-label";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Button,
   Card,
@@ -14,7 +14,7 @@ import {
 } from "antd";
 import dayjs from "dayjs";
 import { Clock, Loader2, MapPin } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/AuthContext";
@@ -32,38 +32,69 @@ import {
 } from "../ui/Card";
 import { Textarea } from "../ui/Textarea";
 import { useTheme } from "../ui/ThemeProvider";
+import { enqueueSnackbar } from "notistack";
 
 export default function CreateRidePage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { me } = useUser();
   const { theme } = useTheme();
-  const [isLoading, setIsLoading] = useState(false);
+  const [form] = Form.useForm();
+
   const [formData, setFormData] = useState({
     stops: false,
     waypoints: [] as string[],
   });
-  const { data: cities, isLoading: loadingCities } = useQuery({
+
+  const {
+    data: cities,
+    isLoading: loadingCities,
+    refetch: refetchCities,
+  } = useQuery({
     queryKey: ["get-cities"],
     queryFn: () => getCitiesByCountry("macedonia"),
     enabled: !!formData.stops,
   });
+
+  const { mutate: createRideMutation, isPending: pendingMessage } = useMutation(
+    {
+      mutationKey: ["send-message"],
+      mutationFn: (body: RideDTO) => createRide(body),
+      onSuccess: () => {
+        navigate("/rides");
+      },
+      onError: () => {
+        enqueueSnackbar(t("Error creating ride"), { variant: "success" });
+      },
+    }
+  );
 
   const handleSwitchChange = (name: string, checked: boolean) => {
     setFormData((prev) => ({ ...prev, [name]: checked }));
   };
 
   const handleSubmit = async (rideData: RideDTO) => {
-    setIsLoading(true);
-    await createRide({ ...rideData, userInfo: { id: me?.id as number } });
-    navigate("/rides");
-    setIsLoading(false);
+    const values = form.getFieldsValue();
+    const preparedFormData = {
+      ...rideData,
+      userInfo: { id: me?.id as number },
+      fromLocation: values.fromLocation,
+      toLocation: values.toLocation,
+    };
+    await createRideMutation(preparedFormData);
   };
 
   const cityOptions = cities?.map((city: { label: string; value: string }) => ({
     label: city,
     value: city,
   }));
+
+  useEffect(() => {
+    refetchCities();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const fromLocation = Form.useWatch("fromLocation", form);
 
   return (
     <div className="container py-8">
@@ -75,7 +106,11 @@ export default function CreateRidePage() {
       </div>
       <div className="flex justify-center">
         <Card className="w-200 mx-auto ">
-          <Form onFinish={handleSubmit} initialValues={{ seatsAvailable: 3 }}>
+          <Form
+            form={form}
+            onFinish={handleSubmit}
+            initialValues={{ seatsAvailable: 3 }}
+          >
             <CardHeader className="text-left">
               <CardTitle>Ride Details</CardTitle>
               <CardDescription>
@@ -87,7 +122,6 @@ export default function CreateRidePage() {
                 <div className="space-y-2">
                   <Label htmlFor="from">{t("rides.from")}</Label>
                   <div className="relative">
-                    <MapPin className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Form.Item
                       name="fromLocation"
                       rules={[
@@ -98,14 +132,42 @@ export default function CreateRidePage() {
                         },
                       ]}
                     >
-                      <Input placeholder="City or location" className="pl-8" />
+                      <div className="relative">
+                        <MapPin className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Select
+                          options={loadingCities ? [] : cityOptions}
+                          placeholder="Select a city"
+                          style={{
+                            width: "100%",
+                            ...(theme === "dark"
+                              ? {
+                                  backgroundColor: "#1e1e2f",
+                                  borderColor: "#363654",
+                                  color: "white",
+                                }
+                              : {}),
+                          }}
+                          showSearch
+                          dropdownStyle={
+                            theme === "dark"
+                              ? {
+                                  backgroundColor: "#252538",
+                                  borderColor: "#363654",
+                                  color: "white",
+                                }
+                              : {}
+                          }
+                          onChange={(value: string) => {
+                            form.setFieldValue("fromLocation", value);
+                          }}
+                        />
+                      </div>
                     </Form.Item>
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="to">{t("rides.to")}</Label>
                   <div className="relative">
-                    <MapPin className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Form.Item
                       name="toLocation"
                       rules={[
@@ -116,7 +178,42 @@ export default function CreateRidePage() {
                         },
                       ]}
                     >
-                      <Input placeholder="City or location" className="pl-8" />
+                      <div className="relative">
+                        <Select
+                          options={
+                            loadingCities
+                              ? []
+                              : cityOptions?.filter(
+                                  (to: { value: string }) =>
+                                    to.value !== fromLocation
+                                )
+                          }
+                          placeholder="Select a city"
+                          style={{
+                            width: "100%",
+                            ...(theme === "dark"
+                              ? {
+                                  backgroundColor: "#1e1e2f",
+                                  borderColor: "#363654",
+                                  color: "white",
+                                }
+                              : {}),
+                          }}
+                          showSearch
+                          dropdownStyle={
+                            theme === "dark"
+                              ? {
+                                  backgroundColor: "#252538",
+                                  borderColor: "#363654",
+                                  color: "white",
+                                }
+                              : {}
+                          }
+                          onChange={(value: string) => {
+                            form.setFieldValue("toLocation", value);
+                          }}
+                        />
+                      </div>
                     </Form.Item>
                   </div>
                 </div>
@@ -303,8 +400,14 @@ export default function CreateRidePage() {
             </CardContent>
             <CardFooter className="flex justify-between">
               <Button onClick={() => navigate("/rides")}>Cancel</Button>
-              <Button htmlType="submit" type="primary" disabled={isLoading}>
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              <Button
+                htmlType="submit"
+                type="primary"
+                disabled={pendingMessage}
+              >
+                {pendingMessage && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
                 Create Ride
               </Button>
             </CardFooter>

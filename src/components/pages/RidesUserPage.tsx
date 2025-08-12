@@ -3,10 +3,12 @@
 import { Label } from "@radix-ui/react-label";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
+  AutoComplete,
   Avatar,
   Button,
   Card,
   Divider,
+  Form,
   Image,
   Modal,
   Select,
@@ -24,18 +26,21 @@ import {
   Users,
 } from "lucide-react";
 import { enqueueSnackbar } from "notistack";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { useUser } from "../../context/AuthContext";
 import { useSearch } from "../../context/SearchContext";
 import {
+  getBooking,
   requestToJoin,
   sendMessage,
 } from "../../services/booking/bookingService";
 import {
   getCitiesByCountry,
+  getCityCoordinates,
   getRideById,
+  getSearchedLocation,
 } from "../../services/rides/ridesServices";
 import {
   CardContent,
@@ -46,7 +51,15 @@ import {
 import ReviewsList from "../ui/ReviewsList";
 import { Textarea } from "../ui/Textarea";
 import { useTheme } from "../ui/ThemeProvider";
-
+import DirectionMap from "../ui/DirectionMap";
+type ORSLocationFeature = {
+  properties: {
+    name: string;
+  };
+  geometry: {
+    coordinates: [number, number];
+  };
+};
 export default function RideDetailPage() {
   const { t } = useTranslation();
   const { me, isAuthenticated } = useUser();
@@ -55,21 +68,40 @@ export default function RideDetailPage() {
   const { from, to, setFrom, setTo } = useSearch();
   const [message, setMessage] = useState("");
   const [note, setNote] = useState("");
-
+  const [currentLocation, setCurrentLocation] = useState<number[]>();
   const [showRequestSent, setShowRequestSent] = useState(false);
   const [openMessageDriver, setOpenMessageDriver] = useState(false);
   const { theme } = useTheme();
+  const [searchLocation, setSearchLocation] = useState("");
+  const [selectedCoordinates, setSelectedCoordinates] = useState("");
+
+  const { data: booking } = useQuery({
+    queryKey: ["get-booking"],
+    queryFn: () => getBooking(Number(id)),
+    enabled: !!id,
+  });
 
   const { data: ride, isLoading: loadingRide } = useQuery({
     queryKey: ["get-ride-by-id"],
     queryFn: () => getRideById(Number(id)),
+    enabled: !!id,
   });
 
   const { data: cities, isLoading: loadingCities } = useQuery({
     queryKey: ["get-cities"],
     queryFn: () => getCitiesByCountry("macedonia"),
+    enabled: !!id,
   });
 
+  const {
+    data: searchedLocationData,
+    isLoading: loadingSearchedLocation,
+    refetch,
+  } = useQuery({
+    queryKey: ["get-locations"],
+    queryFn: () => getSearchedLocation(searchLocation),
+    enabled: !!searchLocation,
+  });
   const cityOptions = cities?.map((city: { label: string; value: string }) => ({
     label: city,
     value: city,
@@ -79,13 +111,14 @@ export default function RideDetailPage() {
     mutationKey: ["request-join"],
     mutationFn: (body: {
       rideId: number;
-      pickupLocation: string;
+      pickupLocation: number[] | string;
       dropoffLocation: string;
       note: string;
     }) => requestToJoin(body),
     onSuccess: (res) => {
       enqueueSnackbar(res, { variant: "success" });
       setShowRequestSent(true);
+      setSelectedCoordinates("");
       setNote("");
       setFrom("");
       setTo("");
@@ -108,18 +141,33 @@ export default function RideDetailPage() {
     });
 
   const handleSendRequest = async () => {
+    if (!currentLocation || !selectedCoordinates) {
+      console.error("Missing current location or selected coordinates");
+      return;
+    }
     const dataToSend: {
       rideId: number;
-      pickupLocation: string;
+      pickupLocation: number[] | string;
       dropoffLocation: string;
       note: string;
     } = {
       rideId: ride.id,
-      pickupLocation: from,
-      dropoffLocation: to,
+      pickupLocation: `${currentLocation[0]},${currentLocation[1]}`,
+      dropoffLocation: `${selectedCoordinates[0]},${selectedCoordinates[1]}`,
       note: note,
     };
+    console.log("dataToSend", dataToSend);
     requestToJoinMutation(dataToSend);
+  };
+
+  const handleShowModal = () => {
+    setShowRequestSent(!showRequestSent);
+  };
+
+  const handleCloseModal = () => {
+    setShowRequestSent(false);
+    setSelectedCoordinates("");
+    setSearchLocation("");
   };
 
   const sendMessageToDriverHandle = () => {
@@ -134,7 +182,24 @@ export default function RideDetailPage() {
     };
     sendMessageToDriverMutation(dataToSend);
   };
+  useEffect(() => {
+    refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchLocation]);
 
+  useEffect(() => {
+    if (showRequestSent) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setCurrentLocation([21.434058103710093, 41.984772280692525]);
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+        }
+      );
+    }
+  }, [showRequestSent]);
   if (loadingRide)
     return (
       <div className="container py-10 h-screen">
@@ -162,6 +227,16 @@ export default function RideDetailPage() {
   const totalDuration = totalDurationEntry
     ? totalDurationEntry.split(":").slice(1).join(":").trim()
     : "N/A";
+
+  const searchedDataFilter = searchedLocationData?.features.map(
+    (location: ORSLocationFeature) => {
+      return {
+        label: location.properties.name,
+        value: location.properties.name,
+        coordinates: location.geometry.coordinates,
+      };
+    }
+  );
 
   return (
     <div className="container px-24 py-8">
@@ -461,7 +536,7 @@ export default function RideDetailPage() {
                 </CardHeader>
 
                 <CardContent>
-                  {showRequestSent ? (
+                  {showRequestSent || booking?.status === "PENDING" ? (
                     <div className="text-center py-4">
                       <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300 mb-4">
                         <svg
@@ -524,7 +599,7 @@ export default function RideDetailPage() {
                         </div>
                       </div>
                       <div className="grid gap-2">
-                        <Label htmlFor="from" className="text-left">
+                        {/* <Label htmlFor="from" className="text-left">
                           {t("rides.from")}
                         </Label>
                         <div className="relative">
@@ -602,10 +677,13 @@ export default function RideDetailPage() {
                         </div>
                       </div>
                       <div className="space-y-2 text-left">
+                       
+
+                       
+                      </div> */}
                         <Label htmlFor="message">
                           Message to driver (optional)
                         </Label>
-
                         <Textarea
                           id="message"
                           placeholder="Introduce yourself and let the driver know about any special requirements"
@@ -614,10 +692,9 @@ export default function RideDetailPage() {
                           className="dark:bg-slate-800 dark:border-gray-700"
                         />
                       </div>
-
                       <Button
                         className="w-full"
-                        onClick={handleSendRequest}
+                        onClick={handleShowModal}
                         variant="solid"
                         style={
                           isAuthenticated
@@ -734,6 +811,33 @@ export default function RideDetailPage() {
               </ul>
             </CardContent>
           </Card>
+          <Modal
+            width={1000}
+            open={showRequestSent}
+            onOk={handleSendRequest}
+            onCancel={handleCloseModal}
+          >
+            <Form>
+              <Form.Item>
+                <AutoComplete
+                  options={!loadingSearchedLocation ? searchedDataFilter : []}
+                  onSearch={(value) => {
+                    if (value.length > 2) {
+                      setSearchLocation(value);
+                    }
+                  }}
+                  onSelect={(value, option) => {
+                    setSelectedCoordinates(option.coordinates);
+                  }}
+                  placeholder="City or location"
+                  filterOption={false}
+                />
+              </Form.Item>
+            </Form>
+            {selectedCoordinates && (
+              <DirectionMap start={currentLocation} end={selectedCoordinates} />
+            )}
+          </Modal>
         </div>
       </div>
     </div>

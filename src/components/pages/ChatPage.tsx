@@ -1,9 +1,18 @@
 "use client";
 
-import { Avatar, Button, Input, Tag } from "antd";
-import React, { useEffect, useRef, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Avatar, Button, Form, Input, Skeleton, Tag } from "antd";
+import { format } from "date-fns";
+import { Loader2, MapPin, Send } from "lucide-react";
+import { enqueueSnackbar } from "notistack";
+import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useUser } from "../../context/AuthContext";
+import {
+  getRideConversation,
+  sendConversation,
+} from "../../services/rides/ridesServices";
 import {
   Card,
   CardContent,
@@ -12,73 +21,39 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/Card";
-import { Loader2, MapPin, Send } from "lucide-react";
-import { format } from "date-fns";
-
-// Mock chat data
-const mockChat = {
-  id: 1,
-  ride: {
-    id: 1,
-    from: "Skopje",
-    to: "Ohrid",
-    date: new Date(2023, 6, 15),
-    time: "08:00",
-  },
-  participants: [
-    {
-      id: 1,
-      name: "Aleksandar M.",
-      avatar: null,
-      isDriver: true,
-    },
-    {
-      id: 2,
-      name: "You",
-      avatar: null,
-      isDriver: false,
-    },
-  ],
-  messages: [
-    {
-      id: 1,
-      senderId: 1,
-      text: "Hello! I've accepted your ride request. We'll meet at City Mall parking lot at 7:45 AM.",
-      timestamp: new Date(2023, 6, 14, 10, 30),
-    },
-    {
-      id: 2,
-      senderId: 2,
-      text: "Great, thank you! I'll be there on time. Do you have space for a medium-sized suitcase?",
-      timestamp: new Date(2023, 6, 14, 10, 35),
-    },
-    {
-      id: 3,
-      senderId: 1,
-      text: "Yes, that's fine. I have plenty of space in the trunk.",
-      timestamp: new Date(2023, 6, 14, 10, 40),
-    },
-    {
-      id: 4,
-      senderId: 2,
-      text: "Perfect! See you tomorrow morning then.",
-      timestamp: new Date(2023, 6, 14, 10, 42),
-    },
-    {
-      id: 5,
-      senderId: 1,
-      text: "Looking forward to it! If you have any questions before then, feel free to ask.",
-      timestamp: new Date(2023, 6, 14, 10, 45),
-    },
-  ],
-};
 
 export default function ChatPage() {
   const { t } = useTranslation();
-  const [chat, setChat] = useState(mockChat);
-  const [newMessage, setNewMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const { id } = useParams();
+  const { me } = useUser();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [form] = Form.useForm();
+  const {
+    data: conversationData,
+    isLoading: loadingConversation,
+    refetch,
+  } = useQuery({
+    queryKey: ["get-conversation"],
+    queryFn: () => getRideConversation(Number(id)),
+    enabled: !!id,
+  });
+
+  const { mutate: sendConversationMutation, isPending: pendingMessage } =
+    useMutation({
+      mutationKey: ["send-message"],
+      mutationFn: (body: {
+        rideId: number;
+        senderId?: number;
+        message: string;
+      }) => sendConversation(body),
+      onSuccess: () => {
+        refetch();
+        form.setFieldValue("message", "");
+      },
+      onError: () => {
+        enqueueSnackbar(t("Error sending message"), { variant: "error" });
+      },
+    });
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -86,45 +61,21 @@ export default function ChatPage() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [chat.messages]);
+  }, [conversationData?.messages]);
 
-  const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newMessage.trim()) return;
-
-    setIsLoading(true);
-
-    try {
-      // Here you would connect to your Spring Boot backend
-      // const response = await fetch(`/api/chats/${params.id}/messages`, {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ text: newMessage }),
-      // })
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      // Add message to chat
-      const newMsg = {
-        id: chat.messages.length + 1,
-        senderId: 2, // Current user
-        text: newMessage,
-        timestamp: new Date(),
-      };
-
-      setChat((prev) => ({
-        ...prev,
-        messages: [...prev.messages, newMsg],
-      }));
-
-      setNewMessage("");
-    } catch (error) {
-      console.error("Failed to send message:", error);
-    } finally {
-      setIsLoading(false);
-    }
+  const handleSendMessage = async (data: {
+    rideId: number;
+    senderId?: number;
+    message: string;
+  }) => {
+    sendConversationMutation({
+      ...data,
+      senderId: me?.id,
+      rideId: Number(id),
+    });
   };
+
+  if (loadingConversation) return <Skeleton />;
 
   return (
     <div className="container py-8">
@@ -148,55 +99,69 @@ export default function ChatPage() {
                     <MapPin />
                     <div>
                       <div className="font-medium text-left">
-                        {chat.ride.from}
+                        {conversationData.ride.fromLocation}
                       </div>
                       <div className="text-sm text-gray-400">
-                        {format(chat.ride.date, "EEE, MMM d")} ·{" "}
-                        {chat.ride.time}
+                        {format(conversationData.ride.date, "EEE, MMM d")} ·{" "}
+                        {conversationData.ride.time}
                       </div>
                     </div>
                   </div>
                   <div className="flex items-start gap-2">
                     <MapPin />
                     <div>
-                      <div className="font-medium">{chat.ride.to}</div>
+                      <div className="font-medium">
+                        {conversationData.ride.toLocation}
+                      </div>
                     </div>
                   </div>
                 </div>
                 <Button className="w-full">
-                  <Link to={`/rides/${chat.ride.id}`}>View Ride Details</Link>
+                  <Link to={`/rides/${conversationData.ride.id}`}>
+                    View Ride Details
+                  </Link>
                 </Button>
               </div>
 
               <div>
                 <h3 className="mb-2 font-medium">Participants</h3>
                 <div className="space-y-2">
-                  {chat.participants.map((participant) => (
-                    <div
-                      key={participant.id}
-                      className="flex items-center justify-between"
-                    >
-                      <div className="flex items-center gap-2">
-                        <Avatar
-                          src={participant.avatar || "/placeholder.svg"}
-                          alt={participant.name}
-                        >
-                          {participant.avatar === null &&
-                            participant.name.charAt(0)}
-                        </Avatar>
-                        <span>{participant.name}</span>
+                  {conversationData.participants.map(
+                    (participant: {
+                      avatar: string;
+                      driver: boolean;
+                      id: number;
+                      name: string;
+                    }) => (
+                      <div
+                        key={participant.id}
+                        className="flex items-center justify-between"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Avatar
+                            src={participant.avatar || "/placeholder.svg"}
+                            alt={participant.name}
+                          >
+                            {participant.avatar === null &&
+                              participant.name.charAt(0)}
+                          </Avatar>
+                          <span>{participant.name}</span>
+                        </div>
+                        {participant.driver && (
+                          <Tag
+                            className="w-15"
+                            color="blue-inverse"
+                            style={{
+                              borderRadius: "999px",
+                              textAlign: "center",
+                            }}
+                          >
+                            Driver
+                          </Tag>
+                        )}
                       </div>
-                      {participant.isDriver && (
-                        <Tag
-                          className="w-15"
-                          color="blue-inverse"
-                          style={{ borderRadius: "999px", textAlign: "center" }}
-                        >
-                          Driver
-                        </Tag>
-                      )}
-                    </div>
-                  ))}
+                    )
+                  )}
                 </div>
               </div>
             </CardContent>
@@ -210,63 +175,90 @@ export default function ChatPage() {
             </CardHeader>
             <CardContent className="flex-1 overflow-y-auto p-4">
               <div className="space-y-4">
-                {chat.messages.map((message) => {
-                  const isCurrentUser = message.senderId === 2;
-                  const sender = chat.participants.find(
-                    (p) => p.id === message.senderId
-                  );
-                  return (
-                    <div
-                      key={message.id}
-                      className={`flex pt-3 ${
-                        isCurrentUser ? "justify-end" : "justify-start"
-                      }`}
-                    >
-                      <div className="flex max-w-[80%] gap-2">
-                        {!isCurrentUser && (
-                          <Avatar
-                            src={sender?.avatar || "/placeholder.svg"}
-                            alt={sender?.name}
-                            size={"large"}
-                          >
-                            {sender?.avatar === null && sender?.name.charAt(0)}
-                          </Avatar>
-                        )}
-                        <div>
-                          <div
-                            className={`rounded-lg p-3 ${
-                              isCurrentUser
-                                ? "bg-[#646cff] text-white"
-                                : "bg-[#f1f5f9]"
-                            }`}
-                          >
-                            {message.text}
-                          </div>
-                          <div className="mt-1 text-xs text-left text-gray-400">
-                            {format(message.timestamp, "HH:mm")}
+                {conversationData.messages.map(
+                  (message: {
+                    id: number;
+                    message: string;
+                    receiverId: number;
+                    senderId: number;
+                    timestamp: string;
+                  }) => {
+                    const isCurrentUser = message.senderId === me?.id;
+                    const sender = conversationData.participants.find(
+                      (p: {
+                        avatar: string;
+                        driver: boolean;
+                        id: number;
+                        name: string;
+                      }) => p.id === message.senderId
+                    );
+                    return (
+                      <div
+                        key={message.id}
+                        className={`flex pt-3 ${
+                          isCurrentUser ? "justify-end" : "justify-start"
+                        }`}
+                      >
+                        <div className="flex max-w-[80%] gap-2">
+                          {!isCurrentUser && (
+                            <Avatar
+                              src={sender?.avatar || "/placeholder.svg"}
+                              alt={sender?.name}
+                              size={"large"}
+                            >
+                              {sender?.avatar === null &&
+                                sender?.name.charAt(0)}
+                            </Avatar>
+                          )}
+                          <div>
+                            <div
+                              className={`rounded-lg p-3 ${
+                                isCurrentUser
+                                  ? "bg-[#646cff] text-white"
+                                  : "bg-[#f1f5f9]"
+                              }`}
+                            >
+                              {message.message}
+                            </div>
+                            <div className="mt-1 text-xs text-left text-gray-400">
+                              {format(message.timestamp, "HH:mm")}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  }
+                )}
                 <div ref={messagesEndRef} />
               </div>
             </CardContent>
             <CardFooter className="border-t border-gray-200 pt-6">
-              <form onSubmit={handleSendMessage} className="flex w-full gap-2">
-                <Input
-                  placeholder={t("chat.message")}
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  size="large"
-                />
-                <Button
-                  size="large"
-                  htmlType="submit"
-                  disabled={isLoading || !newMessage.trim()}
-                >
-                  {isLoading ? (
+              <Form
+                form={form}
+                onFinish={handleSendMessage}
+                className="flex w-full gap-2"
+              >
+                <div className="flex-1">
+                  <Form.Item
+                    name={"message"}
+                    rules={[
+                      {
+                        type: "string",
+                        required: true,
+                        message: "Please write some message!",
+                      },
+                    ]}
+                    className="mb-0"
+                  >
+                    <Input
+                      placeholder={t("chat.message")}
+                      size="large"
+                      className="w-full"
+                    />
+                  </Form.Item>
+                </div>
+                <Button size="large" htmlType="submit">
+                  {pendingMessage ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
                     <div className="flex items-center">
@@ -275,7 +267,7 @@ export default function ChatPage() {
                     </div>
                   )}
                 </Button>
-              </form>
+              </Form>
             </CardFooter>
           </Card>
         </div>

@@ -1,99 +1,99 @@
 {
-    "nav.home": "Kryefaqja",
-    "nav.rides": "Udhëtime",
-    "nav.myRides": "Udhëtimet e Mia",
-    "nav.profile": "Profili",
-    "nav.signIn": "Identifikohu",
-    "nav.signUp": "Regjistrohu",
-    "nav.signOut": "Dil",
-    "home.title": "Ndajeni udhëtimin tuaj, kurseni para dhe kurseni mjedisin",
-    "home.subtitle": "Lidhuni me udhëtarët që ndjekin rrugën tuaj",
-    "home.findRide": "Gjeni një Udhëtim",
-    "home.offerRide": "Ofroni një Udhëtim",
-    "home.howItWorks": "Si Funksionon",
-    "home.step1": "Krijoni një llogari",
-    "home.step2": "Gjeni ose ofroni një udhëtim",
-    "home.step3": "Udhëtoni së bashku dhe kurseni",
-    "home.benefits": "Përfitime",
-    "home.benefit1": "Kurseni para në kostot e udhëtimit",
-    "home.benefit2": "Zvogëloni gjurmën tuaj të karbonit",
-    "home.benefit3": "Takoni njerëz të rinj",
-    "home.benefit4": "Udhëtoni rehat",
-    "footer.about": "Rreth nesh",
-    "footer.contact": "Kontakti",
-    "footer.terms": "Kushtet",
-    "footer.privacy": "Privatësia",
-    "auth.email": "Email",
-    "auth.password": "Fjalëkalimi",
-    "auth.name": "Emri i plotë",
-    "auth.phone": "Numri i telefonit",
-    "auth.signIn": "Identifikohuni",
-    "auth.signUp": "Regjistrohuni",
-    "auth.noAccount": "Nuk keni një llogari?",
-    "auth.haveAccount": "Keni tashmë një llogari?",
-    "rides.from": "Nga",
-    "rides.to": "Për në",
-    "rides.date": "Data",
-    "rides.time": "Ora",
-    "rides.seats": "Vendet e disponueshme",
-    "rides.price": "Çmimi",
-    "rides.driver": "Shoferi",
-    "rides.vehicle": "Automjet",
-    "rides.luggage": "Bagazh",
-    "rides.join": "Bashkohuni në Udhëtim",
-    "rides.create": "Krijo Udhëtim",
-    "rides.search": "Kërko Udhëtime",
-    "profile.rating": "Vlerësimi",
-    "profile.rides": "Udhëtime të Përfunduara",
-    "profile.vehicle": "Automjeti Im",
-    "profile.addVehicle": "Shto Automjet",
-    "profile.editProfile": "Modifiko Profilin",
-    "profile.reviews.shown":"Të gjitha vlerësimet e shfaqura",
-    "profile.model":"Model",
-    "profile.color":"Ngjyrë",
-    "profile.seats":"Vende",
-    "profile.licensePlate":"Targë",
-    "profile.year":"Vit",
-    "chat.send": "Dërgo",
-    "chat.message": "Mesazh",
-    "rides.search.description":"Gjeni udhëtime që përputhen me planet tuaja të udhëtimit",
-    "home.howItWorks.description":"Krijo profilin tënd, shto foton tënde dhe verifiko numrin tënd të telefonit për siguri të shtuar.",
-    "home.step2.description":"Kërko për udhëtime ose ofro udhëtimin tënd. Lidhu me udhëtarët që ndjekin rrugën tënde.",
-    "home.step3.description":"Udhëtoni së bashku, ndani kostot dhe vlerësoni përvojën tuaj për të ndihmuar komunitetin.",
-    "home.benefit1.description":"Ndani shpenzimet e udhëtimit dhe kurseni para në udhëtimet tuaja.",
-    "home.benefit2.description":"Më pak makina në rrugë do të thotë më pak ndotje dhe trafik.",
-    "home.benefit3.description":"Lidhu me udhëtarë me të njëjtat interesa dhe krijo miq të rinj.",
-    "home.benefit4.description":"Shijoni një udhëtim të rehatshëm me shoferë dhe pasagjerë të verifikuar.",
-    "home.whatTheySay":"Çfarë thonë përdoruesit tanë",
-    "home.titlejourney":"Gati për të filluar udhëtimin tuaj?",
-    "home.titlejourney.description":"Bashkohuni me mijëra udhëtarë që tashmë po kursejnë para dhe po zvogëlojnë gjurmën e tyre të karbonit.",
-    "nav.rides.description":"Gjeni udhëtime që përputhen me planet tuaja të udhëtimit",
-    "rides.search.nav":"Kërko",
-    "rides.popular.routes":"Rrugët popullore",
-    "profile.description":"Menaxho profilin dhe preferencat e tua",
-    "profile.member":"Anëtar që nga",
-    "profile.contact":"Informacione Kontakti",
-    "profile.preferences":"Preferencat",
-    "profile.aboutme":"Rreth meje",
-    "profile.reviews":"Vlerësime",
-    "profile.vehicle.details":"Detajet e automjetit",
-    "profile.vehicle.features":"Karakteristikat",
+  "nav.home": "Kryefaqja",
+  "nav.rides": "Udhëtime",
+  "nav.myRides": "Udhëtimet e Mia",
+  "nav.profile": "Profili",
+  "nav.signIn": "Identifikohu",
+  "nav.signUp": "Regjistrohu",
+  "nav.signOut": "Dil",
+  "home.title": "Ndajeni udhëtimin tuaj, kurseni para dhe kurseni mjedisin",
+  "home.subtitle": "Lidhuni me udhëtarët që ndjekin rrugën tuaj",
+  "home.findRide": "Gjeni një Udhëtim",
+  "home.offerRide": "Ofroni një Udhëtim",
+  "home.howItWorks": "Si Funksionon",
+  "home.step1": "Krijoni një llogari",
+  "home.step2": "Gjeni ose ofroni një udhëtim",
+  "home.step3": "Udhëtoni së bashku dhe kurseni",
+  "home.benefits": "Përfitime",
+  "home.benefit1": "Kurseni para në kostot e udhëtimit",
+  "home.benefit2": "Zvogëloni gjurmën tuaj të karbonit",
+  "home.benefit3": "Takoni njerëz të rinj",
+  "home.benefit4": "Udhëtoni rehat",
+  "footer.about": "Rreth nesh",
+  "footer.contact": "Kontakti",
+  "footer.terms": "Kushtet",
+  "footer.privacy": "Privatësia",
+  "auth.email": "Email",
+  "auth.password": "Fjalëkalimi",
+  "auth.name": "Emri i plotë",
+  "auth.phone": "Numri i telefonit",
+  "auth.signIn": "Identifikohuni",
+  "auth.signUp": "Regjistrohuni",
+  "auth.noAccount": "Nuk keni një llogari?",
+  "auth.haveAccount": "Keni tashmë një llogari?",
+  "rides.from": "Nga",
+  "rides.to": "Për në",
+  "rides.date": "Data",
+  "rides.time": "Ora",
+  "rides.seats": "Vendet e disponueshme",
+  "rides.price": "Çmimi",
+  "rides.driver": "Shoferi",
+  "rides.vehicle": "Automjet",
+  "rides.luggage": "Bagazh",
+  "rides.join": "Bashkohuni në Udhëtim",
+  "rides.create": "Krijo Udhëtim",
+  "rides.search": "Kërko Udhëtime",
+  "rides.note": "Shënim",
+  "profile.rating": "Vlerësimi",
+  "profile.rides": "Udhëtime të Përfunduara",
+  "profile.vehicle": "Automjeti Im",
+  "profile.addVehicle": "Shto Automjet",
+  "profile.editProfile": "Modifiko Profilin",
+  "profile.reviews.shown": "Të gjitha vlerësimet e shfaqura",
+  "profile.model": "Model",
+  "profile.color": "Ngjyrë",
+  "profile.seats": "Vende",
+  "profile.licensePlate": "Targë",
+  "profile.year": "Vit",
+  "chat.send": "Dërgo",
+  "chat.message": "Mesazh",
+  "rides.search.description": "Gjeni udhëtime që përputhen me planet tuaja të udhëtimit",
+  "home.howItWorks.description": "Krijo profilin tënd, shto foton tënde dhe verifiko numrin tënd të telefonit për siguri të shtuar.",
+  "home.step2.description": "Kërko për udhëtime ose ofro udhëtimin tënd. Lidhu me udhëtarët që ndjekin rrugën tënde.",
+  "home.step3.description": "Udhëtoni së bashku, ndani kostot dhe vlerësoni përvojën tuaj për të ndihmuar komunitetin.",
+  "home.benefit1.description": "Ndani shpenzimet e udhëtimit dhe kurseni para në udhëtimet tuaja.",
+  "home.benefit2.description": "Më pak makina në rrugë do të thotë më pak ndotje dhe trafik.",
+  "home.benefit3.description": "Lidhu me udhëtarë me të njëjtat interesa dhe krijo miq të rinj.",
+  "home.benefit4.description": "Shijoni një udhëtim të rehatshëm me shoferë dhe pasagjerë të verifikuar.",
+  "home.whatTheySay": "Çfarë thonë përdoruesit tanë",
+  "home.titlejourney": "Gati për të filluar udhëtimin tuaj?",
+  "home.titlejourney.description": "Bashkohuni me mijëra udhëtarë që tashmë po kursejnë para dhe po zvogëlojnë gjurmën e tyre të karbonit.",
+  "nav.rides.description": "Gjeni udhëtime që përputhen me planet tuaja të udhëtimit",
+  "rides.search.nav": "Kërko",
+  "rides.popular.routes": "Rrugët popullore",
+  "profile.description": "Menaxho profilin dhe preferencat e tua",
+  "profile.member": "Anëtar që nga",
+  "profile.contact": "Informacione Kontakti",
+  "profile.preferences": "Preferencat",
+  "profile.aboutme": "Rreth meje",
+  "profile.reviews": "Vlerësime",
+  "profile.vehicle.details": "Detajet e automjetit",
+  "profile.vehicle.features": "Karakteristikat",
 
-    
   "terms.title": "Kushtet e Shërbimit",
   "terms.subtitle": "Ju lutemi lexoni me kujdes këto kushte përpara se të përdorni shërbimet e GoTogether.",
   "terms.lastUpdated": "Përditësuar për herë të fundit: 25 Dhjetor 2025",
-  
+
   "terms.overview.title": "Pasqyrë e Shpejtë",
   "terms.overview.content": "Duke përdorur GoTogether, ju pranoni këto kushte. Ne ofrojmë një platformë për ndarjen e udhëtimeve në Maqedoninë e Veriut. Ju jeni përgjegjës për sigurinë tuaj dhe për të ndjekur ligjet lokale.",
   "terms.overview.community": "Platformë Komunitare",
   "terms.overview.safety": "Siguria e Parë",
   "terms.overview.responsibility": "Përgjegjësia Juaj",
-  
+
   "terms.acceptance.title": "1. Pranimi i Kushteve",
   "terms.acceptance.content1": "Duke hyrë dhe përdorur GoTogether (\"Shërbimin\"), ju i pranoni dhe pajtoheni të bindeni nga kushtet dhe dispozitat e këtij marrëveshjeje. Nëse nuk pajtoheni me sa më sipër, ju lutemi mos e përdorni këtë shërbim.",
   "terms.acceptance.content2": "Këto kushte zbatohen për të gjithë përdoruesit e shërbimit, duke përfshirë pa kufizim përdoruesit që shfletues, shoferë, pasagjerë dhe kontribues të përmbajtjes.",
-  
+
   "terms.service.title": "2. Përshkrimi i Shërbimit",
   "terms.service.content": "GoTogether është një platformë për ndarjen e udhëtimeve që lidh shoferët dhe pasagjerët që udhëtojnë rrugë të ngjashme brenda Maqedonisë së Veriut. Ne ofrojmë platformën teknologjike por nuk ofrojmë shërbime transporti.",
   "terms.service.includes": "Shërbimi ynë përfshin:",
@@ -101,7 +101,7 @@
   "terms.service.list2": "• Sistemin e mesazheve për komunikim",
   "terms.service.list3": "• Profilet e përdoruesve dhe sistemin e vlerësimit",
   "terms.service.list4": "• Mjetet për rezervim dhe menaxhimin e udhëtimeve",
-  
+
   "terms.responsibilities.title": "3. Përgjegjësitë e Përdoruesit",
   "terms.responsibilities.allUsers": "Të Gjithë Përdoruesit Duhet:",
   "terms.responsibilities.list1": "• Të jenë të paktën 18 vjeç",
@@ -114,12 +114,12 @@
   "terms.responsibilities.list7": "• Të kenë regjistrim dhe sigurim të vlefshëm të automjetit",
   "terms.responsibilities.list8": "• Të sigurojnë që automjeti të jetë i gatshëm për rrugë dhe i sigurt",
   "terms.responsibilities.list9": "• Të ndjekin ligjet e trafikut dhe të drejtojnë në mënyrë të sigurt",
-  
+
   "terms.safety.title": "4. Siguria dhe Përgjegjësia",
   "terms.safety.notice": "Njoftim i Rëndësishëm për Sigurinë:",
   "terms.safety.content": "GoTogether nuk është përgjegjës për veprimet e përdoruesve. Ju merrni pjesë në ndarjen e udhëtimeve në rrezikun tuaj. Gjithmonë verifikoni identitetin e shoferit dhe pasagjerit para udhëtimit.",
   "terms.safety.content2": "Përdoruesit pranojnë se ndarja e udhëtimeve përfshin rreziqe të natyrshme. GoTogether nuk garanton sigurinë, besueshmërinë ose legalitetin e përdoruesve ose automjeteve të tyre. Ne rekomandojmë fuqimisht takime në vende publike dhe ndarjen e detajeve të udhëtimit me kontakte të besueshme.",
-  
+
   "terms.payment.title": "5. Kushtet e Pagesës",
   "terms.payment.content": "Marrëveshjet për pagesë bëhen drejtpërdrejt midis shoferëve dhe pasagjerëve. GoTogether nuk përpunon pagesa ose garanton përfundimin e pagesës.",
   "terms.payment.guidelines": "Udhëzime për Pagesën:",
@@ -127,7 +127,7 @@
   "terms.payment.list2": "• Pagesat duhet të mbulojnë vetëm kostot e karburantit dhe automjetit",
   "terms.payment.list3": "• Transporti komercial është i ndaluar",
   "terms.payment.list4": "• Ruani faturat për të dhënat tuaja",
-  
+
   "terms.prohibited.title": "6. Përdorime të Ndaluara",
   "terms.prohibited.content": "Aktivitetet e mëposhtme janë rreptësisht të ndaluara në platformën tonë:",
   "terms.prohibited.contentViolations": "Shkelje të Përmbajtjes:",
@@ -140,14 +140,14 @@
   "terms.prohibited.list6": "• Krijimi i llogarive të shumta të rreme",
   "terms.prohibited.list7": "• Përpjekje për të hakeruar ose shqetësuar shërbimin",
   "terms.prohibited.list8": "• Shkelja e ligjeve lokale të transportit",
-  
+
   "terms.termination.title": "7. Përfundimi i Llogarisë",
   "terms.termination.content1": "Ne rezervojmë të drejtën të përfundojmë ose pezullojmë llogaritë që shkelin këto kushte, angazhohen në sjellje të pasigurt ose marrin vlerësime të këqija vazhdimisht nga përdorues të tjerë.",
   "terms.termination.content2": "Përdoruesit mund të fshijnë llogaritë e tyre në çdo kohë përmes cilësimeve të profilit. Pas përfundimit, aksesi në shërbim do të shfuqizohet menjëherë.",
-  
+
   "terms.changes.title": "8. Ndryshime në Kushtet",
   "terms.changes.content": "GoTogether rezervon të drejtën të modifikojë këto kushte në çdo kohë. Përdoruesit do të njoftohen për ndryshime të rëndësishme përmes emailit ose njoftimeve në platformë. Vazhdimi i përdorimit të shërbimit përbën pranimin e kushteve të modifikuara.",
-  
+
   "terms.contact.title": "Informacioni i Kontaktit",
   "terms.contact.content": "Nëse keni ndonjë pyetje në lidhje me këto Kushte të Shërbimit, ju lutemi na kontaktoni:",
   "terms.contact.email": "Email:",
@@ -155,17 +155,16 @@
   "terms.contact.support": "Kontaktoni Mbështetjen",
   "terms.contact.privacy": "Politika e Privatësisë",
 
-  
   "privacy.title": "Politika e Privatësisë",
   "privacy.subtitle": "Privatësia juaj është e rëndësishme për ne. Kjo politikë shpjegon se si mbledhim, përdorim dhe mbrojmë informacionin tuaj.",
   "privacy.lastUpdated": "Përditësuar për herë të fundit: 18 Dhjetor 2024",
-  
+
   "privacy.overview.title": "Privatësia në Një Shikim",
   "privacy.overview.content": "Ne mbledhim vetëm informacionin e nevojshëm për të ofruar shërbimin tonë të ndarjes së udhëtimeve në mënyrë të sigurt dhe efektive. Të dhënat tuaja nuk shiten kurrë palëve të treta, dhe ju kontrolloni cilësimet e privatësisë.",
   "privacy.overview.dataProtected": "Të Dhëna të Mbrojtura",
   "privacy.overview.youControl": "Ju Kontrolloni",
   "privacy.overview.transparent": "Transparente",
-  
+
   "privacy.collection.title": "1. Informacioni që Mbledhim",
   "privacy.collection.account": "Informacioni i Llogarisë",
   "privacy.collection.accountList1": "• Emri i plotë dhe foto e profilit",
@@ -182,7 +181,7 @@
   "privacy.collection.usageList2": "• Mesazhet dhe komunikimet",
   "privacy.collection.usageList3": "• Vlerësimet dhe komentet",
   "privacy.collection.usageList4": "• Të dhënat e përdorimit të aplikacionit",
-  
+
   "privacy.use.title": "2. Si i Përdorim Informatat Tuaja",
   "privacy.use.content": "Ne i përdorim informatat tuaja vetëm për të ofruar dhe përmirësuar shërbimin tonë të ndarjes së udhëtimeve:",
   "privacy.use.service": "Ofrimi i Shërbimit:",
@@ -195,7 +194,7 @@
   "privacy.use.safetyList2": "• Monitorimi i aktiviteteve të dyshimta",
   "privacy.use.safetyList3": "• Mbajtja e sistemit të vlerësimeve",
   "privacy.use.safetyList4": "• Hetimi i raporteve të sigurisë",
-  
+
   "privacy.sharing.title": "3. Shpërndarja e Informacionit",
   "privacy.sharing.notice": "Kurrë Nuk I Shesim Të Dhënat Tuaja",
   "privacy.sharing.noticeContent": "Informatat tuaja personale nuk shiten kurrë reklamuesve ose palëve të treta për qëllime marketingu.",
@@ -206,7 +205,7 @@
   "privacy.sharing.usersList4": "• Komunikimet në lidhje me udhëtimin",
   "privacy.sharing.legal": "Kërkesat Ligjore:",
   "privacy.sharing.legalContent": "Mund të zbulojmë informacion kur kërkohet nga ligji, për të mbrojtur të drejtat tona ose për të siguruar sigurinë e përdoruesve në situata emergjente.",
-  
+
   "privacy.security.title": "4. Siguria e Të Dhënave",
   "privacy.security.content": "Ne zbatojmë masa standarde të sigurisë në industri për të mbrojtur informacionin tuaj personal:",
   "privacy.security.technical": "Masa Teknike:",
@@ -219,7 +218,7 @@
   "privacy.security.operationalList2": "• Kontroll i biografisë për stafin",
   "privacy.security.operationalList3": "• Procedurat e përgjigjes ndaj incidenteve",
   "privacy.security.operationalList4": "• Trajnime të rregullta sigurie",
-  
+
   "privacy.rights.title": "5. Të Drejtat Tuaja të Privatësisë",
   "privacy.rights.content": "Ju keni kontroll mbi informacionin tuaj personal dhe cilësimet e privatësisë:",
   "privacy.rights.youCan": "Ju Mund të:",
@@ -229,14 +228,14 @@
   "privacy.rights.youCanList4": "• Kërkoni një kopje të të dhënave tuaja personale",
   "privacy.rights.youCanList5": "• Të çregjistroheni nga komunikimet jo-thelbësore",
   "privacy.rights.note": "Për të ushtruar këto të drejta, vizitoni cilësimet e llogarisë tuaj ose kontaktoni ekipin tonë të mbështetjes.",
-  
+
   "privacy.retention.title": "6. Ruajtja e Të Dhënave",
   "privacy.retention.content": "Ne i ruajmë informatat tuaja vetëm për aq kohë sa është e nevojshme për të ofruar shërbimet tona dhe për t'u përmbajtur detyrimeve ligjore:",
   "privacy.retention.active": "Llogaritë Aktive:",
   "privacy.retention.activeContent": "Informacioni ruhet ndërsa llogaria juaj është aktive dhe për një periudhë të arsyeshme pas kësaj për të lehtësuar riaktivizimin.",
   "privacy.retention.deleted": "Llogaritë e Fshira:",
   "privacy.retention.deletedContent": "Shumica e informacionit personal fshihet brenda 30 ditësh nga fshirja e llogarisë. Disa të dhëna mund të mbahen më gjatë për pajtueshmëri ligjore ose qëllime sigurie.",
-  
+
   "privacy.cookies.title": "7. Cookies dhe Gjurmimi",
   "privacy.cookies.content": "Ne përdorim cookies dhe teknologji të ngjashme për të përmirësuar përvojën tuaj dhe për të analizuar përdorimin e shërbimit:",
   "privacy.cookies.essential": "Cookies Thelbësore:",
@@ -244,22 +243,22 @@
   "privacy.cookies.analytics": "Cookies Analitike:",
   "privacy.cookies.analyticsContent": "Na ndihmojnë të kuptojmë se si përdoruesit ndërveprojnë me shërbimin tonë për të bërë përmirësime.",
   "privacy.cookies.note": "Ju mund të kontrolloni preferencat për cookies përmes cilësimeve të shfletuesit tuaj.",
-  
+
   "privacy.children.title": "8. Privatësia e Fëmijëve",
   "privacy.children.notice": "Kufizimi i Moshës",
   "privacy.children.noticeContent": "GoTogether nuk është menduar për përdorues nën 18 vjeç. Ne nuk mbledhim me vetëdije informacion personal nga fëmijët.",
   "privacy.children.content": "Nëse zbulojmë se kemi mbledhur informacion personal nga një fëmijë nën 18 vjeç, do të ndërrmarrim hapa për të fshirë menjëherë atë informacion.",
-  
+
   "privacy.changes.title": "9. Ndryshime në këtë Politikë të Privatësisë",
   "privacy.changes.content": "Ne mund të përditësojmë këtë Politikë të Privatësisë herë pas here. Do t'ju njoftojmë për çdo ndryshim të rëndësishëm përmes email-it ose përmes shërbimit. Vazhdimi i përdorimit të GoTogether pas modifikimeve të tilla përbën pranimin e Politikës së Përditësuar të Privatësisë.",
-  
+
   "privacy.contact.title": "Na Kontaktoni për Privatësi",
   "privacy.contact.content": "Nëse keni pyetje në lidhje me këtë Politikë të Privatësisë ose se si trajtojmë informacionin tuaj personal:",
   "privacy.contact.support": "Mbështetje e Përgjithshme:",
   "privacy.contact.address": "Adresa:",
   "privacy.contact.contactSupport": "Kontaktoni Mbështetjen",
   "privacy.contact.terms": "Kushtet e Shërbimit",
-  
+
   "contact.title": "Kontaktoni Supportin",
   "contact.description": "Keni nevojë për ndihmë? Keni një pyetje? Ne jemi këtu për t'ju ndihmuar. Na dërgoni një mesazh dhe ne do t'ju përgjigjemi së shpejti.",
   "contact.getInTouch": "Na kontaktoni",
@@ -297,7 +296,7 @@
   "contact.categories.other": "Të tjera",
   "about.title": "Rreth GoTogether",
   "about.subtitle": "Ne lidhim njerëzit që udhëtojnë në të njëjtën rrugë për ta bërë transportin më të përballueshëm dhe të qëndrueshëm.",
-  
+
   "about.whatWeDo.title": "Çfarë bëjmë",
   "about.whatWeDo.content": "GoTogether është një platformë për ndarjen e udhëtimeve që ndihmon njerëzit të gjejnë dhe ofrojnë udhëtime në të gjithë Maqedoninë e Veriut. Pavarësisht nëse po shkoni në punë, udhëtoni midis qyteteve ose shkoni në universitet, ne ju ndihmojmë të lidheni me të tjerët që shkojnë në të njëjtën rrugë.",
 
@@ -317,23 +316,4 @@
   "about.contact.content": "Keni pyetje ose keni nevojë për ndihmë? Ne jemi këtu për t'ju ndihmuar.",
   "about.contact.support": "Kontaktoni mbështetjen",
   "about.contact.join": "Bashkohuni me GoTogether"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  }
-  
+}

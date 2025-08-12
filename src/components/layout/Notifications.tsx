@@ -1,6 +1,6 @@
 import { BellOutlined, LoadingOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
-import { Button, Drawer, Spin } from "antd";
+import { Badge, Button, Drawer, Spin } from "antd";
 import { useState } from "react";
 import { getAllBookings } from "../../services/booking/bookingService";
 import NotificationCards from "./parts/NotificationCards.tsx";
@@ -13,6 +13,9 @@ export interface INotification {
   emailSent: boolean;
   username: string;
   phoneNumber: string | null;
+  pickupLocation: string;
+  dropoffLocation: string;
+  note?: string;
 }
 
 export default function Notifications() {
@@ -24,7 +27,6 @@ export default function Notifications() {
   } = useQuery({
     queryKey: ["get-bookings"],
     queryFn: () => getAllBookings(),
-    enabled: !!open,
   });
 
   const showDrawer = () => {
@@ -35,15 +37,30 @@ export default function Notifications() {
     setOpen(false);
   };
 
+  const pendingBookingsBadge =
+    !isLoading &&
+    bookings?.filter((booking: INotification) => booking.status === "PENDING")
+      .length;
+
   return (
     <div>
       <Button
         size="large"
         variant="text"
-        style={{ border: "none", backgroundColor: "transparent" }}
+        style={{
+          border: "none",
+          backgroundColor: "transparent",
+          position: "relative",
+        }}
         icon={<BellOutlined style={{ fontSize: "20px", margin: 6 }} />}
         onClick={showDrawer}
-      ></Button>
+      >
+        <span></span>
+        <Badge
+          count={pendingBookingsBadge}
+          style={{ position: "absolute", bottom: 0, right: 8 }}
+        />
+      </Button>
       <Drawer
         title="Notifications"
         closable={{ "aria-label": "Close Button" }}

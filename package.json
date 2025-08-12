@@ -29,6 +29,7 @@
     "framer-motion": "^12.12.1",
     "i18next": "^25.1.1",
     "jwt-decode": "^4.0.0",
+    "leaflet": "^1.9.4",
     "lottie-web": "^5.12.2",
     "lucide-react": "^0.507.0",
     "nanoid": "^5.1.5",
@@ -51,6 +52,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
+    "@types/leaflet": "^1.9.20",
     "@types/node": "^22.15.14",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",

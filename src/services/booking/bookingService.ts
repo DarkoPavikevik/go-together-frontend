@@ -10,7 +10,7 @@ export interface IUpdateBody {
 }
 export interface IRequestBody {
   rideId: number;
-  pickupLocation: string;
+  pickupLocation: number[] | string;
   dropoffLocation: string;
   note: string;
 }
@@ -45,5 +45,10 @@ export const sendMessage = async (body: {
     `http://localhost:8080/api/chat/send`,
     body
   );
+  return response ? response.data : response;
+};
+
+export const getBooking = async (id: number) => {
+  const response = await axios.get(`http://localhost:8080/api/bookings/${id}`);
   return response ? response.data : response;
 };

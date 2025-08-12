@@ -70,3 +70,36 @@ export const upcomingRides = async (userId: number) => {
   );
   return response ? response.data : response;
 };
+
+export const getSearchedLocation = async (query: string) => {
+  const response = await axios.get(
+    `https://api.openrouteservice.org/geocode/search?api_key=5b3ce3597851110001cf62488d8bf5fbf5134087a250246d98fe102c&text=${query}&boundary.country=MK&layers=venue,address,street,locality`
+  );
+  return response ? response.data : response;
+};
+
+export const getCityCoordinates = async (city: string) => {
+  const response = await axios.get(
+    `http://localhost:8080/api/route/coordinates?city=${city}`
+  );
+  return response ? response.data : response;
+};
+
+export const getRideConversation = async (rideId: number) => {
+  const response = await axios.get(
+    `http://localhost:8080/api/chat/ride-conversation?rideId=${rideId}`
+  );
+  return response ? response.data : response;
+};
+
+export const sendConversation = async (body: {
+  rideId: number;
+  senderId?: number;
+  message: string;
+}) => {
+  const response = await axios.post(
+    `http://localhost:8080/api/chat/send`,
+    body
+  );
+  return response ? response.data : response;
+};

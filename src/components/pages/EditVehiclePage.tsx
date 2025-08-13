@@ -12,58 +12,23 @@ import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/AuthContext";
-import {
-  createVehicle,
-  updateVehicle,
-} from "../../services/vehicle/vehicleService.ts";
-import {
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "../ui/Card";
+import { createVehicle, updateVehicle } from "../../services/vehicle/vehicleService.ts";
+import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/Card";
 import { Label } from "../ui/Label";
 import { useTheme } from "../ui/ThemeProvider";
+import { useTranslation } from 'react-i18next';
 
 const { Option } = Select;
 
 const carMakes = [
-  "Audi",
-  "BMW",
-  "Chevrolet",
-  "Citroën",
-  "Fiat",
-  "Ford",
-  "Honda",
-  "Hyundai",
-  "Kia",
-  "Mazda",
-  "Mercedes-Benz",
-  "Nissan",
-  "Opel",
-  "Peugeot",
-  "Renault",
-  "Škoda",
-  "Toyota",
-  "Volkswagen",
-  "Volvo",
+  "Audi", "BMW", "Chevrolet", "Citroën", "Fiat", "Ford", "Honda", 
+  "Hyundai", "Kia", "Mazda", "Mercedes-Benz", "Nissan", "Opel", 
+  "Peugeot", "Renault", "Škoda", "Toyota", "Volkswagen", "Volvo"
 ];
 
 const carColors = [
-  "Black",
-  "White",
-  "Silver",
-  "Gray",
-  "Blue",
-  "Red",
-  "Green",
-  "Yellow",
-  "Orange",
-  "Brown",
-  "Purple",
-  "Gold",
-  "Beige",
+  "Black", "White", "Silver", "Gray", "Blue", "Red", "Green", 
+  "Yellow", "Orange", "Brown", "Purple", "Gold", "Beige"
 ];
 
 interface IFormData {
@@ -82,6 +47,7 @@ interface IFormData {
 }
 
 export default function EditVehicle() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<RcFile | null>(null);
@@ -92,10 +58,9 @@ export default function EditVehicle() {
 
   const { mutate: updateVehicleMutation } = useMutation({
     mutationKey: ["update-vehicle"],
-    mutationFn: (data: IFormData) =>
-      updateVehicle(me?.vehicle.id as number, data),
+    mutationFn: (data: IFormData) => updateVehicle(me?.vehicle.id as number, data),
     onSuccess: () => {
-      enqueueSnackbar("Vehicle updated successfully", { variant: "success" });
+      enqueueSnackbar(t("editVehicle.messages.updateSuccess"), { variant: "success" });
       refetch();
       setIsLoading(false);
       navigate("/profile");
@@ -106,7 +71,7 @@ export default function EditVehicle() {
     mutationKey: ["update-vehicle"],
     mutationFn: (data: IFormData) => createVehicle(me?.id as number, data),
     onSuccess: () => {
-      enqueueSnackbar("Vehicle created successfully", { variant: "success" });
+      enqueueSnackbar(t("editVehicle.messages.createSuccess"), { variant: "success" });
       refetch();
       setIsLoading(false);
       navigate("/profile");
@@ -126,7 +91,7 @@ export default function EditVehicle() {
           });
 
         if (error) {
-          enqueueSnackbar("Error uploading image", { variant: "error" });
+          enqueueSnackbar(t("editVehicle.messages.uploadError"), { variant: "error" });
           console.log(error);
           return;
         }
@@ -144,17 +109,17 @@ export default function EditVehicle() {
         await createVehicleMutation(body);
       }
     } catch (error) {
-      enqueueSnackbar("Error saving changes", { variant: "error" });
+      enqueueSnackbar(t("editVehicle.messages.saveError"), { variant: "error" });
       console.error(error);
     }
   };
 
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 30 }, (_, i) => currentYear - i);
-  const buttonStyle =
-    theme === "dark"
-      ? { backgroundColor: "#6e3fac", borderColor: "#6e3fac", color: "white" }
-      : { color: "white", backgroundColor: "#646cff" };
+  const buttonStyle = theme === "dark"
+    ? { backgroundColor: "#6e3fac", borderColor: "#6e3fac", color: "white" }
+    : { color: "white", backgroundColor: "#646cff" };
+  
   const props = {
     name: "file",
     accept: "image/png,image/jpeg,image/jpg",
@@ -164,11 +129,10 @@ export default function EditVehicle() {
       return false;
     },
   };
-  const formattedColor =
-    me?.vehicle && me?.vehicle.color
-      ? me.vehicle.color.charAt(0).toUpperCase() +
-        me.vehicle.color.slice(1).toLowerCase()
-      : "";
+
+  const formattedColor = me?.vehicle && me?.vehicle.color
+    ? me.vehicle.color.charAt(0).toUpperCase() + me.vehicle.color.slice(1).toLowerCase()
+    : "";
 
   return (
     <div className="container px-24 py-8">
@@ -178,15 +142,15 @@ export default function EditVehicle() {
           className="mb-4"
           onClick={() => navigate("/profile")}
         >
-          ← Back to Profile
+          ← {t("editVehicle.back")}
         </Button>
         <h1 className="text-3xl font-bold">
-          {me?.vehicle?.id ? "Edit Vehicle" : "Add Vehicle"}
+          {me?.vehicle?.id ? t("editVehicle.title") : t("editVehicle.addTitle")}
         </h1>
         <p className="text-muted-foreground">
           {me?.vehicle?.id
-            ? "Update your vehicle information to help passengers identify your car"
-            : "Add your vehicle information to start offering rides"}
+            ? t("editVehicle.editDescription")
+            : t("editVehicle.addDescription")}
         </p>
       </div>
 
@@ -207,33 +171,32 @@ export default function EditVehicle() {
           comfortableSeats: me?.vehicle?.comfortableSeats ?? true,
         }}
       >
+        {/* Basic Information Card */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Car className="h-5 w-5" />
-              Basic Information
+              {t("editVehicle.basicInfo.title")}
             </CardTitle>
             <CardDescription className="text-left">
-              Enter the basic details about your vehicle
+              {t("editVehicle.basicInfo.description")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2">
                 <div className="text-left">
-                  <Label>Brand</Label>
+                  <Label>{t("editVehicle.basicInfo.brand")}</Label>
                 </div>
                 <Form.Item
                   name={"brand"}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input car brand!",
-                    },
-                  ]}
+                  rules={[{
+                    required: true,
+                    message: t("editVehicle.validation.brandRequired"),
+                  }]}
                 >
                   <Select
-                    placeholder="Select car make"
+                    placeholder={t("editVehicle.basicInfo.brandPlaceholder")}
                     className="w-full"
                     showSearch
                   >
@@ -248,18 +211,16 @@ export default function EditVehicle() {
 
               <div className="space-y-2">
                 <div className="text-left">
-                  <Label>Model</Label>
+                  <Label>{t("editVehicle.basicInfo.model")}</Label>
                 </div>
                 <Form.Item
                   name={"model"}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input car model!",
-                    },
-                  ]}
+                  rules={[{
+                    required: true,
+                    message: t("editVehicle.validation.modelRequired"),
+                  }]}
                 >
-                  <Input placeholder="e.g. Golf, Corolla, Focus" />
+                  <Input placeholder={t("editVehicle.basicInfo.modelPlaceholder")} />
                 </Form.Item>
               </div>
             </div>
@@ -267,18 +228,19 @@ export default function EditVehicle() {
             <div className="grid gap-6 md:grid-cols-4">
               <div className="space-y-2">
                 <div className="text-left">
-                  <Label>Year</Label>
+                  <Label>{t("editVehicle.basicInfo.year")}</Label>
                 </div>
                 <Form.Item
                   name={"year"}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input car year!",
-                    },
-                  ]}
+                  rules={[{
+                    required: true,
+                    message: t("editVehicle.validation.yearRequired"),
+                  }]}
                 >
-                  <Select placeholder="Select year" className="w-full">
+                  <Select 
+                    placeholder={t("editVehicle.basicInfo.yearPlaceholder")} 
+                    className="w-full"
+                  >
                     {years.map((year) => (
                       <Option key={year} value={year}>
                         {year}
@@ -290,18 +252,19 @@ export default function EditVehicle() {
 
               <div className="space-y-2">
                 <div className="text-left">
-                  <Label>Color</Label>
+                  <Label>{t("editVehicle.basicInfo.color")}</Label>
                 </div>
                 <Form.Item
                   name={"color"}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input car color!",
-                    },
-                  ]}
+                  rules={[{
+                    required: true,
+                    message: t("editVehicle.validation.colorRequired"),
+                  }]}
                 >
-                  <Select placeholder="Select color" className="w-full">
+                  <Select 
+                    placeholder={t("editVehicle.basicInfo.colorPlaceholder")} 
+                    className="w-full"
+                  >
                     {carColors.map((color) => (
                       <Option key={color} value={color}>
                         <div className="flex items-center gap-2">
@@ -319,43 +282,38 @@ export default function EditVehicle() {
 
               <div className="space-y-2">
                 <div className="text-left">
-                  <Label>License Plate</Label>
+                  <Label>{t("editVehicle.basicInfo.licensePlate")}</Label>
                 </div>
                 <Form.Item
                   name={"plateNumber"}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input car plate number!",
-                    },
-                  ]}
+                  rules={[{
+                    required: true,
+                    message: t("editVehicle.validation.plateRequired"),
+                  }]}
                 >
                   <Input placeholder="SK-1234-AB" />
                 </Form.Item>
               </div>
               <div className="flex flex-col space-y-2">
                 <div className="text-left">
-                  <Label>Number of Seats</Label>
+                  <Label>{t("editVehicle.basicInfo.seats")}</Label>
                 </div>
                 <Form.Item
                   name={"seats"}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input car seats!",
-                    },
-                    {
-                      type: "number",
-                      min: 2,
-                      max: 9,
-                      message: "Seats must be between 2 and 9",
-                    },
-                  ]}
+                  rules={[{
+                    required: true,
+                    message: t("editVehicle.validation.seatsRequired"),
+                  }, {
+                    type: "number",
+                    min: 2,
+                    max: 9,
+                    message: t("editVehicle.validation.seatsRange"),
+                  }]}
                 >
                   <InputNumber
-                    placeholder="Enter seats"
+                    placeholder={t("editVehicle.basicInfo.seatsPlaceholder")}
                     style={{ width: "100%" }}
-                    className="w-full"
+                    className="w-full bg-white text-black dark:bg-gray-900 dark:text-white dark:border-gray-700"
                   />
                 </Form.Item>
               </div>
@@ -363,15 +321,15 @@ export default function EditVehicle() {
           </CardContent>
         </Card>
 
-        {/* Features & Amenities */}
+        {/* Features & Amenities Card */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Shield className="h-5 w-5" />
-              Features & Amenities
+              {t("editVehicle.features.title")}
             </CardTitle>
             <CardDescription className="text-left">
-              Select the features available in your vehicle
+              {t("editVehicle.features.description")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -383,7 +341,7 @@ export default function EditVehicle() {
                       <div className="p-1 rounded bg-blue-100 text-blue-600">
                         <Settings className="h-4 w-4" />
                       </div>
-                      <span>Air Conditioning</span>
+                      <span>{t("editVehicle.features.airCondition")}</span>
                     </div>
                     <Form.Item name={"airCondition"} valuePropName="checked">
                       <Switch />
@@ -395,7 +353,7 @@ export default function EditVehicle() {
                       <div className="p-1 rounded bg-green-100 text-green-600">
                         <Settings className="h-4 w-4" />
                       </div>
-                      <span>USB Charging</span>
+                      <span>{t("editVehicle.features.usbCharging")}</span>
                     </div>
                     <Form.Item name={"usbCharging"} valuePropName="checked">
                       <Switch />
@@ -407,7 +365,7 @@ export default function EditVehicle() {
                       <div className="p-1 rounded bg-purple-100 text-purple-600">
                         <Settings className="h-4 w-4" />
                       </div>
-                      <span>Music</span>
+                      <span>{t("editVehicle.features.music")}</span>
                     </div>
                     <Form.Item name={"music"} valuePropName="checked">
                       <Switch />
@@ -419,12 +377,9 @@ export default function EditVehicle() {
                       <div className="p-1 rounded bg-orange-100 text-orange-600">
                         <Settings className="h-4 w-4" />
                       </div>
-                      <span>Comfortable seats</span>
+                      <span>{t("editVehicle.features.comfortableSeats")}</span>
                     </div>
-                    <Form.Item
-                      name={"comfortableSeats"}
-                      valuePropName="checked"
-                    >
+                    <Form.Item name={"comfortableSeats"} valuePropName="checked">
                       <Switch />
                     </Form.Item>
                   </div>
@@ -434,15 +389,15 @@ export default function EditVehicle() {
           </CardContent>
         </Card>
 
-        {/* Vehicle Photos */}
+        {/* Vehicle Photos Card */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Camera className="h-5 w-5" />
-              Vehicle Photos
+              {t("editVehicle.photos.title")}
             </CardTitle>
             <CardDescription className="text-left">
-              Add photo of your vehicle to help passengers identify it
+              {t("editVehicle.photos.description")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -453,10 +408,10 @@ export default function EditVehicle() {
                     <InboxOutlined />
                   </p>
                   <p className="ant-upload-text">
-                    Click or drag image to upload
+                    {t("editVehicle.photos.uploadText")}
                   </p>
                   <p className="ant-upload-hint">
-                    Only PNG and JPEG files are allowed.
+                    {t("editVehicle.photos.uploadHint")}
                   </p>
                 </Dragger>
               </Form.Item>
@@ -464,10 +419,11 @@ export default function EditVehicle() {
           </CardContent>
         </Card>
 
+        {/* Actions Card */}
         <Card>
           <CardFooter className="flex justify-between">
             <Button onClick={() => navigate("/profile")} disabled={isLoading}>
-              Cancel
+              {t("editVehicle.actions.cancel")}
             </Button>
             <Button
               htmlType="submit"
@@ -478,12 +434,12 @@ export default function EditVehicle() {
               {isLoading ? (
                 <div className="flex items-center">
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
+                  {t("editVehicle.actions.saving")}
                 </div>
               ) : (
                 <div className="flex items-center">
                   <Check className="mr-2 h-4 w-4" />
-                  Save Vehicle
+                  {t("editVehicle.actions.save")}
                 </div>
               )}
             </Button>

@@ -15,7 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button as AntdButton, Avatar, Skeleton, Tag } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../../context/AuthContext";
-import { upcomingRides } from "../../services/rides/ridesServices";
+import { pastRides, upcomingRides } from "../../services/rides/ridesServices";
 import { Button } from "../ui/Button";
 import type { IRidesData } from "../../utils/types/RideTypes";
 
@@ -33,7 +33,7 @@ export default function MyRidesPage() {
 
   const { data: pastRidesData, isLoading: loadingPastRides } = useQuery({
     queryKey: ["past-rides"],
-    queryFn: () => upcomingRides(me?.id as number),
+    queryFn: () => pastRides(me?.id as number),
     enabled: !!me,
   });
 

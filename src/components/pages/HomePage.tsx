@@ -107,14 +107,17 @@ export default function Home() {
       {/* Search Section */}
       <section className="w-full py-26 md:py-24 homepage-gradient-three-colors">
         <Card
-          className={`mx-auto max-w-4xl shadow-2xl bg-white  ${
-            theme === "dark" ? "border-[#363654]" : "border-gray-200"
-          }`}
-        >
-          <CardHeader>
-            <CardTitle>{t("rides.search")}</CardTitle>
-            <CardDescription>{t("rides.search.description")}</CardDescription>
-          </CardHeader>
+  className={`mx-auto max-w-4xl shadow-2xl 
+    ${theme === "dark" ? "bg-[#1e1e2f] border-[#363654]" : "bg-white border-gray-200"}`}
+>
+  <CardHeader>
+    <CardTitle className={`${theme === "dark" ? "text-white" : "text-black"}`}>
+      {t("rides.search")}
+    </CardTitle>
+    <CardDescription className={`${theme === "dark" ? "text-gray-300" : "text-gray-600"}`}>
+      {t("rides.search.description")}
+    </CardDescription>
+  </CardHeader>
           <CardContent>
             <form className="grid gap-6 sm:grid-cols-2 md:grid-cols-4">
               <div className="grid gap-2">
@@ -124,33 +127,38 @@ export default function Home() {
                 <div className="relative">
                   <MapPin className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                   <Select
-                    value={from}
-                    options={loadingCities ? [] : cityOptions}
-                    placeholder="Select a city"
-                    style={{
-                      width: "100%",
-                      ...(theme === "dark"
-                        ? {
-                            backgroundColor: "#1e1e2f",
-                            borderColor: "#363654",
-                            color: "white",
-                          }
-                        : {}),
-                    }}
-                    showSearch
-                    dropdownStyle={
-                      theme === "dark"
-                        ? {
-                            backgroundColor: "#252538",
-                            borderColor: "#363654",
-                            color: "white",
-                          }
-                        : {}
-                    }
-                    onChange={(e) => {
-                      setFrom(e);
-                    }}
-                  />
+  value={from}
+  options={loadingCities ? [] : cityOptions}
+  placeholder="Select a city"
+  style={{
+    width: "100%",
+    ...(theme === "dark"
+      ? {
+          backgroundColor: "#1e1e2f", // input background
+          borderColor: "#505070",
+          color: "white"
+        }
+      : {})
+  }}
+  dropdownStyle={
+    theme === "dark"
+      ? {
+          backgroundColor: "#1e1e2f", // dropdown background
+          color: "white",
+          borderColor: "#505070"
+        }
+      : {}
+  }
+  dropdownRender={(menu) => (
+    <div style={theme === "dark" ? { backgroundColor: "#1e1e2f" } : {}}>
+      {menu}
+    </div>
+  )}
+  showSearch
+  onChange={(e) => {
+    setFrom(e);
+  }}
+/>
                 </div>
               </div>
               <div className="grid gap-2">

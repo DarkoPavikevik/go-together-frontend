@@ -114,6 +114,8 @@
   "terms.responsibilities.list7": "• Të kenë regjistrim dhe sigurim të vlefshëm të automjetit",
   "terms.responsibilities.list8": "• Të sigurojnë që automjeti të jetë i gatshëm për rrugë dhe i sigurt",
   "terms.responsibilities.list9": "• Të ndjekin ligjet e trafikut dhe të drejtojnë në mënyrë të sigurt",
+  "signin.invalid_login": "Emri i përdoruesit ose fjalëkalimi është i pasaktë",
+  "auth.registerSuccess":"Regjistrimi u krye me sukses",
 
   "terms.safety.title": "4. Siguria dhe Përgjegjësia",
   "terms.safety.notice": "Njoftim i Rëndësishëm për Sigurinë:",
@@ -315,5 +317,70 @@
   "about.contact.title": "Na kontaktoni",
   "about.contact.content": "Keni pyetje ose keni nevojë për ndihmë? Ne jemi këtu për t'ju ndihmuar.",
   "about.contact.support": "Kontaktoni mbështetjen",
-  "about.contact.join": "Bashkohuni me GoTogether"
+  "about.contact.join": "Bashkohuni me GoTogether",
+
+  
+  "editVehicle": {
+    "title": "Modifiko Automjetin",
+    "addTitle": "Shto Automjet",
+    "editDescription": "Përditësoni informacionin e automjetit tuaj për të ndihmuar pasagjerët ta identifikojnë",
+    "addDescription": "Shtoni informacionin e automjetit tuaj për të filluar të ofroni udhëtime",
+    "back": "Kthehu te Profili",
+    
+    "basicInfo": {
+      "title": "Informacionet Bazë",
+      "description": "Vendosni detajet bazë për automjetin tuaj",
+      "brand": "Marka",
+      "brandPlaceholder": "Zgjidhni markën",
+      "model": "Modeli",
+      "modelPlaceholder": "p.sh. Golf, Corolla, Focus",
+      "year": "Viti",
+      "yearPlaceholder": "Zgjidhni vitin",
+      "color": "Ngjyra",
+      "colorPlaceholder": "Zgjidhni ngjyrën",
+      "licensePlate": "Targa",
+      "seats": "Numri i Vendeve",
+      "seatsPlaceholder": "Vendosni numrin e vendeve"
+    },
+    
+    "features": {
+      "title": "Karakteristikat & Rehatitë",
+      "description": "Zgjidhni karakteristikat e disponueshme në automjetin tuaj",
+      "airCondition": "Klima",
+      "usbCharging": "USB Charging",
+      "music": "Muzikë",
+      "comfortableSeats": "Vende të Rehatshme"
+    },
+    
+    "photos": {
+      "title": "Fotot e Automjetit",
+      "description": "Shtoni foto të automjetit tuaj për të ndihmuar pasagjerët ta identifikojnë",
+      "uploadText": "Klikoni ose tërhiqni fotot për të ngarkuar",
+      "uploadHint": "Lejohen vetëm file PNG dhe JPEG."
+    },
+    
+    "actions": {
+      "cancel": "Anulo",
+      "save": "Ruaj Automjetin",
+      "saving": "Duke ruajtur..."
+    },
+    
+    "messages": {
+      "updateSuccess": "Automjeti u përditësua me sukses",
+      "createSuccess": "Automjeti u krijua me sukses",
+      "uploadError": "Gabim gjatë ngarkimit të fotos",
+      "saveError": "Gabim gjatë ruajtjes së ndryshimeve"
+    },
+    
+    "validation": {
+      "brandRequired": "Ju lutem vendosni markën e automjetit!",
+      "modelRequired": "Ju lutem vendosni modelin e automjetit!",
+      "yearRequired": "Ju lutem zgjidhni vitin e prodhimit!",
+      "colorRequired": "Ju lutem zgjidhni ngjyrën e automjetit!",
+      "plateRequired": "Ju lutem vendosni numrin e targave!",
+      "seatsRequired": "Ju lutem vendosni numrin e vendeve!",
+      "seatsRange": "Numri i vendeve duhet të jetë midis 2 dhe 9"
+    }
+  }
+
 }

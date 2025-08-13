@@ -331,5 +331,72 @@
   "about.contact.title": "Get in Touch",
   "about.contact.content": "Have questions or need help? We're here to assist you.",
   "about.contact.support": "Contact Support",
-  "about.contact.join": "Join GoTogether"
+  "about.contact.join": "Join GoTogether",
+  "signin.invalid_login": "Invalid username or password",
+  "auth.registerSuccess":"Registration completed successfully",
+
+  
+  "editVehicle": {
+    "title": "Edit Vehicle",
+    "addTitle": "Add Vehicle",
+    "editDescription": "Update your vehicle information to help passengers identify your car",
+    "addDescription": "Add your vehicle information to start offering rides",
+    "back": "Back to Profile",
+    
+    "basicInfo": {
+      "title": "Basic Information",
+      "description": "Enter the basic details about your vehicle",
+      "brand": "Brand",
+      "brandPlaceholder": "Select car make",
+      "model": "Model",
+      "modelPlaceholder": "e.g. Golf, Corolla, Focus",
+      "year": "Year",
+      "yearPlaceholder": "Select year",
+      "color": "Color",
+      "colorPlaceholder": "Select color",
+      "licensePlate": "License Plate",
+      "seats": "Number of Seats",
+      "seatsPlaceholder": "Enter seats"
+    },
+    
+    "features": {
+      "title": "Features & Amenities",
+      "description": "Select the features available in your vehicle",
+      "airCondition": "Air Conditioning",
+      "usbCharging": "USB Charging",
+      "music": "Music",
+      "comfortableSeats": "Comfortable Seats"
+    },
+    
+    "photos": {
+      "title": "Vehicle Photos",
+      "description": "Add photo of your vehicle to help passengers identify it",
+      "uploadText": "Click or drag image to upload",
+      "uploadHint": "Only PNG and JPEG files are allowed."
+    },
+    
+    "actions": {
+      "cancel": "Cancel",
+      "save": "Save Vehicle",
+      "saving": "Saving..."
+    },
+    
+    "messages": {
+      "updateSuccess": "Vehicle updated successfully",
+      "createSuccess": "Vehicle created successfully",
+      "uploadError": "Error uploading image",
+      "saveError": "Error saving changes"
+    },
+    
+    "validation": {
+      "brandRequired": "Please input car brand!",
+      "modelRequired": "Please input car model!",
+      "yearRequired": "Please select production year!",
+      "colorRequired": "Please select car color!",
+      "plateRequired": "Please input license plate number!",
+      "seatsRequired": "Please input number of seats!",
+      "seatsRange": "Seats must be between 2 and 9"
+    }
+  }
+
 }

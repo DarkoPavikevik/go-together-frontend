@@ -53,6 +53,7 @@ import ReviewsList from "../ui/ReviewsList";
 import { Textarea } from "../ui/Textarea";
 import { useTheme } from "../ui/ThemeProvider";
 import DirectionMap from "../ui/DirectionMap";
+import LocationPicker from "../ui/LocationPicker";
 type ORSLocationFeature = {
   properties: {
     name: string;
@@ -73,6 +74,9 @@ export default function RideDetailPage() {
 const [dropoffLocation, setDropoffLocation] = useState("");
 const [pickupSuggestions, setPickupSuggestions] = useState([]);
 const [dropoffSuggestions, setDropoffSuggestions] = useState([]);
+
+const [pickupLatLng, setPickupLatLng] = useState<[number, number]>([41.9981, 21.4254]); 
+const [dropoffLatLng, setDropoffLatLng] = useState<[number, number]>([41.9981, 21.4254]);
   const [currentLocation, setCurrentLocation] = useState<number[]>();
   const [showRequestSent, setShowRequestSent] = useState(false);
   const [isPending, setIsPending] = useState(false);
@@ -117,6 +121,8 @@ const [dropoffSuggestions, setDropoffSuggestions] = useState([]);
     label: city,
     value: city,
   }));
+
+
 
   const { mutate: requestToJoinMutation, isPending: isRequestPending } = useMutation({
   mutationKey: ["request-join"],
@@ -657,58 +663,23 @@ const [dropoffSuggestions, setDropoffSuggestions] = useState([]);
           </div>
         </div>
 
-        {/* Pickup Location */}
-        <div className="grid gap-2">
-          <label>Pickup Location</label>
-  <input
-    value={pickupLocation}
-    onChange={(e) => handleLocationInput(e.target.value, "pickup")}
-    className="w-full border border-gray-300 rounded-lg p-2"
-    placeholder="Start typing..."
-  />
-  {pickupSuggestions.length > 0 && (
-    <ul className="border rounded-lg mt-1 bg-white max-h-40 overflow-auto">
-      {pickupSuggestions.map((s: any) => (
-        <li
-          key={s.properties.id}
-          className="p-2 hover:bg-gray-200 cursor-pointer"
-          onClick={() => {
-            setPickupLocation(s.properties.label);
-            setPickupSuggestions([]);
-          }}
-        >
-          {s.properties.label}
-        </li>
-      ))}
-    </ul>
-  )}
-</div>
+       {/* Pickup Location */}
+<LocationPicker
+  location={pickupLocation}
+  setLocation={setPickupLocation}
+  latLng={pickupLatLng}
+  setLatLng={setPickupLatLng}
+  placeholder="Pickup Location"
+/>
 
-<div>
-  <label>Dropoff Location</label>
-  <input
-    value={dropoffLocation}
-    onChange={(e) => handleLocationInput(e.target.value, "dropoff")}
-    className="w-full border border-gray-300 rounded-lg p-2"
-    placeholder="Start typing..."
-  />
-  {dropoffSuggestions.length > 0 && (
-    <ul className="border rounded-lg mt-1 bg-white max-h-40 overflow-auto">
-      {dropoffSuggestions.map((s: any) => (
-        <li
-          key={s.properties.id}
-          className="p-2 hover:bg-gray-200 cursor-pointer"
-          onClick={() => {
-            setDropoffLocation(s.properties.label);
-            setDropoffSuggestions([]);
-          }}
-        >
-          {s.properties.label}
-        </li>
-      ))}
-    </ul>
-  )}
-        </div>
+{/* Dropoff Location */}
+<LocationPicker
+  location={dropoffLocation}
+  setLocation={setDropoffLocation}
+  latLng={dropoffLatLng}
+  setLatLng={setDropoffLatLng}
+  placeholder="Dropoff Location"
+/>
 
         {/* Message */}
         <div className="grid gap-2">

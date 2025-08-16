@@ -72,8 +72,14 @@ export const upcomingRides = async (userId: number) => {
 };
 
 export const getSearchedLocation = async (query: string) => {
+  if (!query.trim()) {
+    return { features: [] }; // No results if no query
+  }
+
   const response = await axios.get(
-    `https://api.openrouteservice.org/geocode/search?api_key=5b3ce3597851110001cf62488d8bf5fbf5134087a250246d98fe102c&text=${query}&boundary.country=MK&layers=venue,address,street,locality`
+    `https://api.openrouteservice.org/geocode/search?api_key=5b3ce3597851110001cf62488d8bf5fbf5134087a250246d98fe102c&text=${encodeURIComponent(
+      query
+    )}&boundary.country=MK&layers=venue,address,street,locality`
   );
   return response ? response.data : response;
 };

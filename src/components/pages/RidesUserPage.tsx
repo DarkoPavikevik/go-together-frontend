@@ -10,6 +10,7 @@ import {
   Divider,
   Form,
   Image,
+  Input,
   Modal,
   Select,
   Skeleton,
@@ -68,12 +69,22 @@ export default function RideDetailPage() {
   const { from, to, setFrom, setTo } = useSearch();
   const [message, setMessage] = useState("");
   const [note, setNote] = useState("");
+ const [pickupLocation, setPickupLocation] = useState("");
+const [dropoffLocation, setDropoffLocation] = useState("");
+const [pickupSuggestions, setPickupSuggestions] = useState([]);
+const [dropoffSuggestions, setDropoffSuggestions] = useState([]);
   const [currentLocation, setCurrentLocation] = useState<number[]>();
   const [showRequestSent, setShowRequestSent] = useState(false);
+  const [isPending, setIsPending] = useState(false);
   const [openMessageDriver, setOpenMessageDriver] = useState(false);
   const { theme } = useTheme();
   const [searchLocation, setSearchLocation] = useState("");
   const [selectedCoordinates, setSelectedCoordinates] = useState("");
+
+
+  
+
+  
 
   const { data: booking } = useQuery({
     queryKey: ["get-booking"],
@@ -107,23 +118,23 @@ export default function RideDetailPage() {
     value: city,
   }));
 
-  const { mutate: requestToJoinMutation, isPending } = useMutation({
-    mutationKey: ["request-join"],
-    mutationFn: (body: {
-      rideId: number;
-      pickupLocation: number[] | string;
-      dropoffLocation: string;
-      note: string;
-    }) => requestToJoin(body),
-    onSuccess: (res) => {
-      enqueueSnackbar(res, { variant: "success" });
-      setShowRequestSent(true);
-      setSelectedCoordinates("");
-      setNote("");
-      setFrom("");
-      setTo("");
-    },
-  });
+  const { mutate: requestToJoinMutation, isPending: isRequestPending } = useMutation({
+  mutationKey: ["request-join"],
+  mutationFn: (body: {
+    rideId: number;
+    pickupLocation: number[] | string;
+    dropoffLocation: string;
+    note: string;
+  }) => requestToJoin(body),
+  onSuccess: (res) => {
+    enqueueSnackbar(res, { variant: "success" });
+    setShowRequestSent(true);
+    setSelectedCoordinates("");
+    setNote("");
+    setFrom("");
+    setTo("");
+  },
+});
 
   const { mutate: sendMessageToDriverMutation, isPending: pendingMessage } =
     useMutation({
@@ -139,6 +150,18 @@ export default function RideDetailPage() {
         setOpenMessageDriver(false);
       },
     });
+
+  const handleLocationInput = async (value: string, type: "pickup" | "dropoff") => {
+  if (type === "pickup") {
+    setPickupLocation(value);
+    const res = await getSearchedLocation(value);
+    setPickupSuggestions(res.features || []);
+  } else {
+    setDropoffLocation(value);
+    const res = await getSearchedLocation(value);
+    setDropoffSuggestions(res.features || []);
+  }
+};
 
   const handleSendRequest = async () => {
     if (!currentLocation || !selectedCoordinates) {
@@ -160,9 +183,52 @@ export default function RideDetailPage() {
     requestToJoinMutation(dataToSend);
   };
 
-  const handleShowModal = () => {
-    setShowRequestSent(!showRequestSent);
-  };
+  const handleRequestBooking = async () => {
+  const token = localStorage.getItem("accessToken");
+
+  if (!token) {
+    alert("You are not logged in.");
+    return;
+  }
+
+  if (!pickupLocation.trim() || !dropoffLocation.trim()) {
+    alert("Please enter both pickup and dropoff locations.");
+    return;
+  }
+
+  try {
+    setIsPending(true);
+    const res = await fetch("http://localhost:8080/api/bookings/request", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.replace(/"/g, "")}`, // safe, token nije null
+      },
+      body: JSON.stringify({
+        rideId: ride.id,
+        pickupLocation,
+        dropoffLocation,
+        note,
+      }),
+    });
+
+    console.log("Status:", res.status);
+    const text = await res.text();
+    console.log("Response body:", text);
+
+    if (!res.ok) throw new Error("Failed to send booking request");
+
+    setShowRequestSent(true);
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong sending your request.");
+  } finally {
+    setIsPending(false);
+  }
+};
+
+
+
 
   const handleCloseModal = () => {
     setShowRequestSent(false);
@@ -527,194 +593,158 @@ export default function RideDetailPage() {
           {me?.id !== ride?.userInfo.id && (
             <>
               <Card className="user-ride-car-border">
-                <CardHeader className="text-left">
-                  <CardTitle>Request to Join</CardTitle>
+  <CardHeader className="text-left">
+    <CardTitle>Request to Join</CardTitle>
+    <CardDescription>
+      Send a request to join this ride
+    </CardDescription>
+  </CardHeader>
 
-                  <CardDescription>
-                    Send a request to join this ride
-                  </CardDescription>
-                </CardHeader>
+  <CardContent>
+    {showRequestSent || booking?.status === "PENDING" ? (
+      <div className="text-center py-4">
+        <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300 mb-4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M4.5 12.75l6 6 9-13.5"
+            />
+          </svg>
+        </div>
 
-                <CardContent>
-                  {showRequestSent || booking?.status === "PENDING" ? (
-                    <div className="text-center py-4">
-                      <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300 mb-4">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={1.5}
-                          stroke="currentColor"
-                          className="w-6 h-6"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M4.5 12.75l6 6 9-13.5"
-                          />
-                        </svg>
-                      </div>
+        <h3 className="text-lg font-medium mb-2">Request Sent!</h3>
+        <p className="text-sm text-muted-foreground mb-4">
+          The driver will review your request and respond soon.
+        </p>
 
-                      <h3 className="text-lg font-medium mb-2">
-                        Request Sent!
-                      </h3>
+        <Button onClick={() => navigate("/rides")}>View My Rides</Button>
+      </div>
+    ) : (
+      <div className="space-y-4">
+        {/* Price & Seats */}
+        <div className="rounded-lg bg-[#f1f5f9] dark:bg-[#2a2a3d] p-4">
+          <div className="flex justify-between mb-2">
+            <span className="text-sm font-medium !text-gray-800 dark:!text-gray-200">
+              Price per seat
+            </span>
+            <span className="font-bold !text-gray-900 dark:!text-gray-100">
+              {ride.price} {ride.currency}
+            </span>
+          </div>
 
-                      <p className="text-sm text-muted-foreground mb-4">
-                        The driver will review your request and respond soon.
-                      </p>
+          <div className="flex justify-between mb-2">
+            <span className="text-sm font-medium !text-gray-800 dark:!text-gray-200">
+              Seats
+            </span>
+            <span className="!text-gray-900 dark:!text-gray-100">1</span>
+          </div>
 
-                      <Button
-                        onClick={() => {
-                          navigate("/rides");
-                        }}
-                      >
-                        View My Rides
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      <div className="rounded-lg bg-[#f1f5f9] dark:bg-slate-800 p-4">
-                        <div className="flex justify-between mb-2">
-                          <span className="text-sm font-medium">
-                            Price per seat
-                          </span>
+          <div className="flex justify-between pt-2 border-t border-gray-300 dark:border-slate-500">
+            <span className="font-semibold !text-gray-900 dark:!text-gray-100">
+              Total
+            </span>
+            <span className="font-extrabold !text-gray-900 dark:!text-gray-100">
+              {ride.price} {ride.currency}
+            </span>
+          </div>
+        </div>
 
-                          <span className="font-bold">
-                            {ride.price} {ride.currency}
-                          </span>
-                        </div>
+        {/* Pickup Location */}
+        <div className="grid gap-2">
+          <label>Pickup Location</label>
+  <input
+    value={pickupLocation}
+    onChange={(e) => handleLocationInput(e.target.value, "pickup")}
+    className="w-full border border-gray-300 rounded-lg p-2"
+    placeholder="Start typing..."
+  />
+  {pickupSuggestions.length > 0 && (
+    <ul className="border rounded-lg mt-1 bg-white max-h-40 overflow-auto">
+      {pickupSuggestions.map((s: any) => (
+        <li
+          key={s.properties.id}
+          className="p-2 hover:bg-gray-200 cursor-pointer"
+          onClick={() => {
+            setPickupLocation(s.properties.label);
+            setPickupSuggestions([]);
+          }}
+        >
+          {s.properties.label}
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
 
-                        <div className="flex justify-between mb-2">
-                          <span className="text-sm font-medium">Seats</span>
+<div>
+  <label>Dropoff Location</label>
+  <input
+    value={dropoffLocation}
+    onChange={(e) => handleLocationInput(e.target.value, "dropoff")}
+    className="w-full border border-gray-300 rounded-lg p-2"
+    placeholder="Start typing..."
+  />
+  {dropoffSuggestions.length > 0 && (
+    <ul className="border rounded-lg mt-1 bg-white max-h-40 overflow-auto">
+      {dropoffSuggestions.map((s: any) => (
+        <li
+          key={s.properties.id}
+          className="p-2 hover:bg-gray-200 cursor-pointer"
+          onClick={() => {
+            setDropoffLocation(s.properties.label);
+            setDropoffSuggestions([]);
+          }}
+        >
+          {s.properties.label}
+        </li>
+      ))}
+    </ul>
+  )}
+        </div>
 
-                          <span>1</span>
-                        </div>
+        {/* Message */}
+        <div className="grid gap-2">
+          <Label htmlFor="message">Message to driver (optional)</Label>
+          <Textarea
+            id="message"
+            placeholder="Introduce yourself and let the driver know about any special requirements"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            className="dark:bg-slate-800 dark:border-gray-700"
+          />
+        </div>
 
-                        <div className="flex justify-between pt-2 border-t border-gray-200 dark:border-gray-700">
-                          <span className="font-medium">Total</span>
+        <Button
+          className="w-full"
+          onClick={handleRequestBooking}
+          variant="solid"
+          style={
+            isAuthenticated
+              ? { backgroundColor: "#646cff", color: "white" }
+              : {}
+          }
+          loading={isPending}
+          disabled={!isAuthenticated}
+        >
+          Request to Join
+        </Button>
 
-                          <span className="font-bold">
-                            {ride.price} {ride.currency}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="grid gap-2">
-                        {/* <Label htmlFor="from" className="text-left">
-                          {t("rides.from")}
-                        </Label>
-                        <div className="relative">
-                          <MapPin className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                          <Select
-                            value={from}
-                            options={loadingCities ? [] : cityOptions}
-                            placeholder="Select a city"
-                            style={{
-                              width: "100%",
-                              ...(theme === "dark"
-                                ? {
-                                    backgroundColor: "#1e1e2f",
-                                    borderColor: "#363654",
-                                    color: "white",
-                                  }
-                                : {}),
-                            }}
-                            showSearch
-                            dropdownStyle={
-                              theme === "dark"
-                                ? {
-                                    backgroundColor: "#252538",
-                                    borderColor: "#363654",
-                                    color: "white",
-                                  }
-                                : {}
-                            }
-                            onChange={(e) => {
-                              setFrom(e);
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div className="grid gap-2">
-                        <Label htmlFor="to" className="text-left">
-                          {t("rides.to")}
-                        </Label>
-                        <div className="relative">
-                          <MapPin className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                          <Select
-                            value={to}
-                            options={
-                              loadingCities
-                                ? []
-                                : cityOptions.filter(
-                                    (to: { value: string }) => to.value !== from
-                                  )
-                            }
-                            placeholder="Select a city"
-                            style={{
-                              width: "100%",
-                              ...(theme === "dark"
-                                ? {
-                                    backgroundColor: "#1e1e2f",
-                                    borderColor: "#363654",
-                                    color: "white",
-                                  }
-                                : {}),
-                            }}
-                            showSearch
-                            dropdownStyle={
-                              theme === "dark"
-                                ? {
-                                    backgroundColor: "#252538",
-                                    borderColor: "#363654",
-                                    color: "white",
-                                  }
-                                : {}
-                            }
-                            onChange={(e) => {
-                              setTo(e);
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div className="space-y-2 text-left">
-                       
+        <p className="text-xs text-muted-foreground text-center">
+          You won't be charged until the driver accepts your request
+        </p>
+      </div>
+    )}
+  </CardContent>
+</Card>
 
-                       
-                      </div> */}
-                        <Label htmlFor="message">
-                          Message to driver (optional)
-                        </Label>
-                        <Textarea
-                          id="message"
-                          placeholder="Introduce yourself and let the driver know about any special requirements"
-                          value={note}
-                          onChange={(e) => setNote(e.target.value)}
-                          className="dark:bg-slate-800 dark:border-gray-700"
-                        />
-                      </div>
-                      <Button
-                        className="w-full"
-                        onClick={handleShowModal}
-                        variant="solid"
-                        style={
-                          isAuthenticated
-                            ? { backgroundColor: "#646cff", color: "white" }
-                            : {}
-                        }
-                        loading={isPending}
-                        disabled={!isAuthenticated}
-                      >
-                        Request to Join
-                      </Button>
-
-                      <p className="text-xs text-muted-foreground text-center">
-                        You won't be charged until the driver accepts your
-                        request
-                      </p>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
 
               <Card className="user-ride-car-border">
                 <CardHeader>
@@ -811,7 +841,7 @@ export default function RideDetailPage() {
               </ul>
             </CardContent>
           </Card>
-          <Modal
+          {/* <Modal
             width={1000}
             open={showRequestSent}
             onOk={handleSendRequest}
@@ -837,7 +867,7 @@ export default function RideDetailPage() {
             {selectedCoordinates && (
               <DirectionMap start={currentLocation} end={selectedCoordinates} />
             )}
-          </Modal>
+          </Modal> */}
         </div>
       </div>
     </div>

@@ -2,7 +2,7 @@ import { BellOutlined, LoadingOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
 import { Badge, Button, Drawer, Spin } from "antd";
 import { useState } from "react";
-import { getAllBookings } from "../../services/booking/bookingService";
+import { getAllBookings, getMyBookings } from "../../services/booking/bookingService";
 import NotificationCards from "./parts/NotificationCards.tsx";
 export interface INotification {
   id: number;
@@ -20,14 +20,14 @@ export interface INotification {
 
 export default function Notifications() {
   const [open, setOpen] = useState(false);
-  const {
-    data: bookings,
-    isLoading,
-    refetch,
-  } = useQuery({
-    queryKey: ["get-bookings"],
-    queryFn: () => getAllBookings(),
-  });
+
+  // Zemi token od localStorage
+ const token = localStorage.getItem("accessToken") || "";
+
+const { data: bookings, isLoading, refetch } = useQuery({
+  queryKey: ["get-my-bookings"],
+  queryFn: () => getMyBookings(token),
+});
 
   const showDrawer = () => {
     setOpen(true);
@@ -69,22 +69,17 @@ export default function Notifications() {
         size="large"
       >
         {!isLoading ? (
-          bookings?.map((data: INotification) => {
-            return (
-              <div className="p-2">
-                <NotificationCards
-                  key={data.id}
-                  notification={data}
-                  refetchNotifications={refetch}
-                />
-              </div>
-            );
-          })
+          bookings?.map((data: INotification) => (
+            <div className="p-2" key={data.id}>
+              <NotificationCards
+                notification={data}
+                refetchNotifications={refetch}
+              />
+            </div>
+          ))
         ) : (
           <div className="w-full flex items-center justify-center">
-            <Spin
-              indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />}
-            />
+            <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
           </div>
         )}
       </Drawer>

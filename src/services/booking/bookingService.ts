@@ -52,3 +52,21 @@ export const getBooking = async (id: number) => {
   const response = await axios.get(`http://localhost:8080/api/bookings/${id}`);
   return response ? response.data : response;
 };
+
+export const getMyBookings = async (token: string) => {
+  if (!token) throw new Error("No token provided");
+
+  // Otstrani pocetni i krajnji quotes ako gi ima
+  const cleanToken = token.replace(/^"(.*)"$/, "$1");
+
+  const response = await axios.get(
+    `http://localhost:8080/api/bookings/my-notifications`,
+    {
+      headers: {
+        Authorization: `Bearer ${cleanToken}`,
+      },
+    }
+  );
+
+  return response ? response.data : response;
+};

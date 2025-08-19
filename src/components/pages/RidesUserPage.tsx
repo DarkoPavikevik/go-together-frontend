@@ -74,6 +74,8 @@ export default function RideDetailPage() {
 const [dropoffLocation, setDropoffLocation] = useState("");
 const [pickupSuggestions, setPickupSuggestions] = useState([]);
 const [dropoffSuggestions, setDropoffSuggestions] = useState([]);
+const [isOptimizing, setIsOptimizing] = useState(false);
+const [optimizedRoute, setOptimizedRoute] = useState<string[] | null>(null);
 
 const [pickupLatLng, setPickupLatLng] = useState<[number, number]>([41.9981, 21.4254]); 
 const [dropoffLatLng, setDropoffLatLng] = useState<[number, number]>([41.9981, 21.4254]);
@@ -141,6 +143,56 @@ const [dropoffLatLng, setDropoffLatLng] = useState<[number, number]>([41.9981, 2
     setTo("");
   },
 });
+
+const handleOptimizeRoute = async () => {
+  if (!pickupLocation || !dropoffLocation) {
+    enqueueSnackbar("Please enter both start and end locations", { variant: "error" });
+    return;
+  }
+
+  try {
+    setIsOptimizing(true);
+    
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+    alert("You are not logged in.");
+    return;
+  }
+
+    const response = await fetch(`http://localhost:8080/api/rides/${id}/optimize`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token.replace(/"/g, "")}`,
+      },
+      body: JSON.stringify({
+        start: pickupLocation,
+        end: dropoffLocation
+      }),
+    });
+
+    const data = await response.json();
+    
+    if (!response.ok) {
+      console.error("Optimization error details:", data);
+      throw new Error(data.message || `HTTP error! status: ${response.status}`);
+    }
+
+    setOptimizedRoute(data);
+    enqueueSnackbar("Route optimized successfully", { variant: "success" });
+  } catch (error) {
+    console.error("Full error details:", {
+      error,
+      request: {
+        url: `http://localhost:8080/api/rides/${id}/optimize`,
+        body: { start: pickupLocation, end: dropoffLocation }
+      }
+    });
+    enqueueSnackbar( "Failed to optimize route", { variant: "error" });
+  } finally {
+    setIsOptimizing(false);
+  }
+};
 
   const { mutate: sendMessageToDriverMutation, isPending: pendingMessage } =
     useMutation({
@@ -812,33 +864,60 @@ const [dropoffLatLng, setDropoffLatLng] = useState<[number, number]>([41.9981, 2
               </ul>
             </CardContent>
           </Card>
-          {/* <Modal
-            width={1000}
-            open={showRequestSent}
-            onOk={handleSendRequest}
-            onCancel={handleCloseModal}
-          >
-            <Form>
-              <Form.Item>
-                <AutoComplete
-                  options={!loadingSearchedLocation ? searchedDataFilter : []}
-                  onSearch={(value) => {
-                    if (value.length > 2) {
-                      setSearchLocation(value);
-                    }
-                  }}
-                  onSelect={(value, option) => {
-                    setSelectedCoordinates(option.coordinates);
-                  }}
-                  placeholder="City or location"
-                  filterOption={false}
-                />
-              </Form.Item>
-            </Form>
-            {selectedCoordinates && (
-              <DirectionMap start={currentLocation} end={selectedCoordinates} />
-            )}
-          </Modal> */}
+          // Add this card component right after the "Safety Tips" card in your RideDetailPage
+{me?.id === ride?.userInfo.id && (
+  <Card className="user-ride-car-border">
+    <CardHeader className="text-left">
+      <CardTitle>Route Optimization</CardTitle>
+      <CardDescription>
+        Set your start and end points to optimize the route
+      </CardDescription>
+    </CardHeader>
+    <CardContent>
+      <div className="space-y-4">
+        {/* Start Location */}
+        <LocationPicker
+          location={pickupLocation}
+          setLocation={setPickupLocation}
+          latLng={pickupLatLng}
+          setLatLng={setPickupLatLng}
+          placeholder="Your starting location"
+        />
+
+        {/* End Location */}
+        <LocationPicker
+          location={dropoffLocation}
+          setLocation={setDropoffLocation}
+          latLng={dropoffLatLng}
+          setLatLng={setDropoffLatLng}
+          placeholder="Your final destination"
+        />
+
+        <Button
+          className="w-full"
+          onClick={handleOptimizeRoute}
+          variant="solid"
+          style={{ backgroundColor: "#646cff", color: "white" }}
+          loading={isOptimizing}
+        >
+          Optimize Route
+        </Button>
+
+        {/* Display optimized route if available */}
+        {optimizedRoute && (
+          <div className="mt-4">
+            <h4 className="font-medium mb-2">Optimized Route:</h4>
+            <ol className="list-decimal pl-5 space-y-1">
+              {optimizedRoute.map((point, index) => (
+                <li key={index}>{point}</li>
+              ))}
+            </ol>
+          </div>
+        )}
+      </div>
+    </CardContent>
+  </Card>
+)}
         </div>
       </div>
     </div>

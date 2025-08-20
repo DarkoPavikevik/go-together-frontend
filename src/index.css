@@ -70,6 +70,19 @@ button:focus-visible {
   }
 }
 
+.leaflet-container {
+  width: 100% !important;
+  height: 200px !important;
+  border-radius: 0.75rem; /* ако сакаш заоблени агли */
+  z-index: 0 !important; /* ова ќе спречи да оди над navbar-от */
+}
+
+.leaflet-pane,
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 0 !important; /* ресетира Leaflet */
+}
+
 .ReactFlagsSelect-module_selectBtn__19wW7::after {
   display: none !important;
 }

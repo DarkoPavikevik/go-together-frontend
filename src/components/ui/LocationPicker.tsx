@@ -95,28 +95,29 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
       )}
 
       <MapContainer
-        center={latLng}
-        zoom={13}
-        style={{ height: "200px", marginTop: "8px" }}
-      >
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        <Marker
-  position={latLng}
-  draggable
-  eventHandlers={{
-    dragend: async (e) => {
-      const marker = e.target;
-      const position = marker.getLatLng();
-      setLatLng([position.lat, position.lng]);
+  center={latLng}
+  zoom={13}
+  className="w-full rounded-lg overflow-hidden"
+  style={{ height: "200px", minHeight: "150px", marginTop: "8px" }}
+>
+  <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+  <Marker
+    position={latLng}
+    draggable
+    eventHandlers={{
+      dragend: async (e) => {
+        const marker = e.target;
+        const position = marker.getLatLng();
+        setLatLng([position.lat, position.lng]);
 
-      // Reverse geocode za da setira input
-      const address = await reverseGeocode(position.lat, position.lng);
-      setLocation(address);
-    },
-  }}
-/>
-        <MapClick />
-      </MapContainer>
+        const address = await reverseGeocode(position.lat, position.lng);
+        setLocation(address);
+      },
+    }}
+  />
+  <MapClick />
+</MapContainer>
+
     </div>
   );
 };

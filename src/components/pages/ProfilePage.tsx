@@ -2,15 +2,16 @@
 
 import { InboxOutlined, LoadingOutlined } from "@ant-design/icons";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { getRideDates } from "../../services/profile/profileServices";
 import { useMutation } from "@tanstack/react-query";
-import { Avatar, Button, Form, Image, Spin, Tag, Tooltip } from "antd";
+import { Avatar, Badge, Button, Calendar, Form, Image, Spin, Tag, Tooltip } from "antd";
 import type { RcFile } from "antd/es/upload";
 import Dragger from "antd/es/upload/Dragger";
 import { format } from "date-fns";
 import { Car, Edit, Loader2, Phone, Star, User } from "lucide-react";
 import { nanoid } from "nanoid";
 import { enqueueSnackbar } from "notistack";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { useUser } from "../../context/AuthContext";
@@ -38,7 +39,24 @@ const preferences = [
   { key: "music", label: "Music" },
   { key: "talking", label: "Talking" },
 ] as const;
+const mockRideDates = [
+  new Date(2023, 9, 15), // October 15, 2023
+  new Date(2023, 9, 18), // October 18, 2023
+  new Date(2023, 9, 22), // October 22, 2023
+  new Date(2023, 9, 25), // October 25, 2023
+  new Date(2023, 9, 28), // October 28, 2023
+  new Date(2023, 10, 2), // November 2, 2023
+  new Date(2023, 10, 5), // November 5, 2023
+];
 
+// Function to check if a date has a ride
+const hasRideOnDate = (date: Date) => {
+  return mockRideDates.some(rideDate => 
+    date.getDate() === rideDate.getDate() &&
+    date.getMonth() === rideDate.getMonth() &&
+    date.getFullYear() === rideDate.getFullYear()
+  );
+};
 export default function ProfilePage() {
   const { t } = useTranslation();
   const { addProfilePicture } = useAuthController();
@@ -46,6 +64,8 @@ export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<RcFile | null>(null);
+  const [rideDates, setRideDates] = useState<Date[]>([]);
+  const [isLoadingRides, setIsLoadingRides] = useState(false);
 
   // const userSupabase = useUser();
   const supabase = useSupabaseClient();
@@ -68,6 +88,33 @@ export default function ProfilePage() {
         refetch();
       },
     });
+
+    const hasRideOnDate = (date: Date) => {
+    return rideDates.some(rideDate => 
+      date.getDate() === rideDate.getDate() &&
+      date.getMonth() === rideDate.getMonth() &&
+      date.getFullYear() === rideDate.getFullYear()
+    );
+  };
+
+  useEffect(() => {
+    const fetchRideDates = async () => {
+      if (!me?.id) return;
+      
+      setIsLoadingRides(true);
+      try {
+        const dates = await getRideDates(me.id);
+        setRideDates(dates);
+      } catch (error) {
+        console.error("Failed to fetch ride dates", error);
+        enqueueSnackbar("Error loading ride dates", { variant: "error" });
+      } finally {
+        setIsLoadingRides(false);
+      }
+    };
+
+    fetchRideDates();
+  }, [me?.id]);
 
   const handleSubmit = async (data: IUpdateProfile) => {
     try {
@@ -100,6 +147,17 @@ export default function ProfilePage() {
       enqueueSnackbar("Error saving changes", { variant: "error" });
       console.error(error);
     }
+  };
+
+  const dateCellRender = (value: any) => {
+    if (hasRideOnDate(value.toDate())) {
+      return (
+        <div className="flex justify-center items-center h-full">
+          <Badge status="success" />
+        </div>
+      );
+    }
+    return null;
   };
 
   const props = {
@@ -239,6 +297,30 @@ export default function ProfilePage() {
               </div>
             </CardContent>
           </Card>
+
+          <Card className="border-gray-200">
+      <CardHeader>
+        <CardTitle>
+          <div className="text-left">{t("profile.calendar")}</div>
+        </CardTitle>
+        <CardDescription>
+           {t("profile.calendar.description")}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        {isLoadingRides ? (
+          <div className="flex justify-center items-center h-64">
+            <Spin indicator={<LoadingOutlined spin />} />
+          </div>
+        ) : (
+          <Calendar 
+            fullscreen={false} 
+            dateCellRender={dateCellRender}
+            className="rounded-md border"
+          />
+        )}
+      </CardContent>
+    </Card>
         </div>
 
         <div className="lg:col-span-2 space-y-6">

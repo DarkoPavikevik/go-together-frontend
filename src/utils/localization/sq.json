@@ -116,6 +116,9 @@
   "terms.responsibilities.list9": "• Të ndjekin ligjet e trafikut dhe të drejtojnë në mënyrë të sigurt",
   "signin.invalid_login": "Emri i përdoruesit ose fjalëkalimi është i pasaktë",
   "auth.registerSuccess":"Regjistrimi u krye me sukses",
+  "profile.calendar":"Kalendari im i udhëtimit",
+  "profile.calendar.description":"Datat me udhëtime janë shënuar me një pikë të gjelbër",
+
 
   "terms.safety.title": "4. Siguria dhe Përgjegjësia",
   "terms.safety.notice": "Njoftim i Rëndësishëm për Sigurinë:",

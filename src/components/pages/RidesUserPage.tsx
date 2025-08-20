@@ -90,8 +90,6 @@ const [dropoffLatLng, setDropoffLatLng] = useState<[number, number]>([41.9981, 2
 
   
 
-  
-
   const { data: booking } = useQuery({
     queryKey: ["get-booking"],
     queryFn: () => getBooking(Number(id)),
@@ -864,7 +862,7 @@ const handleOptimizeRoute = async () => {
               </ul>
             </CardContent>
           </Card>
-          // Add this card component right after the "Safety Tips" card in your RideDetailPage
+          
 {me?.id === ride?.userInfo.id && (
   <Card className="user-ride-car-border">
     <CardHeader className="text-left">

@@ -334,6 +334,8 @@
   "about.contact.join": "Join GoTogether",
   "signin.invalid_login": "Invalid username or password",
   "auth.registerSuccess":"Registration completed successfully",
+  "profile.calendar":"My Ride Calendar",
+  "profile.calendar.description":"Dates with rides are marked with a green dot",
 
   
   "editVehicle": {

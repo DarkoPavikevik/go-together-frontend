@@ -32,3 +32,17 @@ export const updateProfile = async (id: number, body: IUpdateProfile) => {
   );
   return response ? response.data : response;
 };
+
+
+export const getRideDates = async (userId: number): Promise<Date[]> => {
+  try {
+    const response = await axios.get(`http://localhost:8080/api/user/${userId}/ride-dates`);
+    return response.data
+  .filter((d: string | null) => d !== null)
+  .map((d: string) => new Date(d));
+
+  } catch (error) {
+    console.error("Error fetching ride dates:", error);
+    throw new Error("Failed to fetch ride dates");
+  }
+};

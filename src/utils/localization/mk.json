@@ -324,6 +324,8 @@
   "about.contact.join": "Придружете се на GoTogether",
   "signin.invalid_login": "Неточно корисничко име или лозинка",
   "auth.registerSuccess":"Регистрацијата е успешно завршена",
+  "profile.calendar":"Mојот календар за возење",
+  "profile.calendar.description":"Датумите со возења се означени со зелена точка",
   
   "editVehicle": {
     "title": "Уреди возило",

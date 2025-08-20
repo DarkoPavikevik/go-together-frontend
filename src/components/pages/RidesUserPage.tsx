@@ -646,7 +646,9 @@ const handleOptimizeRoute = async () => {
         </div>
 
         <div className="flex flex-col gap-4">
-          {me?.id !== ride?.userInfo.id && (
+          {me?.id !== ride?.userInfo.id &&
+          !ride.passengerBookings?.some((pb: { user: { id: number } }) => pb.user.id === me?.id)
+ &&  (
             <>
               <Card className="user-ride-car-border">
   <CardHeader className="text-left">
